@@ -2,18 +2,27 @@ import numpy as np
 from matplotlib import pyplot as plt
 import random
 import scipy.integrate as integrate
+from fonction_conversion import convert_to_function
 from lecture import parse_params
 import function.potential as potential 
 import function.kernel as kernel
 
 
-# --- Chargement des données du fichier texte---
+# --- Chargement ---
 params = parse_params("parametres.txt")
-print(params)
 
-# --- Injection dans les variables locales ---
-for nom, valeur in params.items():
-    globals()[nom] = valeur
+# --- Déclaration explicite ---
+dt   = params["dt"]
+T    = params["T"]
+Temp = params["Temp"]
+d    = params["d"]
+w0   = convert_to_function(params["w0"])
+w1   = convert_to_function(params["w1"])
+s    = convert_to_function(params["s"])
+nx   = params["nx"]
+ny   = params["ny"]
+K01  = convert_to_function(params["K01"])
+K10  = convert_to_function(params["K10"])
 
 # --- Affichage ---
 for nom, valeur in params.items():

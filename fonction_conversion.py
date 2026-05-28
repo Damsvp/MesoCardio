@@ -31,3 +31,7 @@ def convert_to_function(param_list):
         raise ValueError(f"Fonction '{type_}' non définie dans '{categorie}.py'")
 
     return func(*parametres)
+
+# Exemple d'utilisation
+# w0=convert_to_function(["potential", "gaussienne", 5, 1])
+# print(w0(4)) 

@@ -1,5 +1,5 @@
 #Lis le fichier text et ressort des constantes quand il n'y a qu'une valeur,
-#et des listes de valeurs quand il y en a plusieurs. Injecte ensuite dans les variables locales.
+
 
 def parse_params(filepath):
     params = {}
@@ -57,14 +57,15 @@ def parse_params(filepath):
     return params
 
 
+# ----------------- Exemple d'utilisation -------------------------------------
 # --- Chargement ---
-params = parse_params("parametres.txt")
+# params = parse_params("parametres.txt")
 
-# --- Injection dans les variables locales ---
-for nom, valeur in params.items():
-    globals()[nom] = valeur
+# # --- Injection dans les variables locales ---
+# for nom, valeur in params.items():
+#     globals()[nom] = valeur
 
-# --- Affichage ---
-for nom, valeur in params.items():
-    print(f"{nom} = {valeur}")
+# # --- Affichage ---
+# for nom, valeur in params.items():
+#     print(f"{nom} = {valeur}")
 
