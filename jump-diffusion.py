@@ -75,7 +75,7 @@ for t in range(nsteps - 1):
     Y[t + 1] = Y[t] - ny*dyw1(X[t], Y[t]) + np.sqrt(2*ny*dt/b)*By
 
     #alpha and X dynamics
-      prob = [(K10(j*dx, Y[t], s[t]) + K01rev(j*dx, Y[t], s[t]))*dx for j in range(npos)] #space discretized probabilities of detachment
+    prob = [(K10(j*dx, Y[t], s[t]) + K01rev(j*dx, Y[t], s[t]))*dx for j in range(npos)] #space discretized probabilities of detachment
     k = sum(prob)  #calculate the overall detachment rate
     if x < k*dt :
       alpha[t + 1] = 0
