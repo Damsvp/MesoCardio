@@ -3,7 +3,8 @@ from matplotlib import pyplot as plt
 import random
 import scipy.integrate as integrate
 from lecture import parse_params
-import potential 
+import function.potential as potential 
+import function.kernel as kernel
 
 
 # --- Chargement des données du fichier texte---

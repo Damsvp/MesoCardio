@@ -1,3 +1,6 @@
+#Lis le fichier text et ressort des constantes quand il n'y a qu'une valeur,
+#et des listes de valeurs quand il y en a plusieurs. Injecte ensuite dans les variables locales.
+
 def parse_params(filepath):
     params = {}
 
