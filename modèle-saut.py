@@ -4,3 +4,6 @@ import matplotlib.pyplot as plt
 def u(x):
     return x
 
+def v(x):
+    return 1
+
