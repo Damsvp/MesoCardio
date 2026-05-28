@@ -86,5 +86,19 @@ for t in range(nsteps - 1):
 
 print(alpha)
 
-plt.plot([t for t in range(nsteps)], X)
+Liste_temps=[t for t in range(nsteps)]
+fig,axs=plt.subplots(nrows=1,ncols=3,figsize=(10,5))
+axs[0].plot(Liste_temps, alpha)
+axs[0].set_title("évolution de alpha au cours du temps")
+axs[0].set_xlabel("temps")
+axs[0].set_ylabel("alpha")
+axs[1].plot(Liste_temps, X)
+axs[1].set_title("évolution de X au cours du temps")
+axs[1].set_xlabel("temps")
+axs[1].set_ylabel("X_t")
+axs[2].plot(Liste_temps, Y)
+axs[2].set_title("évolution de Y au cours du temps")
+axs[2].set_xlabel("temps")
+axs[2].set_ylabel("Y_t")
+plt.tight_layout()
 plt.show()
