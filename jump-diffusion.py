@@ -2,6 +2,20 @@ import numpy as np
 from matplotlib import pyplot as plt
 import random
 import scipy.integrate as integrate
+from lecture import parse_params
+
+# --- Chargement des données du fichier texte---
+params = parse_params("parametres.txt")
+print(params)
+
+# --- Injection dans les variables locales ---
+for nom, valeur in params.items():
+    globals()[nom] = valeur
+
+# --- Affichage ---
+for nom, valeur in params.items():
+    print(f"{nom} = {valeur}")
+
 
 N = 10 #number of heads we are going to simulate
 n = 1 #viscosity of the sarcomere's surroundings
@@ -12,16 +26,16 @@ dx = 0.1 #length discretization
 npos = int(d/dx) #number of possible positions
 positions = [k*dx for k in range(npos)]   #all possible positions
 
-b = 0.001 #inverse temperature
+b = 1/Temp #inverse temperature
 ny = 1 #viscosity coefficients
 nx = 1
 
-T = 10  #max time of the simulation
-dt = 0.1    #time step
+#T = 10  #max time of the simulation
+#dt = 0.1    #time step
 nsteps = int(T/dt)    #number of steps in the simulation
 
 K01 = lambda x, y, s : np.exp(-((s-50)/50)**2)    #direct transition rates
-K10 = lambda x, y, s : 1
+K10 = lambda x, y, s : 0.1
 
 w0 = lambda x, y : 0.1     #energy landscape and derivatives for detached head
 dxw0 = lambda x, y : 0
@@ -34,6 +48,7 @@ dyw1 = lambda x, y : 0
 muT = 0.05   #shift due to ATP consumption
 
 h = 1       #caracteristic length scale used to make the expression of reverse transition rates homogeneous
+#Modifier à terme pour que l'intégrale fasse 1 je crois???
 
 K01rev = lambda x, y, s : (1/h)*K01(x, y, s)*np.exp(b*(w1(s, y) - w0(x, y)))     #reverse transition rates
 K10rev = lambda x, y, s : h*K10(x, y, s)*np.exp(b*((w0(x, y) - muT) - w1(s, y)))
@@ -87,7 +102,7 @@ for t in range(nsteps - 1):
 print(alpha)
 
 #Visualization of the results
-Liste_temps=[t for t in range(nsteps)]
+Liste_temps=np.linspace(0, T, nsteps)
 fig,axs=plt.subplots(nrows=2,ncols=2,figsize=(10,5))
 axs[0,0].plot(Liste_temps, alpha)
 axs[0,0].set_title("évolution de alpha au cours du temps")
