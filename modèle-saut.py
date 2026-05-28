@@ -7,5 +7,4 @@ def u(x):
 def v(x):
     return 1
 
-def k(x):
-    return 8
+"scarabée"
