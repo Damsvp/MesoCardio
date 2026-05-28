@@ -7,4 +7,3 @@ def u(x):
 def v(x):
     return 1
 
-"scarabée"
