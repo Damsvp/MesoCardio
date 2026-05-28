@@ -2,10 +2,10 @@ timestep: dt , 0.1;
 Simulation time: T , 20;
 Space lenght: d , 100;
 Température : Temp , 1000;
-Detached energy of myosin head  : w0 , "type", param1, param2, param3;
-Attached energy of myosin head  : w1 , "type", param1, param2, param3;
+Detached energy of myosin head  : w0 ,"potential", "type", param1, param2, param3;
+Attached energy of myosin head  : w1 , "potential", "type", param1, param2, param3;
 Dynamic of actin : s , "type" , param1;
-Viscosity_x : nx , 1
-Viscosity_y : ny , 1
-Kernel 0 to 1 : K01 , "type"
-Kernel 1 to 0 : K10 , "type"
+Viscosity_x : nx , 1;
+Viscosity_y : ny , 1;
+Kernel 0 to 1 : K01 , "Kernel", "type";
+Kernel 1 to 0 : K10 , "Kernel", "type";

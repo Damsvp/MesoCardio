@@ -3,6 +3,8 @@ from matplotlib import pyplot as plt
 import random
 import scipy.integrate as integrate
 from lecture import parse_params
+import potential 
+
 
 # --- Chargement des données du fichier texte---
 params = parse_params("parametres.txt")
@@ -21,7 +23,7 @@ N = 10 #number of heads we are going to simulate
 n = 1 #viscosity of the sarcomere's surroundings
 F = 1 #force exerted on the actin filament
 
-d = 100 #length of the interval in which the myosin head can move around the actin attachment site
+#d = 100 #length of the interval in which the myosin head can move around the actin attachment site
 dx = 0.1 #length discretization
 npos = int(d/dx) #number of possible positions
 positions = [k*dx for k in range(npos)]   #all possible positions
