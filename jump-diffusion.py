@@ -12,7 +12,7 @@ dx = 0.1 #length discretization
 npos = int(d/dx) #number of possible positions
 positions = [k*dx for k in range(npos)]   #all possible positions
 
-b = 0.00001 #inverse temperature
+b = 0.001 #inverse temperature
 ny = 1 #viscosity coefficients
 nx = 1
 
@@ -86,19 +86,24 @@ for t in range(nsteps - 1):
 
 print(alpha)
 
+#Visualization of the results
 Liste_temps=[t for t in range(nsteps)]
-fig,axs=plt.subplots(nrows=1,ncols=3,figsize=(10,5))
-axs[0].plot(Liste_temps, alpha)
-axs[0].set_title("évolution de alpha au cours du temps")
-axs[0].set_xlabel("temps")
-axs[0].set_ylabel("alpha")
-axs[1].plot(Liste_temps, X)
-axs[1].set_title("évolution de X au cours du temps")
-axs[1].set_xlabel("temps")
-axs[1].set_ylabel("X_t")
-axs[2].plot(Liste_temps, Y)
-axs[2].set_title("évolution de Y au cours du temps")
-axs[2].set_xlabel("temps")
-axs[2].set_ylabel("Y_t")
+fig,axs=plt.subplots(nrows=2,ncols=2,figsize=(10,5))
+axs[0,0].plot(Liste_temps, alpha)
+axs[0,0].set_title("évolution de alpha au cours du temps")
+axs[0,0].set_xlabel("temps")
+axs[0,0].set_ylabel("alpha")
+axs[0,1].plot(Liste_temps, X)
+axs[0,1].set_title("évolution de X au cours du temps")
+axs[0,1].set_xlabel("temps")
+axs[0,1].set_ylabel("X_t")
+axs[1,0].plot(Liste_temps, Y)
+axs[1,0].set_title("évolution de Y au cours du temps")
+axs[1,0].set_xlabel("temps")
+axs[1,0].set_ylabel("Y_t")
+axs[1,1].plot(Liste_temps, s)
+axs[1,1].set_title("évolution de s au cours du temps")
+axs[1,1].set_xlabel("temps")
+axs[1,1].set_ylabel("s_t")
 plt.tight_layout()
 plt.show()
