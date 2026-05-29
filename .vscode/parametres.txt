@@ -1,3 +1,0 @@
-Pas de temps : 0.1;
-w0 : "type", param1, param2, param3;
-w1 : "type", param1, param2, param3;
