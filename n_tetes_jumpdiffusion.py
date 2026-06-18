@@ -1,3 +1,4 @@
+#%%
 import numpy as np
 from matplotlib import pyplot as plt
 import random
@@ -64,14 +65,8 @@ k = 1.34 #stiffness of the myosin
 k10 = 1 #transition rates
 k01 = 1
 
-def heaviside(s) :
-  if s < 0 :
-    return 0
-  else :
-    return 1
-
-K01 = lambda x, y, s : k01*heaviside(l0 - y)*heaviside(l/2 - abs(x - s)) #0.1 + kmax*(1 - np.tanh(alphay*(y - l0)))*(0.5*(1 - heaviside(s))*(1 + np.tanh(alphas*(s + sl01))) + 0.5*heaviside(s)*(1 - np.tanh(alphas*(s - sr01))))   #direct transition rates
-K10 = lambda x, y, s : k10*heaviside(l/2 - abs(x - s))*(heaviside(y - l0))+(1/(d/2-x))**2#
+K01 = lambda x, y, s : k01*np.heaviside(l0 - y,0.5)*np.heaviside(l/2 - np.abs(x - s),0.5) #0.1 + kmax*(1 - np.tanh(alphay*(y - l0)))*(0.5*(1 - heaviside(s))*(1 + np.tanh(alphas*(s + sl01))) + 0.5*heaviside(s)*(1 - np.tanh(alphas*(s - sr01))))   #direct transition rates
+K10 = lambda x, y, s : k10*np.heaviside(l/2 - np.abs(x - s),0.5)*np.heaviside(y - l0,0.5)+(1/np.maximum(d/2 - x, 1e-10))**2#
 #note that K10 is supposed to vanish outside of [-l/2, l/2]
 
 E = 80 #energy shift in zJ
@@ -107,14 +102,18 @@ h = 11       #caracteristic length scale (nm) used to make the expression of rev
 K01rev = lambda x, y, s : (1/h)*K01(x, y, s)*np.exp(b*(w1(s, y) - w0(x, y)))     #reverse transition rates
 K10rev = lambda x, y, s : h*K10(x, y, s)*np.exp(b*((w0(x, y) - muT) - w1(s, y)))
 
+#%% Simulation
 
 alpha = np.array([[0 for t in range(nsteps)] for i in range(N)])      #actual description of the stochastic process
 s0 = d * (np.random.random(size=N) - 0.5) #Initial Condition
 s = np.array([[s0[i] for t in range(nsteps)] for i in range(N)], dtype = float)
 X = np.array([[s[i,0] for t in range(nsteps)] for i in range(N)], dtype = float)
 Y = np.array([[0 for t in range(nsteps)] for i in range(N)], dtype = float)
+period=[]
 
 for t in range(nsteps - 1):
+  #possible positions
+  pos=np.array([j*dx for j in range(npos)])
 
   #Clock
   c01 = [0.0 for i in range(N)]
@@ -137,6 +136,8 @@ for t in range(nsteps - 1):
      #torus condition on s
     if s[i,t + 1] < -d/2 :
       s[i,t + 1] += d
+      if i==0:  
+        period.append(t*dt)
     elif s[i,t + 1] > d/2 :
       s[i,t + 1] -= d
     #generating random numbers to decide if a jump takes place between t and t+dt
@@ -185,10 +186,12 @@ for t in range(nsteps - 1):
       c10[i]+= K10t*dt
 
       #alpha and X dynamics
+      prob = [(K10(j*dx, Y[i, t], s[i,t]) + K01rev(j*dx, Y[i, t], s[i,t]))*dx for j in range(npos)] #space discretized probabilities of detachment
+      detach_rate = sum(prob)
      #calculate the overall detachment rate
       if c01rev[i] > e01rev[i] or c10[i] > e10[i]:   # guard: no detachment possible, skip the jump
         alpha[i, t + 1] = 0
-        X[i, t + 1] = s[i,t] 
+        X[i, t + 1] = s[i,t] +np.random.choice(pos,p= 1/detach_rate*np.array(prob))
         c01rev[i]=0.0
         e01rev[i]=-np.log(np.random.random())
         c10[i]=0.0
@@ -197,8 +200,7 @@ for t in range(nsteps - 1):
         alpha[i, t + 1] = 1
         X[i, t + 1] = s[i,t + 1]
 
-
-#Visualization of the results
+#%%  Visualization of the results
 fig, axs = plt.subplots(nrows=3, figsize=(18,18))
 
 axs[0].plot([dt*t for t in range(nsteps)], X[0, :],label='X')
@@ -218,4 +220,373 @@ axs[2].set_xlabel("time")
 axs[2].set_ylabel(r"$\alpha$")
 axs[2].set_title(r"$\alpha$ over time")
 
+
 plt.show()
+
+#%% Force/Speed
+
+speed=[]
+for i in range(len(period)-1):
+  speed.append(d/(period[i+1]-period[i]))
+
+mean_speed=np.mean(speed)
+print(mean_speed)
+
+#%% Simulation accelerated Claude
+
+# --------- Vectorised function --------------------
+def double_well(y, kpre, kpost, lsep, ypre, ypost, v):
+    return np.where(
+        y < lsep,
+        (kpre/2) * (y - ypre)**2 + v,
+        (kpost/2) * (y - ypost)**2
+    )
+
+def d_double_well(y, kpre, kpost, lsep, ypre, ypost, v):
+    return np.where(
+        y < lsep,
+        kpre * (y - ypre),
+        kpost * (y - ypost)
+    )
+
+w0 = lambda x, y : E + ((k/2)*(x + y)**2 + double_well(y + sbar0, k0pre, k0post, l0, y0pre, y0post, v0))     #energy landscape and derivatives for detached head
+dxw0 = lambda x, y : k*(x + y)
+dyw0 = lambda x, y : k*(x + y) + d_double_well(y + sbar0, k0pre, k0post, l0, y0pre, y0post, v0)
+
+w1 = lambda x, y : ((k/2)*(x + y)**2 + double_well(y + sbar1, k1pre, k1post, l1, y1pre, y1post, v1))     #energy landscape and derivatives for attached head
+dxw1 = lambda x, y : k*(x + y)
+dyw1 = lambda x, y : k*(x + y) + d_double_well(y + sbar1, k1pre, k1post, l1, y1pre, y1post, v1)
+
+
+# ── Pré-calculs hors boucle ──────────────────────────────────────────
+pos = np.arange(npos) * dx                        # (npos,)  — sorti de la boucle
+
+alpha = np.zeros((N, nsteps), dtype=np.int8)
+s0    = d * (np.random.random(size=N) - 0.5)
+s     = np.empty((N, nsteps))
+s[:, 0] = s0
+X     = np.empty((N, nsteps))
+X[:, 0] = s0
+Y     = np.zeros((N, nsteps))
+
+# Horloges persistantes entre timesteps
+c01    = np.zeros(N);  e01    = -np.log(np.random.random(size=N))
+c10    = np.zeros(N);  e10    = -np.log(np.random.random(size=N))
+c01rev = np.zeros(N);  e01rev = -np.log(np.random.random(size=N))
+c10rev = np.zeros(N);  e10rev = -np.log(np.random.random(size=N))
+
+period = []
+
+for t in range(nsteps - 1):
+    at  = alpha[:, t]          # (N,)
+    Xt  = X[:, t]
+    Yt  = Y[:, t]
+    st  = s[:, t]
+
+    # ── Dynamique de s (vectorisée) ───────────────────────────────────
+    # dxw1 doit accepter des tableaux → vérifier/vectoriser la fonction
+    delta_s = F*dt/v - (dt/v) * np.sum(at * dxw1(st, Yt))
+    # (si dxw1 est scalaire, utiliser np.vectorize ou la réécrire)
+
+    st1 = st + delta_s
+    wrap_minus = st1 < -d / 2
+    wrap_plus  = st1 >  d / 2
+    st1[wrap_minus] += d
+    st1[wrap_plus]  -= d
+    if wrap_minus[0]:                 # équivalent au if i==0 d'origine
+        period.append(t * dt)
+    s[:, t + 1] = st1
+
+    # ── Bruits browniens vectorisés ───────────────────────────────────
+    Bx = np.random.randn(N)
+    By = np.random.randn(N)
+
+    # ── Calcul vectorisé des taux (doit accepter des arrays) ──────────
+    K01t    = K01(Xt, Yt, st)       # (N,)
+    K10t    = K10(Xt, Yt, st)
+    K01revt = K01rev(Xt, Yt, st)
+    K10revt = K10rev(Xt, Yt, st)
+
+    # ── Masques α=0 / α=1 ────────────────────────────────────────────
+    m0 = (at == 0)    # (N,) bool
+    m1 = (at == 1)
+
+    # ─── Bloc α = 0 ───────────────────────────────────────────────────
+    sig0 = np.sqrt(2 * ny * dt / b)
+    Y[m0, t + 1] = (Yt[m0]
+                    - dt * ny * dyw0(Xt[m0], Yt[m0])
+                    + sig0 * By[m0])
+
+    c01[m0]    += K01t[m0]    * dt
+    c10rev[m0] += K10revt[m0] * dt
+
+    jump0 = m0 & ((c01 > e01) | (c10rev > e10rev))
+    stay0 = m0 & ~jump0
+
+    # Particules qui sautent → α = 1
+    alpha[jump0, t + 1] = 1
+    X[jump0, t + 1]     = st1[jump0]
+    # reset horloges
+    n_j0 = jump0.sum()
+    c01[jump0]    = 0.0;  e01[jump0]    = -np.log(np.random.random(size=n_j0))
+    c10rev[jump0] = 0.0;  e10rev[jump0] = -np.log(np.random.random(size=n_j0))
+
+    # Particules qui restent → α = 0
+    alpha[stay0, t + 1] = 0
+    X[stay0, t + 1] = (Xt[stay0]
+                       - dt * nx * dxw0(Xt[stay0], Yt[stay0])
+                       + np.sqrt(2 * nx * dt / b) * Bx[stay0])
+
+    # ─── Bloc α = 1 ───────────────────────────────────────────────────
+    sig1 = np.sqrt(2 * ny * dt / b)
+    Y[m1, t + 1] = (Yt[m1]
+                    - dt * ny * dyw1(Xt[m1], Yt[m1])
+                    + sig1 * By[m1])
+
+    c01rev[m1] += K01revt[m1] * dt
+    c10[m1]    += K10t[m1]    * dt
+
+    jump1 = m1 & ((c01rev > e01rev) | (c10 > e10))
+    stay1 = m1 & ~jump1
+
+    # Particules qui détachent → α = 0, position tirée selon prob
+    # np.random.choice avec p= ne se vectorise pas directement :
+    # on calcule les proba pour toutes les particules m1 et on échantillonne
+    if jump1.any():
+        idx1  = np.where(jump1)[0]
+        # prob shape: (|jump1|, npos)
+        prob_mat = np.array([
+            [( K10(np.array([pos[j]]), Yt[i:i+1], st[i:i+1])
+             + K01rev(np.array([pos[j]]), Yt[i:i+1], st[i:i+1]))[0] * dx
+              for j in range(npos)]
+            for i in idx1
+        ])
+        row_sums = prob_mat.sum(axis=1, keepdims=True)
+        prob_mat /= row_sums
+        chosen = np.array([
+            np.random.choice(pos, p=prob_mat[k])
+            for k in range(len(idx1))
+        ])
+        alpha[jump1, t + 1] = 0
+        X[jump1, t + 1]     = st1[jump1] + chosen
+        n_j1 = jump1.sum()
+        c01rev[jump1] = 0.0; e01rev[jump1] = -np.log(np.random.random(size=n_j1))
+        c10[jump1]    = 0.0; e10[jump1]    = -np.log(np.random.random(size=n_j1))
+
+    # Particules qui restent attachées → α = 1
+    alpha[stay1, t + 1] = 1
+    X[stay1, t + 1]     = st1[stay1]
+
+speed=[]
+for i in range(len(period)-1):
+  speed.append(d/(period[i+1]-period[i]))
+
+mean_speed=np.mean(speed)
+print(mean_speed)
+# %% Claude corrigé
+# --------- Vectorised function --------------------
+def double_well(y, kpre, kpost, lsep, ypre, ypost, v):
+    return np.where(
+        y < lsep,
+        (kpre/2) * (y - ypre)**2 + v,
+        (kpost/2) * (y - ypost)**2
+    )
+
+def d_double_well(y, kpre, kpost, lsep, ypre, ypost, v):
+    return np.where(
+        y < lsep,
+        kpre * (y - ypre),
+        kpost * (y - ypost)
+    )
+
+w0 = lambda x, y : E + ((k/2)*(x + y)**2 + double_well(y + sbar0, k0pre, k0post, l0, y0pre, y0post, v0))     #energy landscape and derivatives for detached head
+dxw0 = lambda x, y : k*(x + y)
+dyw0 = lambda x, y : k*(x + y) + d_double_well(y + sbar0, k0pre, k0post, l0, y0pre, y0post, v0)
+
+w1 = lambda x, y : ((k/2)*(x + y)**2 + double_well(y + sbar1, k1pre, k1post, l1, y1pre, y1post, v1))     #energy landscape and derivatives for attached head
+dxw1 = lambda x, y : k*(x + y)
+dyw1 = lambda x, y : k*(x + y) + d_double_well(y + sbar1, k1pre, k1post, l1, y1pre, y1post, v1)
+
+for t in range(nsteps - 1):
+    at = alpha[:, t]
+    Xt = X[:, t]
+    Yt = Y[:, t]
+    st = s[:, t]
+
+    # ── Dynamique de s ────────────────────────────────────────────────
+    delta_s = F*dt/v - (dt/v) * np.sum(at * dxw1(st, Yt))
+    st1 = st + delta_s
+    wrap_minus = st1 < -d/2
+    wrap_plus  = st1 >  d/2
+    st1[wrap_minus] += d
+    st1[wrap_plus]  -= d
+    if wrap_minus[0]:
+        period.append(t * dt)
+    s[:, t+1] = st1
+
+    # ── Bruits browniens ──────────────────────────────────────────────
+    Bx = np.random.randn(N)
+    By = np.random.randn(N)
+
+    # ── Taux ──────────────────────────────────────────────────────────
+    K01t    = K01(Xt, Yt, st)
+    K10t    = K10(Xt, Yt, st)
+    K01revt = K01rev(Xt, Yt, st)
+    K10revt = K10rev(Xt, Yt, st)
+
+    # ── Horloges tirées à chaque pas (comme dans l'original) ──────────
+    e01    = -np.log(np.random.random(size=N))
+    e10    = -np.log(np.random.random(size=N))
+    e01rev = -np.log(np.random.random(size=N))
+    e10rev = -np.log(np.random.random(size=N))
+
+    # accumulation sur un seul pas
+    c01    = K01t    * dt
+    c10    = K10t    * dt
+    c01rev = K01revt * dt
+    c10rev = K10revt * dt
+
+    m0 = (at == 0)
+    m1 = (at == 1)
+
+    # ─── Bloc α = 0 ───────────────────────────────────────────────────
+    Y[m0, t+1] = (Yt[m0]
+                  - dt*ny * dyw0(Xt[m0], Yt[m0])
+                  + np.sqrt(2*ny*dt/b) * By[m0])
+
+    jump0 = m0 & ((c01 > e01) | (c10rev > e10rev))
+    stay0 = m0 & ~jump0
+
+    alpha[jump0, t+1] = 1
+    X[jump0, t+1]     = st1[jump0]
+
+    alpha[stay0, t+1] = 0
+    X[stay0, t+1] = (Xt[stay0]
+                     - dt*nx * dxw0(Xt[stay0], Yt[stay0])
+                     + np.sqrt(2*nx*dt/b) * Bx[stay0])
+
+    # ─── Bloc α = 1 ───────────────────────────────────────────────────
+    Y[m1, t+1] = (Yt[m1]
+                  - dt*ny * dyw1(Xt[m1], Yt[m1])
+                  + np.sqrt(2*ny*dt/b) * By[m1])
+
+    jump1 = m1 & ((c01rev > e01rev) | (c10 > e10))
+    stay1 = m1 & ~jump1
+
+    if jump1.any():
+        idx1 = np.where(jump1)[0]
+        # prob shape : (|jump1|, npos)
+        prob_mat = (
+            K10(pos[None, :], Yt[idx1, None], st[idx1, None])
+          + K01rev(pos[None, :], Yt[idx1, None], st[idx1, None])
+        ) * dx                                   # (|jump1|, npos)
+        row_sums = prob_mat.sum(axis=1, keepdims=True)
+        prob_mat /= row_sums
+        chosen = np.array([
+            np.random.choice(pos, p=prob_mat[k])
+            for k in range(len(idx1))
+        ])
+        alpha[jump1, t+1] = 0
+        X[jump1, t+1]     = st1[jump1] + chosen
+
+    alpha[stay1, t+1] = 1
+    X[stay1, t+1]     = st1[stay1]
+
+
+# %% VErsion finale corrigée
+
+# ── Initialisation des horloges hors boucle ──────────────────────────
+c01    = np.zeros(N)
+c10    = np.zeros(N)
+c01rev = np.zeros(N)
+c10rev = np.zeros(N)
+e01    = -np.log(np.random.random(size=N))
+e10    = -np.log(np.random.random(size=N))
+e01rev = -np.log(np.random.random(size=N))
+e10rev = -np.log(np.random.random(size=N))
+
+for t in range(nsteps - 1):
+    at = alpha[:, t]
+    Xt = X[:, t]
+    Yt = Y[:, t]
+    st = s[:, t]
+
+    # ── Dynamique de s ────────────────────────────────────────────────
+    delta_s = F*dt/v - (dt/v) * np.sum(at * dxw1(st, Yt))
+    st1 = st + delta_s
+    wrap_minus = st1 < -d/2
+    wrap_plus  = st1 >  d/2
+    st1[wrap_minus] += d
+    st1[wrap_plus]  -= d
+    if wrap_minus[0]:
+        period.append(t * dt)
+    s[:, t+1] = st1
+
+    # ── Bruits et taux ────────────────────────────────────────────────
+    Bx = np.random.randn(N)
+    By = np.random.randn(N)
+
+    K01t    = K01(Xt, Yt, st)
+    K10t    = K10(Xt, Yt, st)
+    K01revt = K01rev(Xt, Yt, st)
+    K10revt = K10rev(Xt, Yt, st)
+
+    m0 = (at == 0)
+    m1 = (at == 1)
+
+    # ── Accumulation des compteurs (selon l'état actuel) ─────────────
+    c01[m0]    += K01t[m0]    * dt
+    c10rev[m0] += K10revt[m0] * dt
+    c01rev[m1] += K01revt[m1] * dt
+    c10[m1]    += K10t[m1]    * dt
+
+    # ─── Bloc α = 0 ───────────────────────────────────────────────────
+    Y[m0, t+1] = (Yt[m0]
+                  - dt*ny * dyw0(Xt[m0], Yt[m0])
+                  + np.sqrt(2*ny*dt/b) * By[m0])
+
+    jump0 = m0 & ((c01 > e01) | (c10rev > e10rev))
+    stay0 = m0 & ~jump0
+
+    alpha[jump0, t+1] = 1
+    X[jump0, t+1]     = st1[jump0]
+    # Reset des horloges ayant sonné
+    n_j0 = jump0.sum()
+    c01[jump0]    = 0.0;  e01[jump0]    = -np.log(np.random.random(size=n_j0))
+    c10rev[jump0] = 0.0;  e10rev[jump0] = -np.log(np.random.random(size=n_j0))
+
+    alpha[stay0, t+1] = 0
+    X[stay0, t+1] = (Xt[stay0]
+                     - dt*nx * dxw0(Xt[stay0], Yt[stay0])
+                     + np.sqrt(2*nx*dt/b) * Bx[stay0])
+
+    # ─── Bloc α = 1 ───────────────────────────────────────────────────
+    Y[m1, t+1] = (Yt[m1]
+                  - dt*ny * dyw1(Xt[m1], Yt[m1])
+                  + np.sqrt(2*ny*dt/b) * By[m1])
+
+    jump1 = m1 & ((c01rev > e01rev) | (c10 > e10))
+    stay1 = m1 & ~jump1
+
+    if jump1.any():
+        idx1 = np.where(jump1)[0]
+        prob_mat = (
+            K10(pos[None, :], Yt[idx1, None], st[idx1, None])
+          + K01rev(pos[None, :], Yt[idx1, None], st[idx1, None])
+        ) * dx
+        row_sums = prob_mat.sum(axis=1, keepdims=True)
+        prob_mat /= row_sums
+        chosen = np.array([
+            np.random.choice(pos, p=prob_mat[k])
+            for k in range(len(idx1))
+        ])
+        alpha[jump1, t+1] = 0
+        X[jump1, t+1]     = st1[jump1] + chosen
+        n_j1 = jump1.sum()
+        c01rev[jump1] = 0.0; e01rev[jump1] = -np.log(np.random.random(size=n_j1))
+        c10[jump1]    = 0.0; e10[jump1]    = -np.log(np.random.random(size=n_j1))
+
+    alpha[stay1, t+1] = 1
+    X[stay1, t+1]     = st1[stay1]
+
+# %%
