@@ -11,3 +11,5 @@ A faire:
 * Faire des Simulations 
 * Générer en amont les Browniens?
 * Mettre des compteurs au lieu des $dt$
+* Mettre les unites ou dire si c'est adimensionné: paramètre a et \kappa en expliquant comment le sytème est adimensionné
+* Ecrire les équation en adimensionné => changer le code. 
