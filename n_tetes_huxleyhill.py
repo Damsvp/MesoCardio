@@ -2,19 +2,19 @@ import numpy as np
 from matplotlib import pyplot as plt
 import random
 
-N = 10 #number of heads we are going to simulate
+N = 5 #number of heads we are going to simulate
 delta = [5*(random.random() - 0.5) for i in range(N)] #random position shifts for the heads
 v = 1 #viscosity of the sarcomere's surroundings
-F = 0 #force exerted on the actin filament
-d = 100 #distance between two actin attachment sites
+F = 0.1 #force exerted on the actin filament
+d = 20 #distance between two actin attachment sites
 b = 0.1 #inverse temperature
 
-T = 1000  #max time of the simulation
+T = 100  #max time of the simulation
 dt = 0.1    #time step
 nsteps = int(T/dt)    #number of steps in the simulation
 
 k01 = lambda s : np.exp(-(s/50)**2)    #direct transition rates
-k10 = lambda s : 1
+k10 = lambda s : 1 + 0.1/(s**2-100)
 
 w0 = lambda s : 0.1     #energy landscape and derivatives for detached head
 dw0 = lambda s : 0
@@ -70,6 +70,8 @@ for t in range(nsteps - 1):
 print(alpha[0, :])
 
 #Visualization of the results
-plt.plot([dt*t for t in range(nsteps)], s)
-#plt.plot([dt*t for t in range(nsteps)], [sum(alpha[i, t] for i in range(N)) for t in range(nsteps)])
+fig, axs = plt.subplots(nrows=1, ncols=2)
+
+axs[0].plot([dt*t for t in range(nsteps)], s)
+axs[1].plot([dt*t for t in range(nsteps)], [sum(alpha[i, t] for i in range(N)) for t in range(nsteps)])
 plt.show()

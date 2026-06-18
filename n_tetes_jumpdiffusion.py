@@ -4,62 +4,118 @@ import random
 
 
 
-N = 2 #number of heads we are going to simulate
-delta = [5*(random.random() - 0.5) for i in range(N)] #random position shifts for the heads
+N = 1 #number of heads we are going to simulate
+delta = [0 for i in range(N)] #random position shifts for the heads
 v = 2 #viscosity of the sarcomere's surroundings
-F = 5 #force exerted on the actin filament
-d = 100 #distance between two actin attachment sites
-b = 0.1 #inverse temperature
+F = 0 #force exerted on the actin filament
+d = 38 #distance between two actin attachment sites
+
+k1pre = 5.6 #stiffness pre power stroke (pN/nm)
+k1post = 1.4 #stiffness post power stroke
+l1 = 1.42 #separation between the two wells (nm)
+y1pre = 0 #position of the minimum of the pre power stroke well
+y1post = 11 #position of the minimum of the post power stroke well
+v1 = (k1post/2)*(l1 - y1post)**2 - (k1pre/2)*(l1 - y1pre)**2 #energy difference between the two states at the position of the minimum of the post power stroke well
+
+k0pre = 11.45 #stiffness pre power stroke
+k0post = 0.45 #stiffness post power stroke
+l0 = 1.42 #separation between the two wells (nm)
+y0pre = 0 #position of the minimum of the pre power stroke well
+y0post = 6 #position of the minimum of the post power stroke well
+v0 = (k0post/2)*(l0 - y0post)**2 - (k0pre/2)*(l0 - y0pre)**2 #energy difference between the two states at the position of the minimum of the post power stroke well
 
 
-l = 20 #length of the interval in which the myosin head can detach
-dx = 0.1 #length discretization
+def double_well(y, kpre, kpost, lsep, ypre, ypost, v) :
+  if y < lsep :
+    return (kpre/2)*(y - ypre)**2 + v
+  else :
+    return (kpost/2)*(y - ypost)**2
+
+def d_double_well(y, kpre, kpost, lsep, ypre, ypost, v) :
+  if y < lsep :
+    return kpre*(y - ypre)
+  else :
+    return kpost*(y - ypost)
+
+
+l = 5 #length of the interval in which the myosin head can detach
+dx = 0.01 #length discretization
 npos = int(l/dx) #number of possible positions
 positions = [k*dx - l/2 for k in range(npos)]   #all possible positions
 
 
-Temp = 10
-b = 1/Temp #inverse temperature
-ny = 1 #viscosity coefficients
-nx = 1
+kBTemp = 4.14 #kB*temperature in zJ (T = 300K)
+b = 1/kBTemp #inverse temperature
+ny = 10.288 #inverse viscosity coefficients (fluidity) (ms-1.pN-1.nm)
+nx = 10.288
 
-T = 100  #max time of the simulation
-dt = 0.1    #time step
+T = 1500  #max time of the simulation, in ms
+dt = 0.01    #time step (ms)
 nsteps = int(T/dt)    #number of steps in the simulation
 
-K01 = lambda x, y, s : np.exp(-(s/50)**2)    #direct transition rates
-K10 = lambda x, y, s : 0.04
+kmax = 1.21 
+alphay = 8
+alphas = 8
+sl01 = 3.82
+sr01 = 3.82
+
+k = 1.34 #stiffness of the myosin
+
+k10 = 1 #transition rates
+k01 = 1
+
+def heaviside(s) :
+  if s < 0 :
+    return 0
+  else :
+    return 1
+
+K01 = lambda x, y, s : k01*heaviside(l0 - y)*heaviside(l/2 - abs(x - s)) #0.1 + kmax*(1 - np.tanh(alphay*(y - l0)))*(0.5*(1 - heaviside(s))*(1 + np.tanh(alphas*(s + sl01))) + 0.5*heaviside(s)*(1 - np.tanh(alphas*(s - sr01))))   #direct transition rates
+K10 = lambda x, y, s : k10*heaviside(l/2 - abs(x - s))*(heaviside(y - l0) + 10*heaviside(3 - s))
 #note that K10 is supposed to vanish outside of [-l/2, l/2]
 
-w0 = lambda x, y : 0.1     #energy landscape and derivatives for detached head
-dxw0 = lambda x, y : 0
-dyw0 = lambda x, y : 0
+E = 80 #energy shift in zJ
+sbar0 = 1.2 #shift of the potential, in nm
+sbar1 = 1.2
 
-w1 = lambda x, y : 10*(x/50)**2      #energy landscape and derivatives for attached head
-dxw1 = lambda x, y : 0.4*x/50
-dyw1 = lambda x, y : 0
+w0 = lambda x, y : E + ((k/2)*(x + y)**2 + double_well(y + sbar0, k0pre, k0post, l0, y0pre, y0post, v0))     #energy landscape and derivatives for detached head
+dxw0 = lambda x, y : k*(x + y)
+dyw0 = lambda x, y : k*(x + y) + d_double_well(y + sbar0, k0pre, k0post, l0, y0pre, y0post, v0)
 
-muT = 0.05   #shift due to ATP consumption
+w1 = lambda x, y : ((k/2)*(x + y)**2 + double_well(y + sbar1, k1pre, k1post, l1, y1pre, y1post, v1))     #energy landscape and derivatives for attached head
+dxw1 = lambda x, y : k*(x + y)
+dyw1 = lambda x, y : k*(x + y) + d_double_well(y + sbar1, k1pre, k1post, l1, y1pre, y1post, v1)
 
-h = 10       #caracteristic length scale used to make the expression of reverse transition rates homogeneous
+muT = 100   #shift due to ATP consumption, in zJ
+
+
+plt.plot([dx*t - d/4 for t in range(4*npos)], [w0(0, dx*t - d/4) for t in range(4*npos)], label = 'detached')
+plt.plot([dx*t - d/4 for t in range(4*npos)], [w1(0, dx*t - d/4) for t in range(4*npos)], label = 'attached')
+plt.plot([dx*t - d/4 for t in range(4*npos)], [w0(0, dx*t - d/4) - muT for t in range(4*npos)], label = 'detached')
+
+plt.show()
+
+
+
+
+h = 11       #caracteristic length scale (nm) used to make the expression of reverse transition rates homogeneous
 #Modifier à terme pour que l'intégrale fasse 1 je crois NONONONONON
 #c'est un taux de transition, pas une probabilité
 
-K01rev = lambda x, y, s : 0*(1/h)*K01(x, y, s)*np.exp(b*(w1(s, y) - w0(x, y)))     #reverse transition rates
+K01rev = lambda x, y, s : (1/h)*K01(x, y, s)*np.exp(b*(w1(s, y) - w0(x, y)))     #reverse transition rates
 K10rev = lambda x, y, s : h*K10(x, y, s)*np.exp(b*((w0(x, y) - muT) - w1(s, y)))
 
 
 alpha = np.array([[0 for t in range(nsteps)] for i in range(N)])      #actual description of the stochastic process
-s = np.array([5 for t in range(nsteps)])
-X = np.array([[s[0] + delta[i] for t in range(nsteps)] for i in range(N)])
-Y = np.array([[0 for t in range(nsteps)] for i in range(N)])
+s = np.array([5 for t in range(nsteps)], dtype = float)
+X = np.array([[s[0] + delta[i] for t in range(nsteps)] for i in range(N)], dtype = float)
+Y = np.array([[0 for t in range(nsteps)] for i in range(N)], dtype = float)
 
 for t in range(nsteps - 1):
 
   #s dynamics
-  s[t + 1] = s[t] + F*dt - (dt/v)*sum([alpha[i, t]*dxw1(s[t] + delta[i], Y[i, t]) for i in range(N)])
+  s[t + 1] = s[t] + F*dt/v - (dt/v)*sum([alpha[i, t]*dxw1(s[t] + delta[i], Y[i, t]) for i in range(N)])
   #torus condition on s
-  print((dt/v)*sum([alpha[i, t]*dxw1(s[t] + delta[i], Y[i, t]) for i in range(N)]))
   if s[t + 1] < -d/2 :
     s[t + 1] += d
   elif s[t + 1] > d/2 :
@@ -76,7 +132,7 @@ for t in range(nsteps - 1):
     
     if alpha[i, t] == 0 :
       #Y dynamics
-      Y[i, t + 1] = Y[i, t] - ny*dyw0(X[i, t], Y[i, t]) + np.sqrt(2*ny*dt/b)*By
+      Y[i, t + 1] = Y[i, t] - dt*ny*dyw0(X[i, t], Y[i, t]) + np.sqrt(2*ny*dt/b)*By
 
       #alpha and X dynamics
       if x < K01(X[i, t], Y[i, t], s[t])*dt :
@@ -87,21 +143,25 @@ for t in range(nsteps - 1):
         X[i, t + 1] = s[t + 1] + delta[i]
       else :
         alpha[i, t + 1] = 0
-        X[i, t + 1] = X[i, t] - nx*dxw0(X[i, t], Y[i, t]) + np.sqrt(2*nx*dt/b)*Bx
+        X[i, t + 1] = X[i, t] - dt*nx*dxw0(X[i, t], Y[i, t]) + np.sqrt(2*nx*dt/b)*Bx
 
     if alpha[i, t] == 1 :
       #Y dynamics
-      Y[i, t + 1] = Y[i, t] - ny*dyw1(X[i, t], Y[i, t]) + np.sqrt(2*ny*dt/b)*By
+      #print(t, Y[i, t], X[i, t])
+      Y[i, int(t + 1)] = Y[i, t] - dt*ny*dyw1(X[i, t], Y[i, t]) + np.sqrt(2*ny*dt/b)*By
 
       #alpha and X dynamics
       prob = [(K10(j*dx, Y[i, t], s[t] + delta[i]) + K01rev(j*dx, Y[i, t], s[t] + delta[i]))*dx for j in range(npos)] #space discretized probabilities of detachment
-      k = sum(prob)  #calculate the overall detachment rate
-      if x < k*dt :
+      detach_rate = sum(prob)  #calculate the overall detachment rate
+      if detach_rate < 1e-12:   # guard: no detachment possible, skip the jump
+        alpha[i, t + 1] = 1
+        X[i, t + 1] = s[t + 1] + delta[i]
+      elif x < detach_rate*dt :
         alpha[i, t + 1] = 0
-        X[i, t + 1] = s[t] + delta[i] + np.random.choice(positions, p = (1/k)*np.array(prob))
+        X[i, t + 1] = s[t] + delta[i] + np.random.choice(positions, p = (1/detach_rate)*np.array(prob))
       else :
         alpha[i, t + 1] = 1
-        X[i, t + 1] = s[t + 1]
+        X[i, t + 1] = s[t + 1] + delta[i]
 
 
 #Visualization of the results
