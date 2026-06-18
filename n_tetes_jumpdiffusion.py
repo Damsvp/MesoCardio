@@ -112,6 +112,24 @@ X = np.array([[s[0] + delta[i] for t in range(nsteps)] for i in range(N)], dtype
 Y = np.array([[0 for t in range(nsteps)] for i in range(N)], dtype = float)
 
 for t in range(nsteps - 1):
+  #Compute the rates K and K_rev
+  K01t= K01(X[i, t], Y[i, t], s[t])
+  K10revt= K10rev(X[i, t], Y[i, t], s[t] + delta[i])
+
+  K10t= K10(X[i, t], Y[i, t], s[t])
+  K01revt=K01rev(X[i, t], Y[i, t], s[t] + delta[i])
+
+  #Clock
+  c01 = [0.0 for i in range(N)]
+  c10 = [0.0 for i in range(N)]
+  e01 = -np.log(np.random.random(size=N))   # realisation of an exponential of parameter 1
+  e10 = -np.log(np.random.random(size=N))
+
+  #Clock
+  c01rev = [0.0 for i in range(N)]
+  c10rev = [0.0 for i in range(N)]
+  e01rev = -np.log(np.random.random(size=N))   # realisation of an exponential of parameter 1
+  e10rev = -np.log(np.random.random(size=N))
 
   #s dynamics
   s[t + 1] = s[t] + F*dt/v - (dt/v)*sum([alpha[i, t]*dxw1(s[t] + delta[i], Y[i, t]) for i in range(N)])
@@ -128,19 +146,25 @@ for t in range(nsteps - 1):
     #X and Y brownian motions
     Bx = random.gauss(0, 1)
     By = random.gauss(0, 1)
-
+    
+    
     
     if alpha[i, t] == 0 :
       #Y dynamics
       Y[i, t + 1] = Y[i, t] - dt*ny*dyw0(X[i, t], Y[i, t]) + np.sqrt(2*ny*dt/b)*By
 
+      #clocks increases:
+      c01[i]+= K01t*dt
+      c10rev[i]+= K10revt*dt
+
       #alpha and X dynamics
-      if x < K01(X[i, t], Y[i, t], s[t])*dt :
+      if c01[i] > e01[i] or c10rev[i] > e10rev[i]:
         alpha[i, t + 1] = 1
         X[i, t + 1] = s[t + 1] + delta[i]
-      elif y < K10rev(X[i, t], Y[i, t], s[t] + delta[i])*dt :
-        alpha[i, t + 1] = 1
-        X[i, t + 1] = s[t + 1] + delta[i]
+        c01[i]=0.0
+        e01[i]=-np.log(np.random.random())
+        c10rev[i]=0.0
+        e10rev[i]=-np.log(np.random.random())
       else :
         alpha[i, t + 1] = 0
         X[i, t + 1] = X[i, t] - dt*nx*dxw0(X[i, t], Y[i, t]) + np.sqrt(2*nx*dt/b)*Bx
@@ -150,15 +174,20 @@ for t in range(nsteps - 1):
       #print(t, Y[i, t], X[i, t])
       Y[i, int(t + 1)] = Y[i, t] - dt*ny*dyw1(X[i, t], Y[i, t]) + np.sqrt(2*ny*dt/b)*By
 
+      #clocks increases:
+      c01rev[i]+= K01revt*dt
+      c10[i]+= K10t*dt
+
       #alpha and X dynamics
       prob = [(K10(j*dx, Y[i, t], s[t] + delta[i]) + K01rev(j*dx, Y[i, t], s[t] + delta[i]))*dx for j in range(npos)] #space discretized probabilities of detachment
       detach_rate = sum(prob)  #calculate the overall detachment rate
-      if detach_rate < 1e-12:   # guard: no detachment possible, skip the jump
-        alpha[i, t + 1] = 1
-        X[i, t + 1] = s[t + 1] + delta[i]
-      elif x < detach_rate*dt :
+      if c01rev[i] > e01rev[i] or c10[i] > e10[i]:   # guard: no detachment possible, skip the jump
         alpha[i, t + 1] = 0
         X[i, t + 1] = s[t] + delta[i] + np.random.choice(positions, p = (1/detach_rate)*np.array(prob))
+        c01rev[i]=0.0
+        e01rev[i]=-np.log(np.random.random())
+        c10[i]=0.0
+        e10[i]=-np.log(np.random.random())
       else :
         alpha[i, t + 1] = 1
         X[i, t + 1] = s[t + 1] + delta[i]

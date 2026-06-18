@@ -5,3 +5,12 @@ def uniforme(valeur):
 
 def exponentiel(lam):
     return lambda x, y, s: np.exp(-lam * x)
+
+def heaviside(s) :
+  if s < 0 :
+    return 0
+  else :
+    return 1
+  
+def Heaviside(k, l0, l):
+   return lambda x, y, s : k*heaviside(l0 - y)*heaviside(l/2 - abs(x - s))
