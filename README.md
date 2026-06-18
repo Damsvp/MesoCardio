@@ -9,3 +9,5 @@ A faire:
 * Tout mettre en anglais 
 * Regarder la Fermeture
 * Faire des Simulations 
+* Générer en amont les Browniens?
+* Mettre des compteurs au lieu des $dt$
