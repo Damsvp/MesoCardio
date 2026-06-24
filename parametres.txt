@@ -1,0 +1,12 @@
+timestep: dt , 0.1;
+Simulation time: T , 20;
+Space lenght: d , 100;
+Température : Temp , 1000;
+Exemple fonction : w_temoin , "categorie" , "fonction" , param1 , param2, param3;
+Detached energy of myosin head  : w0 ,"potential", "uniforme", 100;
+Attached energy of myosin head  : w1 , "potential", "uniforme", 100;
+Dynamic of actin : s , "type" , param1;
+Viscosity_x : nx , 1;
+Viscosity_y : ny , 1;
+Kernel 0 to 1 : K01 , "kernel", "uniforme", 100;
+Kernel 1 to 0 : K10 , "kernel", "uniforme", 100;
