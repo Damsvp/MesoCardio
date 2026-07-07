@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 import random
 
 d = 38 #distance between two actin attachment sites
-N = 12
+N = 16
 v = 2
 
 k1pre = 5.6 #stiffness pre power stroke (pN/nm)
