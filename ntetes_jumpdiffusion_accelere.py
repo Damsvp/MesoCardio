@@ -27,8 +27,10 @@ y0pre = 0 #position of the minimum of the pre power stroke well
 y0post = 6 #position of the minimum of the post power stroke well
 v0 = (k0post/2)*(l0 - y0post)**2 - (k0pre/2)*(l0 - y0pre)**2 #energy difference between the two states at the position of the minimum of the post power stroke well
 
-l = 5 #length of the interval in which the myosin head can detach
-dx = 0.01 #length discretization
+k = 1.34 #stiffness of the myosin
+
+l = 15 #length of the interval in which the myosin head can detach
+dx = 0.05 #length discretization
 npos = int(l/dx) #number of possible positions
 positions = [k*dx - l/2 for k in range(npos)]   #all possible positions
 
@@ -42,20 +44,52 @@ T = 1000  #max time of the simulation, in ms
 dt = 0.01    #time step (ms)
 nsteps = int(T/dt)    #number of steps in the simulation
 
-kmax = 1.21 
-alphay = 8
+kmax = 1.21  #maximal forward transition rate
+alphay = 8   #nm-1
 alphas = 8
-sl01 = 3.82
+sl01 = 3.82  #nm (range of attachment for s)
 sr01 = 3.82
+y0 = 2     #nm
 
-k = 1.34 #stiffness of the myosin
+kwl = 4 #ms-1
+alphaxwl = 5 #nm-1
+lwl = 10 #nm
+alphaswl = 8 #nm-1
+swl = -19 #nm
 
-k10 = 1 #transition rates
-k01 = 1
+kwr = 5 #ms-1
+alphaxwr = 5 #nm-1
+lwr = 10 #nm
+alphaswr = 4 #nm-1
+swr = 9 #nm
 
-K01 = lambda x, y, s : k01*np.heaviside(l0 - y,0.5)*np.heaviside(l/2 - np.abs(x - s),0.5) #0.1 + kmax*(1 - np.tanh(alphay*(y - l0)))*(0.5*(1 - heaviside(s))*(1 + np.tanh(alphas*(s + sl01))) + 0.5*heaviside(s)*(1 - np.tanh(alphas*(s - sr01))))   #direct transition rates
-K10 = lambda x, y, s : k10*np.heaviside(l/2 - np.abs(x - s),0.5)*np.heaviside(y - l0,0.5)+(1/np.maximum(d/2 - x, 1e-10))**2#
-#note that K10 is supposed to vanish outside of [-l/2, l/2]
+kp = 1 #ms-1
+alphaxp = 5 #nm-1
+lp = 1 #nm
+alphasp = 10 #nm-1
+sp = -9 #nm
+
+kb = 1.89 #ms-1
+alphab = 5 #nm-1
+lb = 0.2 #nm
+
+xl = -12 #nm
+xh = -8 #nm
+yl = 12.5 #nm
+sl = -24 #nm
+sh = -16 #nm
+
+#maximal s extension for reachable actin sites
+sminus = -30 #nm
+splus = 10 #nm
+
+
+K01 = lambda x, y, s : kmax*(1 - np.tanh(alphay*(y - y0)))*(0.5*(1 + np.tanh(alphas*(s + sl01)))*np.heaviside(-s, 0) + 0.5*(1 + np.tanh(alphas*(s - sr01)))*np.heaviside(s, 0))
+K10 = lambda x, y, s : (kwl*(0.5*(1 + np.tanh(alphaxwl*(x - s + lwl)))*np.heaviside(s - x, 0) + 0.5*(1 - np.tanh(alphaxwl*(x - s - lwl)))*np.heaviside(s - x, 0))*0.5*(1 - np.tanh(alphaswl*(s - swl)))
++ kwr*(0.5*(1 + np.tanh(alphaxwr*(x - s + lwr)))*np.heaviside(s - x, 0) + 0.5*(1 - np.tanh(alphaxwr*(x - s - lwr)))*np.heaviside(s - x, 0))*0.5*(1 - np.tanh(alphaswr*(s - swr)))
++ kp*(0.5*(1 + np.tanh(alphaxp*(x - s + lp)))*np.heaviside(s - x, 0) + 0.5*(1 - np.tanh(alphaxp*(x - s - lp)))*np.heaviside(s - x, 0))*0.5*(1 - np.tanh(alphasp*(s - sp)))
++ kb*(0.5*(1 + np.tanh(alphab(x - s + lb)))*np.heaviside(s - x, 0) + 0.5*(1 - np.tanh(x - s - lb))*np.heaviside(s - x, 0)))*(1 - np.heaviside(x - xl, 0)*np.heaviside(xh - x, 0))*np.heaviside(y - yl, 0)*np.heaviside(s - sl, 0)*np.heaviside(sh - s, 0)
+#full expression of the rates, note that K10 is supposed to be vanishingly small for x not in [s - l/2, s + l/2]
 
 E = 80 #energy shift in zJ
 sbar0 = 1.2 #shift of the potential, in nm
@@ -163,7 +197,7 @@ for t in range(nsteps - 1):
     # Particules qui sautent → α = 1
     alpha[jump0, t + 1] = 1
     X[jump0, t + 1]     = st1[jump0]
-    # reset horloges
+    # reset clocks
     n_j0 = jump0.sum()
     c01[jump0]    = 0.0;  e01[jump0]    = -np.log(np.random.random(size=n_j0))
     c10rev[jump0] = 0.0;  e10rev[jump0] = -np.log(np.random.random(size=n_j0))
