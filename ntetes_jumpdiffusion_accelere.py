@@ -40,8 +40,8 @@ b = 1/kBTemp #inverse temperature
 ny = 10.288 #inverse viscosity coefficients (fluidity) (ms-1.pN-1.nm)
 nx = 10.288
 
-T = 1000  #max time of the simulation, in ms
-dt = 0.01    #time step (ms)
+T = 100  #max time of the simulation, in ms
+dt = 0.001    #time step (ms)
 nsteps = int(T/dt)    #number of steps in the simulation
 
 kmax = 1.21  #maximal forward transition rate
@@ -83,12 +83,18 @@ sh = -16 #nm
 sminus = -30 #nm
 splus = 10 #nm
 
-
 K01 = lambda x, y, s : kmax*(1 - np.tanh(alphay*(y - y0)))*(0.5*(1 + np.tanh(alphas*(s + sl01)))*np.heaviside(-s, 0) + 0.5*(1 + np.tanh(alphas*(s - sr01)))*np.heaviside(s, 0))
-K10 = lambda x, y, s : (kwl*(0.5*(1 + np.tanh(alphaxwl*(x - s + lwl)))*np.heaviside(s - x, 0) + 0.5*(1 - np.tanh(alphaxwl*(x - s - lwl)))*np.heaviside(s - x, 0))*0.5*(1 - np.tanh(alphaswl*(s - swl)))
-+ kwr*(0.5*(1 + np.tanh(alphaxwr*(x - s + lwr)))*np.heaviside(s - x, 0) + 0.5*(1 - np.tanh(alphaxwr*(x - s - lwr)))*np.heaviside(s - x, 0))*0.5*(1 - np.tanh(alphaswr*(s - swr)))
-+ kp*(0.5*(1 + np.tanh(alphaxp*(x - s + lp)))*np.heaviside(s - x, 0) + 0.5*(1 - np.tanh(alphaxp*(x - s - lp)))*np.heaviside(s - x, 0))*0.5*(1 - np.tanh(alphasp*(s - sp)))
-+ kb*(0.5*(1 + np.tanh(alphab(x - s + lb)))*np.heaviside(s - x, 0) + 0.5*(1 - np.tanh(x - s - lb))*np.heaviside(s - x, 0)))*(1 - np.heaviside(x - xl, 0)*np.heaviside(xh - x, 0))*np.heaviside(y - yl, 0)*np.heaviside(s - sl, 0)*np.heaviside(sh - s, 0)
+K10 = lambda x, y, s : 0.8*np.heaviside(1 - s, 0)*np.heaviside(s + 10, 0) + 10*(np.heaviside(-20 - s, 0) + np.heaviside(s - 10, 0))
+#the expression of the detachment rate is simplified here to roughly match figure 3 of the orange article...
+
+
+#this is supposed to be the full expression of the detachment rate but for some reason the head stays stuck to actin
+#(kwl*(0.5*(1 + np.tanh(alphaxwl*(x - s + lwl)))*np.heaviside(s - x, 0) + 0.5*(1 - np.tanh(alphaxwl*(x - s - lwl)))*np.heaviside(s - x, 0))*0.5*(1 - np.tanh(alphaswl*(s - swl)))
+# + kwr*(0.5*(1 + np.tanh(alphaxwr*(x - s + lwr)))*np.heaviside(s - x, 0) + 0.5*(1 - np.tanh(alphaxwr*(x - s - lwr)))*np.heaviside(s - x, 0))*0.5*(1 - np.tanh(alphaswr*(s - swr)))
+# + kp*(0.5*(1 + np.tanh(alphaxp*(x - s + lp)))*np.heaviside(s - x, 0) + 0.5*(1 - np.tanh(alphaxp*(x - s - lp)))*np.heaviside(s - x, 0))*0.5*(1 - np.tanh(alphasp*(s - sp)))
+# + kb*(0.5*(1 + np.tanh(alphab*(x - s + lb)))*np.heaviside(s - x, 0) + 0.5*(1 - np.tanh(x - s - lb))*np.heaviside(s - x, 0)))*(1 - np.heaviside(x - xl, 0)*np.heaviside(xh - x, 0))*np.heaviside(y - yl, 0)*np.heaviside(s - sl, 0)*np.heaviside(sh - s, 0)
+
+
 #full expression of the rates, note that K10 is supposed to be vanishingly small for x not in [s - l/2, s + l/2]
 
 E = 80 #energy shift in zJ
