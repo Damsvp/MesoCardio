@@ -383,115 +383,6 @@ for i in range(len(period)-1):
 
 mean_speed=np.mean(speed)
 print(mean_speed)
-# %% Claude corrigé
-# --------- Vectorised function --------------------
-def double_well(y, kpre, kpost, lsep, ypre, ypost, v):
-    return np.where(
-        y < lsep,
-        (kpre/2) * (y - ypre)**2 + v,
-        (kpost/2) * (y - ypost)**2
-    )
-
-def d_double_well(y, kpre, kpost, lsep, ypre, ypost, v):
-    return np.where(
-        y < lsep,
-        kpre * (y - ypre),
-        kpost * (y - ypost)
-    )
-
-w0 = lambda x, y : E + ((k/2)*(x + y)**2 + double_well(y + sbar0, k0pre, k0post, l0, y0pre, y0post, v0))     #energy landscape and derivatives for detached head
-dxw0 = lambda x, y : k*(x + y)
-dyw0 = lambda x, y : k*(x + y) + d_double_well(y + sbar0, k0pre, k0post, l0, y0pre, y0post, v0)
-
-w1 = lambda x, y : ((k/2)*(x + y)**2 + double_well(y + sbar1, k1pre, k1post, l1, y1pre, y1post, v1))     #energy landscape and derivatives for attached head
-dxw1 = lambda x, y : k*(x + y)
-dyw1 = lambda x, y : k*(x + y) + d_double_well(y + sbar1, k1pre, k1post, l1, y1pre, y1post, v1)
-
-for t in range(nsteps - 1):
-    at = alpha[:, t]
-    Xt = X[:, t]
-    Yt = Y[:, t]
-    st = s[:, t]
-
-    # ── Dynamique de s ────────────────────────────────────────────────
-    delta_s = F*dt/v - (dt/v) * np.sum(at * dxw1(st, Yt))
-    st1 = st + delta_s
-    wrap_minus = st1 < -d/2
-    wrap_plus  = st1 >  d/2
-    st1[wrap_minus] += d
-    st1[wrap_plus]  -= d
-    if wrap_minus[0]:
-        period.append(t * dt)
-    s[:, t+1] = st1
-
-    # ── Bruits browniens ──────────────────────────────────────────────
-    Bx = np.random.randn(N)
-    By = np.random.randn(N)
-
-    # ── Taux ──────────────────────────────────────────────────────────
-    K01t    = K01(Xt, Yt, st)
-    K10t    = K10(Xt, Yt, st)
-    K01revt = K01rev(Xt, Yt, st)
-    K10revt = K10rev(Xt, Yt, st)
-
-    # ── Horloges tirées à chaque pas (comme dans l'original) ──────────
-    e01    = -np.log(np.random.random(size=N))
-    e10    = -np.log(np.random.random(size=N))
-    e01rev = -np.log(np.random.random(size=N))
-    e10rev = -np.log(np.random.random(size=N))
-
-    # accumulation sur un seul pas
-    c01    = K01t    * dt
-    c10    = K10t    * dt
-    c01rev = K01revt * dt
-    c10rev = K10revt * dt
-
-    m0 = (at == 0)
-    m1 = (at == 1)
-
-    # ─── Bloc α = 0 ───────────────────────────────────────────────────
-    Y[m0, t+1] = (Yt[m0]
-                  - dt*ny * dyw0(Xt[m0], Yt[m0])
-                  + np.sqrt(2*ny*dt/b) * By[m0])
-
-    jump0 = m0 & ((c01 > e01) | (c10rev > e10rev))
-    stay0 = m0 & ~jump0
-
-    alpha[jump0, t+1] = 1
-    X[jump0, t+1]     = st1[jump0]
-
-    alpha[stay0, t+1] = 0
-    X[stay0, t+1] = (Xt[stay0]
-                     - dt*nx * dxw0(Xt[stay0], Yt[stay0])
-                     + np.sqrt(2*nx*dt/b) * Bx[stay0])
-
-    # ─── Bloc α = 1 ───────────────────────────────────────────────────
-    Y[m1, t+1] = (Yt[m1]
-                  - dt*ny * dyw1(Xt[m1], Yt[m1])
-                  + np.sqrt(2*ny*dt/b) * By[m1])
-
-    jump1 = m1 & ((c01rev > e01rev) | (c10 > e10))
-    stay1 = m1 & ~jump1
-
-    if jump1.any():
-        idx1 = np.where(jump1)[0]
-        # prob shape : (|jump1|, npos)
-        prob_mat = (
-            K10(pos[None, :], Yt[idx1, None], st[idx1, None])
-          + K01rev(pos[None, :], Yt[idx1, None], st[idx1, None])
-        ) * dx                                   # (|jump1|, npos)
-        row_sums = prob_mat.sum(axis=1, keepdims=True)
-        prob_mat /= row_sums
-        chosen = np.array([
-            np.random.choice(pos, p=prob_mat[k])
-            for k in range(len(idx1))
-        ])
-        alpha[jump1, t+1] = 0
-        X[jump1, t+1]     = st1[jump1] + chosen
-
-    alpha[stay1, t+1] = 1
-    X[stay1, t+1]     = st1[stay1]
-
 
 # %% VErsion finale corrigée
 
@@ -588,5 +479,37 @@ for t in range(nsteps - 1):
 
     alpha[stay1, t+1] = 1
     X[stay1, t+1]     = st1[stay1]
+
+# %% Trajectoire de Z_t = sum_i alpha_i (X_i + Y_i)
+
+time = dt * np.arange(nsteps)
+
+Z = np.sum(alpha * (X + Y), axis=0)          # (nsteps,)  somme sur les têtes attachées
+n_attached = alpha.sum(axis=0)               # nombre de têtes attachées à chaque instant
+
+fig, axs = plt.subplots(nrows=3, figsize=(18, 12), sharex=True)
+
+axs[0].plot(time, Z, lw=0.8)
+axs[0].set_ylabel(r"$\sum_i \alpha_i (X_i + Y_i)$  (nm)")
+axs[0].set_title(r"Trajectoire de $Z_t = \sum_i \alpha_i (X_i + Y_i)$")
+
+axs[1].plot(time, k * Z, lw=0.8, color='tab:red')
+axs[1].set_ylabel(r"$k\,Z_t$  (pN)")
+axs[1].set_title("Force totale exercée par les têtes attachées")
+
+axs[2].step(time, n_attached, where='post', lw=0.8, color='tab:green', label='têtes attachées')
+axs[2].axhline(N, color='black', ls='--', lw=1, label=f'N = {N} (total)')
+axs[2].set_xlabel("time (ms)")
+axs[2].set_ylabel(r"$\sum_i \alpha_i$")
+axs[2].set_ylim(0, N + 1)
+axs[2].set_title(f"Nombre de têtes attachées (max atteint : {int(n_attached.max())} / {N})")
+axs[2].legend()
+
+plt.tight_layout()
+plt.show()
+
+print("Z moyen  :", Z.mean(), "nm")
+print("Force moyenne k*Z :", k * Z.mean(), "pN")
+print(f"Nombre max de têtes attachées : {int(n_attached.max())} / {N}")
 
 # %%

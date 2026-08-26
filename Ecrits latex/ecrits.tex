@@ -1,0 +1,188 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{geometry}
+\usepackage{hyperref}
+\geometry{margin=2.5cm}
+
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\indic}[1]{\mathrm{1}_{#1}}
+
+\title{Formalisme jump-diffusion pour la contraction musculaire \\
+\large Équation maîtresse et fermeture à force imposée}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Contexte}
+
+On considère le modèle jump-diffusion de l'interaction actine--myosine
+proposé par Chaintron, Kimmig, Caruel et Moireau
+(\emph{J. Appl. Phys.} \textbf{134}, 194901 (2023),
+\href{https://doi.org/10.1063/5.0158191}{doi:10.1063/5.0158191}).
+L'état d'une tête de myosine représentative est décrit par le processus
+de Markov
+\[
+Z_t = (\alpha_t, X_t, Y_t) \in \{0,1\} \times \left(-\tfrac{d}{2}, +\tfrac{d}{2}\right) \times \R,
+\]
+où $\alpha_t$ est l'état d'attachement (0 : détaché, 1 : attaché),
+$X_t$ la position de la tête par rapport à son point d'ancrage, et
+$Y_t$ la variable de conformation associée au \emph{power-stroke}.
+
+\section{Équation maîtresse du modèle (éq. 17 du papier)}
+
+Le triplet $(\alpha_t, X_t, Y_t)$ est régi par le système d'équations
+différentielles stochastiques suivant.
+
+\subsection*{Dynamique de $\alpha_t$}
+
+\begin{align*}
+\dd\alpha_t
+&= \indic{\alpha_t=0}\left[
+\int_{\R_+} \indic{z \le K_{0\to1}(X_t,Y_t,s(t))}\, N_{0\to1}(\dd t,\dd z)
++ \int_{\R_+} \indic{z \le K^{\mathrm{rev}}_{1\to0}(X_t,Y_t,s(t))}\, N^{\mathrm{rev}}_{1\to0}(\dd t,\dd z)
+\right] \\[1mm]
+&\quad - \indic{\alpha_t=1}\left[
+\int_{-d/2}^{d/2}\!\!\int_{\R_+} \indic{z \le K_{1\to0}(x,Y_t,s(t))}\, N_{1\to0}(\dd t,\dd x,\dd z) \right.\\
+&\qquad\qquad\quad \left. + \int_{-d/2}^{d/2}\!\!\int_{\R_+} \indic{z \le K^{\mathrm{rev}}_{0\to1}(x,Y_t,s(t))}\, N^{\mathrm{rev}}_{0\to1}(\dd t,\dd x,\dd z)
+\right]
+\end{align*}
+
+\subsection*{Dynamique de $X_t$}
+
+\begin{align*}
+\dd X_t
+&= \indic{\alpha_t=0}\left[-\eta_x^{-1}\partial_x w_0(X_t,Y_t)\,\dd t
++ \sqrt{2\eta_x^{-1}k_BT}\; \dd B_t^x\right]
++ \indic{\alpha_t=1}\, \dot x_c(t)\,\dd t \\[1mm]
+&\quad + \indic{\alpha_t=0}\left[
+\int_{\R_+} (s(t)-X_t)\,\indic{z \le K_{0\to1}(X_t,Y_t,s(t))}\, N_{0\to1}(\dd t,\dd z) \right.\\
+&\qquad\qquad\quad \left. + \int_{\R_+} (s(t)-X_t)\,\indic{z \le K^{\mathrm{rev}}_{1\to0}(X_t,Y_t,s(t))}\, N^{\mathrm{rev}}_{1\to0}(\dd t,\dd z)
+\right] \\[1mm]
+&\quad + \indic{\alpha_t=1}\left[
+\int_{-d/2}^{d/2}\!\!\int_{\R_+} (x-s(t))\,\indic{z \le K_{1\to0}(x,Y_t,s(t))}\, N_{1\to0}(\dd t,\dd x,\dd z) \right.\\
+&\qquad\qquad\quad \left. + \int_{-d/2}^{d/2}\!\!\int_{\R_+} (x-X_t)\,\indic{z \le K^{\mathrm{rev}}_{0\to1}(x,Y_t,s(t))}\, N^{\mathrm{rev}}_{0\to1}(\dd t,\dd x,\dd z)
+\right]
+\end{align*}
+
+\subsection*{Dynamique de $Y_t$}
+
+\[
+\dd Y_t = -\eta_y^{-1}\partial_y w_{\alpha_t}(X_t,Y_t)\,\dd t
++ \sqrt{2\eta_y^{-1}k_BT}\; \dd B_t^y
+\]
+
+\bigskip
+\noindent
+Ici, $N_{0\to1}$, $N^{\mathrm{rev}}_{0\to1}$, $N_{1\to0}$, $N^{\mathrm{rev}}_{1\to0}$
+sont quatre mesures aléatoires de Poisson indépendantes associées
+respectivement à l'attachement direct, au détachement inverse,
+au détachement direct et à l'attachement inverse ; $B_t^x, B_t^y$
+sont deux mouvements browniens indépendants (bruit thermique) ;
+$\eta_x,\eta_y$ sont les coefficients de friction ; $k_B$ la constante
+de Boltzmann, $T$ la température, et $w_\alpha(x,y)$ le paysage
+énergétique de la tête dans l'état $\alpha$.
+
+\section{Quantité dérivée $Z_t$ (somme sur la population)}
+
+On définit désormais, pour une population de $N$ têtes indexées par
+$i$, la quantité agrégée
+\[
+Z_t := \sum_i \alpha_i^t\,\kappa\,(X_i^t+Y_i^t),
+\]
+où $\kappa$ est la raideur de la myosine. Cette quantité intervient
+dans la relation de fermeture à force imposée $F$ :
+\[
+\frac{\dd s}{\dd t} = \frac{F}{v} - \frac{1}{v}\,Z_t,
+\]
+avec $v$ un paramètre de viscosité.
+
+\subsection*{Remarque}
+
+Dans le modèle du papier, $\kappa(s+y) = \partial_s w_1(s,y)$
+correspond exactement à la force générée par une tête attachée
+(cf.\ définition de $\tau_c(t)$, section III.C du papier). La quantité
+$Z_t/N$ correspond donc à la force macroscopique moyenne
+$\tau_c(t)$, ce qui assure la cohérence de la fermeture proposée
+avec le cadre thermodynamique de l'article.
+
+\section{Dérivation de la dynamique de $Z_t$}
+
+\subsection{Dynamique d'une seule tête}
+
+Soit $\xi_i^t := \alpha_i^t\,\kappa\,(X_i^t+Y_i^t) = \varphi(\alpha_i^t, X_i^t, Y_i^t)$
+avec $\varphi(\alpha,x,y) = \alpha\,\kappa\,(x+y)$.
+
+Comme $\varphi$ est \emph{affine} en $(x,y)$ à $\alpha$ fixé, les
+termes du second ordre de la formule d'Itô (dérivées
+$\partial^2_{xx}$, $\partial^2_{yy}$) s'annulent. Il reste :
+
+\paragraph{Partie continue.} Tant que $\alpha_i^t=1$ (donc
+$X_i^t=s(t)$) :
+\[
+\dd\xi_i^t\Big|_{\text{cont}}
+= \indic{\alpha_i^t=1}\,\kappa\Big[\dot x_c(t)
+- \eta_y^{-1}\partial_y w_1(X_i^t,Y_i^t)\Big]\dd t
++ \indic{\alpha_i^t=1}\,\kappa\sqrt{2\eta_y^{-1}k_BT}\;\dd B_i^{y,t}.
+\]
+Lorsque $\alpha_i^t=0$, on a $\xi_i^t \equiv 0$ : pas de contribution
+continue.
+
+\paragraph{Partie sauts.} À un attachement (direct ou inverse), la
+position saute instantanément à $s(t)$, donc $\xi_i^t$ saute de $0$ à
+$\kappa(s(t)+Y_i^t)$ ; à un détachement, l'inverse se produit :
+\begin{align*}
+\dd\xi_i^t\Big|_{\text{sauts}}
+= \kappa\big(s(t)+Y_i^t\big)\Big[
+&\indic{\alpha_i^t=0}\big(\dd N_{0\to1,i} + \dd N^{\mathrm{rev}}_{1\to0,i}\big) \\
+- &\indic{\alpha_i^t=1}\big(\dd N_{1\to0,i} + \dd N^{\mathrm{rev}}_{0\to1,i}\big)
+\Big],
+\end{align*}
+où $\dd N_{\cdot,i}$ désigne le comptage des sauts acceptés (intégrale
+de $\indic{z\le K(\cdot)}$ contre la mesure de Poisson correspondante,
+comme dans l'équation maîtresse pour $\dd\alpha_i^t$).
+
+\subsection{Sommation sur la population}
+
+En sommant sur toutes les têtes $i$ (les mesures de Poisson et les
+browniens étant indépendants d'une tête à l'autre) :
+
+\begin{align*}
+\dd Z_t
+&= \sum_{i:\,\alpha_i^t=1} \kappa\Big[\dot x_c(t)
+- \eta_y^{-1}\partial_y w_1(X_i^t,Y_i^t)\Big]\dd t
++ \sum_{i:\,\alpha_i^t=1} \kappa\sqrt{2\eta_y^{-1}k_BT}\;\dd B_i^{y,t} \\[1mm]
+&\quad + \sum_i \kappa\big(s(t)+Y_i^t\big)\Big[
+\indic{\alpha_i^t=0}\big(\dd N_{0\to1,i} + \dd N^{\mathrm{rev}}_{1\to0,i}\big)
+- \indic{\alpha_i^t=1}\big(\dd N_{1\to0,i} + \dd N^{\mathrm{rev}}_{0\to1,i}\big)
+\Big].
+\end{align*}
+
+\subsection{Système fermé}
+
+Avec la relation de fermeture
+\[
+\frac{\dd s}{\dd t} = \frac{F}{v} - \frac{Z_t}{v},
+\]
+le système devient auto-cohérent : $s(t)$ (et donc $\dot x_c(t) = \dot s(t)$,
+paramètre exogène dans le modèle original à vitesse imposée) devient
+une variable dynamique pilotée par $Z_t$, qui dépend en retour de
+l'état de l'ensemble de la population de têtes attachées.
+
+\bigskip
+\noindent
+\textbf{Remarque.} Cette relation de fermeture à force imposée $F$
+n'est pas présente telle quelle dans le papier original ; elle en
+constitue une extension naturelle, dans l'esprit de la perspective
+évoquée par les auteurs en conclusion (simulation du modèle en
+conditions de force imposée, avec prise en compte explicite de
+l'élasticité du filament).
+
+\end{document}
