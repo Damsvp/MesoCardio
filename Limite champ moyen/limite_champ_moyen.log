@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 22.10) (preloaded format=pdflatex 2022.11.2)  26 AUG 2026 14:09
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 22.10) (preloaded format=pdflatex 2022.11.2)  26 AUG 2026 15:40
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -437,41 +437,46 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `math shift' on input line 70.
 
 
-Overfull \hbox (4.58064pt too wide) in paragraph at lines 90--91
+Overfull \hbox (8.95656pt too wide) in paragraph at lines 88--89
+\T1/cmr/bx/n/10.95 Remarque \T1/cmr/m/n/10.95 (Sur le terme de gain dans [])\T1/cmr/bx/n/10.95 . \T1/cmr/m/it/10.95 Le gain dans $\OML/cmm/m/it/10.95 v[]$ \T1/cmr/m/it/10.95 (venant des événe-ments d'attachement)
+ []
+
+
+Overfull \hbox (4.58064pt too wide) in paragraph at lines 92--93
 \T1/cmr/bx/n/10.95 Remarque. \T1/cmr/m/it/10.95 L'équation maîtresse linéaire de di-men-sion $\OT1/cmr/m/n/10.95 3\OML/cmm/m/it/10.95 N \OT1/cmr/m/n/10.95 + 1$ \T1/cmr/m/it/10.95 dégénère en une équa-tion maîtresse
  []
 
-
-Overfull \hbox (32.0066pt too wide) detected at line 101
-[]
- []
-
 [2]
-Overfull \hbox (80.5751pt too wide) detected at line 108
+Overfull \hbox (32.0066pt too wide) detected at line 103
 []
  []
 
 
-Overfull \hbox (53.79457pt too wide) in paragraph at lines 133--143
+Overfull \hbox (80.5751pt too wide) detected at line 110
+[]
+ []
+
+
+Overfull \hbox (53.79457pt too wide) in paragraph at lines 135--145
  [] 
  []
 
-[3] (limite_champ_moyen.aux)
+[3] [4] (limite_champ_moyen.aux)
 Package rerunfilecheck Info: File `limite_champ_moyen.out' has not changed.
 (rerunfilecheck)             Checksum: 3B889D564D36D9943E37495DB3D03C26;1455.
  ) 
 Here is how much of TeX's memory you used:
- 10929 strings out of 475380
- 172877 string characters out of 2776300
- 530473 words of memory out of 3000000
- 32142 multiletter control sequences out of 15000+600000
+ 10931 strings out of 475380
+ 172894 string characters out of 2776300
+ 531473 words of memory out of 3000000
+ 32143 multiletter control sequences out of 15000+600000
  489328 words of font info for 84 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 72i,15n,77p,772b,449s stack positions out of 10000i,1000n,20000p,200000b,80000s
+ 72i,15n,77p,1126b,499s stack positions out of 10000i,1000n,20000p,200000b,80000s
  <C:\Users\Damien\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbi1095.pk> <C:\Users\Damien\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm0800.pk> <C:\Users\Damien\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti1095.pk> <C:\Users\Damien\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1095.pk> <C:\Users\Damien\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1095.pk> <C:\Users\Damien\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1440.pk> <C:\Users\Damien\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1000.pk> <C:\Users\Damien\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1000.pk> <C:\Users\Damien\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1728.pk><C:/Users/Damien/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/Damien/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/Damien/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/Damien/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Users/Damien/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/Damien/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/Damien/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Users/Damien/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/Damien/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Damien/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Users/Damien/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/Damien/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on limite_champ_moyen.pdf (3 pages, 247934 bytes).
+Output written on limite_champ_moyen.pdf (4 pages, 253982 bytes).
 PDF statistics:
- 440 PDF objects out of 1000 (max. 8388607)
- 19 named destinations out of 1000 (max. 500000)
+ 453 PDF objects out of 1000 (max. 8388607)
+ 20 named destinations out of 1000 (max. 500000)
  41 words of extra memory for PDF output out of 10000 (max. 10000000)
 

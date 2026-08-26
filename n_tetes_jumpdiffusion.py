@@ -484,8 +484,8 @@ for t in range(nsteps - 1):
 
 time = dt * np.arange(nsteps)
 
-Z = np.sum(alpha * (X + Y), axis=0)          # (nsteps,)  somme sur les têtes attachées
-n_attached = alpha.sum(axis=0)               # nombre de têtes attachées à chaque instant
+Z = 1/N*  np.sum(alpha * (X + Y), axis=0)          # (nsteps,)  somme sur les têtes attachées
+n_attached = 1/N * alpha.sum(axis=0)               # pourcentage de nombre de têtes attachées à chaque instant
 
 fig, axs = plt.subplots(nrows=3, figsize=(18, 12), sharex=True)
 
@@ -498,11 +498,11 @@ axs[1].set_ylabel(r"$k\,Z_t$  (pN)")
 axs[1].set_title("Force totale exercée par les têtes attachées")
 
 axs[2].step(time, n_attached, where='post', lw=0.8, color='tab:green', label='têtes attachées')
-axs[2].axhline(N, color='black', ls='--', lw=1, label=f'N = {N} (total)')
+axs[2].axhline(1, color='black', ls='--', lw=1, label=f'N = {N} (total)')
 axs[2].set_xlabel("time (ms)")
-axs[2].set_ylabel(r"$\sum_i \alpha_i$")
-axs[2].set_ylim(0, N + 1)
-axs[2].set_title(f"Nombre de têtes attachées (max atteint : {int(n_attached.max())} / {N})")
+axs[2].set_ylabel(r"$1/N\sum_i \alpha_i$")
+axs[2].set_ylim(0, 1)
+axs[2].set_title(f"Nombre de têtes attachées en pourcentage (max atteint : {int(N*n_attached.max())} / {N})")
 axs[2].legend()
 
 plt.tight_layout()
@@ -510,6 +510,6 @@ plt.show()
 
 print("Z moyen  :", Z.mean(), "nm")
 print("Force moyenne k*Z :", k * Z.mean(), "pN")
-print(f"Nombre max de têtes attachées : {int(n_attached.max())} / {N}")
+print(f"Nombre max de têtes attachées : {int(N*n_attached.max())} / {N}")
 
 # %%

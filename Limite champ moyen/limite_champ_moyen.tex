@@ -29,7 +29,7 @@
 On d\'erive la limite $N\to\infty$ de l'\'equation ma\^itresse du syst\`eme \`a $N$ t\^etes de myosine coupl\'ees par la fermeture \`a force impos\'ee, ainsi que l'EDS non lin\'eaire (McKean--Vlasov) associ\'ee au processus limite. La preuve de propagation du chaos est report\'ee \`a un travail ult\'erieur ; on suppose ici qu'elle peut \^etre \'etablie sous des hypoth\`eses de r\'egularit\'e raisonnables sur les taux de saut et les potentiels.
 \end{abstract}
 
-\section{Système à $N$ têtes~: état augmenté et \'echelle n\'ecessaire}
+\section{Syst\`eme \`a $N$ t\^etes~: \'etat augment\'e et \'echelle n\'ecessaire}
 
 On consid\`ere $N$ t\^etes $(\alpha_t^i, X_t^i, Y_t^i)_{i=1}^N$ i.i.d.\ en loi initiale (ou \'echangeables), coupl\'ees uniquement par le champ commun $s_t$ via la fermeture
 \[
@@ -76,7 +76,7 @@ On pose $u_t(x,y):=p_t(0,x,y)$ et, comme $X\equiv s_t$ conditionnellement \`a $\
 \partial_t u_t(x,y) &= \underbrace{\eta_x^{-1}\partial_x(u_t\partial_xw_0)+\eta_x^{-1}k_BT\partial_x^2u_t + \eta_y^{-1}\partial_y(u_t\partial_yw_0)+\eta_y^{-1}k_BT\partial_y^2u_t}_{\text{Fokker--Planck}} \notag \\
 &\quad -\;\Lon(x,y,s_t)\,u_t(x,y) \;+\; \ind{[-d/2,d/2]}(x)\,\Loff(x,y,s_t)\,v_t(y), \label{eq:u}\\[1em]
 \partial_t v_t(y) &= \eta_y^{-1}\partial_y\big(v_t\,\partial_yw_1(s_t,y)\big)+\eta_y^{-1}k_BT\,\partial_y^2v_t(y) \notag\\
-&\quad +\;\Lon(s_t,y,s_t)\,u_t(s_t,y) \;-\;\Big(\int_{-d/2}^{d/2}\Loff(x',y,s_t)\,dx'\Big)v_t(y), \label{eq:v}
+&\quad +\;\int_{-d/2}^{d/2}\Lon(x,y,s_t)\,u_t(x,y)\,dx \;-\;\Big(\int_{-d/2}^{d/2}\Loff(x',y,s_t)\,dx'\Big)v_t(y), \label{eq:v}
 \end{align}
 coupl\'e de fa\c con auto-coh\'erente (non lin\'eaire, au sens de McKean) \`a
 \begin{equation}
@@ -84,7 +84,9 @@ coupl\'e de fa\c con auto-coh\'erente (non lin\'eaire, au sens de McKean) \`a
 \label{eq:closure}
 \end{equation}
 
-La conservation de la masse $\iint u_t+\int v_t=1$ pour tout $t$ d\'ecoule directement de la construction des termes de gain/perte dans \eqref{eq:u}--\eqref{eq:v}.
+\begin{remark*}[Sur le terme de gain dans \eqref{eq:v}]
+Le gain dans $v_t$ (venant des \'ev\'enements d'attachement) doit \^etre \textbf{int\'egr\'e sur la position source} $x$, et non \'evalu\'e ponctuellement en $x=s_t$~: une t\^ete d\'etach\'ee \`a n'importe quelle position $x\in[-d/2,d/2]$ s'attache et retombe toujours au m\^eme point $X=s_t$ (cible ponctuelle, source continue), au contraire du d\'etachement o\`u c'est la \emph{cible} $x$ qui est continue (source ponctuelle $s_t$, donc gain en \eqref{eq:u} correctement ponctuel en $x$). Cette asym\'etrie source/cible entre les deux types de saut se v\'erifie rigoureusement en prenant l'adjoint $L^2$ du g\'en\'erateur $\mathcal L^{(0)}_s$ (dualit\'e $\langle\mathcal L\phi,u\rangle=\langle\phi,\mathcal L^*u\rangle$), et c'est cette forme int\'egr\'ee, symm\'etrique du terme $\int\Loff$ d\'ej\`a pr\'esent dans la perte de $v$, qui assure la conservation exacte de la masse~: $\iint u_t+\int v_t=1$ pour tout $t$ (les deux termes de flux entre $u$ et $v$ s'annulent exactement en sommant \eqref{eq:u} et \eqref{eq:v}).
+\end{remark*}
 
 \begin{remark*}
 L'\'equation ma\^itresse lin\'eaire de dimension $3N+1$ d\'eg\'en\`ere en une \'equation ma\^itresse \textbf{non lin\'eaire} de dimension $3+1$ (une t\^ete repr\'esentative + $s_t$), o\`u le couplage \`a la population enti\`ere est remplac\'e par une esp\'erance sous la loi \emph{courante} $p_t$ elle-m\^eme --- la logique champ moyen / McKean--Vlasov. On retrouve la dynamique d'une t\^ete isol\'ee du mod\`ele original, mais avec $s(t)$ non plus exog\`ene~: elle est pilot\'ee en boucle ferm\'ee par la force macroscopique moyenne $\bar z_t=\tau_c(t)$.
