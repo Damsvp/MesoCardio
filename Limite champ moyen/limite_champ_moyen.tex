@@ -1,0 +1,145 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+
+\newcommand{\ind}[1]{\mathrm{1}_{#1}}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Lon}{\Lambda_{\mathrm{on}}}
+\newcommand{\Loff}{\Lambda_{\mathrm{off}}}
+
+\theoremstyle{plain}
+\newtheorem*{remark*}{Remarque}
+
+\title{Limite de champ moyen ($N\to\infty$) du mod\`ele jump-diffusion\\ pour la contraction musculaire}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+On d\'erive la limite $N\to\infty$ de l'\'equation ma\^itresse du syst\`eme \`a $N$ t\^etes de myosine coupl\'ees par la fermeture \`a force impos\'ee, ainsi que l'EDS non lin\'eaire (McKean--Vlasov) associ\'ee au processus limite. La preuve de propagation du chaos est report\'ee \`a un travail ult\'erieur ; on suppose ici qu'elle peut \^etre \'etablie sous des hypoth\`eses de r\'egularit\'e raisonnables sur les taux de saut et les potentiels.
+\end{abstract}
+
+\section{Système à $N$ têtes~: état augmenté et \'echelle n\'ecessaire}
+
+On consid\`ere $N$ t\^etes $(\alpha_t^i, X_t^i, Y_t^i)_{i=1}^N$ i.i.d.\ en loi initiale (ou \'echangeables), coupl\'ees uniquement par le champ commun $s_t$ via la fermeture
+\[
+\dot s_t = \frac{F}{v} - \frac{Z_t}{v}, \qquad Z_t = \sum_{i=1}^N \alpha_t^i\,\kappa(X_t^i+Y_t^i).
+\]
+
+\'Etant donn\'e que $Z_t$ est une somme, elle est g\'en\'eriquement $O(N)$~; c'est $Z_t/N$ qui a un sens macroscopique (force moyenne $\tau_c(t)$). Pour que $\dot s_t$ ait une limite non triviale quand $N\to\infty$, il faut que le coefficient devant $Z_t$ soit en $1/N$, ce qui impose l'\'echelle physique naturelle (viscosit\'e totale et force impos\'ee proportionnelles au nombre de t\^etes, donc au nombre de g\'en\'erateurs de force en parall\`ele)~:
+\[
+v = N v_1, \qquad F = N f, \qquad \Longrightarrow \qquad \dot s_t = \frac{1}{v_1}\Big(f - \bar Z_t^N\Big), \qquad \bar Z_t^N := \frac1N\sum_{i=1}^N \alpha_t^i\kappa(X_t^i+Y_t^i).
+\]
+
+Sans cette \'echelle, la limite $N\to\infty$ de l'\'equation ma\^itresse est d\'eg\'en\'er\'ee. C'est la seule \'echelle compatible avec l'interpr\'etation $Z_t/N \to \tau_c(t)$.
+
+\section{\'Equation ma\^itresse \`a $N$ t\^etes (g\'en\'erateur)}
+
+\'Etat markovien complet~: $\big(s_t,(\alpha_t^i,X_t^i,Y_t^i)_{i\le N}\big)$. Le g\'en\'erateur se d\'ecompose en
+\[
+\mathcal L_N = \frac{1}{v_1}\big(f-\bar z^N\big)\,\partial_s \;+\; \sum_{i=1}^N \mathcal L^{(i)}_{s},\qquad \bar z^N=\frac1N\sum_j \alpha^j\kappa(x^j+y^j),
+\]
+o\`u $\mathcal L^{(i)}_s$ est le g\'en\'erateur d'une t\^ete isol\'ee, qui n'agit que sur $(\alpha^i,X^i,Y^i)$ et d\'epend de la population \textbf{uniquement} \`a travers le scalaire $s$ commun. C'est la structure d'une interaction de type champ moyen (McKean--Vlasov)~: chaque particule ne voit les autres qu'\`a travers une moyenne empirique.
+
+On note
+\[
+\Lon(x,y,s):=K_{0\to1}(x,y,s)+K_{1\to0}^{\mathrm{rev}}(x,y,s), \qquad
+\Loff(x,y,s):=K_{1\to0}(x,y,s)+K_{0\to1}^{\mathrm{rev}}(x,y,s).
+\]
+
+\paragraph{T\^ete d\'etach\'ee ($\alpha=0$, $X$ et $Y$ diffusent librement dans $w_0$).}
+\[
+\mathcal L^{(0)}_s\phi = -\eta_x^{-1}\partial_xw_0\,\partial_x\phi+\eta_x^{-1}k_BT\,\partial_x^2\phi -\eta_y^{-1}\partial_yw_0\,\partial_y\phi+\eta_y^{-1}k_BT\,\partial_y^2\phi + \Lon(x,y,s)\big[\phi(1,s,y)-\phi(0,x,y)\big].
+\]
+
+\paragraph{T\^ete attach\'ee ($\alpha=1$, $X_t\equiv s_t$, seule $Y$ diffuse dans $w_1$).}
+\[
+\mathcal L^{(1)}_s\phi = \dot s\,\partial_x\phi -\eta_y^{-1}\partial_yw_1(s,y)\,\partial_y\phi+\eta_y^{-1}k_BT\,\partial_y^2\phi + \int_{-d/2}^{d/2}\Loff(x',y,s)\big[\phi(0,x',y)-\phi(1,s,y)\big]\,dx'.
+\]
+
+\section{\'Equation ma\^itresse limite ($N\to\infty$, McKean--Vlasov)}
+
+Par \'echangeabilit\'e, un argument de champ moyen (couplage synchrone avec $N$ copies i.i.d.\ du processus non lin\'eaire limite) donne~: pour $k$ fix\'e, la loi de $(\alpha^{1:k},X^{1:k},Y^{1:k})$ converge quand $N\to\infty$ vers $p_t^{\otimes k}$ --- \textbf{propagation du chaos} --- o\`u $p_t(\alpha,x,y)$ est la loi \`a un corps du processus non lin\'eaire limite, solution du syst\`eme auto-coh\'erent suivant. \emph{(On suppose ici cette convergence \'etablie~; la preuve rigoureuse est report\'ee.)}
+
+On pose $u_t(x,y):=p_t(0,x,y)$ et, comme $X\equiv s_t$ conditionnellement \`a $\alpha=1$, $p_t(1,\dd x,\dd y)=v_t(y)\,\delta_{s_t}(\dd x)\,\dd y$. Le syst\`eme ferm\'e est~:
+\begin{align}
+\partial_t u_t(x,y) &= \underbrace{\eta_x^{-1}\partial_x(u_t\partial_xw_0)+\eta_x^{-1}k_BT\partial_x^2u_t + \eta_y^{-1}\partial_y(u_t\partial_yw_0)+\eta_y^{-1}k_BT\partial_y^2u_t}_{\text{Fokker--Planck}} \notag \\
+&\quad -\;\Lon(x,y,s_t)\,u_t(x,y) \;+\; \ind{[-d/2,d/2]}(x)\,\Loff(x,y,s_t)\,v_t(y), \label{eq:u}\\[1em]
+\partial_t v_t(y) &= \eta_y^{-1}\partial_y\big(v_t\,\partial_yw_1(s_t,y)\big)+\eta_y^{-1}k_BT\,\partial_y^2v_t(y) \notag\\
+&\quad +\;\Lon(s_t,y,s_t)\,u_t(s_t,y) \;-\;\Big(\int_{-d/2}^{d/2}\Loff(x',y,s_t)\,dx'\Big)v_t(y), \label{eq:v}
+\end{align}
+coupl\'e de fa\c con auto-coh\'erente (non lin\'eaire, au sens de McKean) \`a
+\begin{equation}
+\boxed{\;\dot s_t=\frac{1}{v_1}\big(f-\bar z_t\big),\qquad \bar z_t=\int_{-d/2}^{d/2}\kappa(s_t+y)\,v_t(y)\,dy = \E_{p_t}\big[\alpha_t\,\kappa(X_t+Y_t)\big].\;}
+\label{eq:closure}
+\end{equation}
+
+La conservation de la masse $\iint u_t+\int v_t=1$ pour tout $t$ d\'ecoule directement de la construction des termes de gain/perte dans \eqref{eq:u}--\eqref{eq:v}.
+
+\begin{remark*}
+L'\'equation ma\^itresse lin\'eaire de dimension $3N+1$ d\'eg\'en\`ere en une \'equation ma\^itresse \textbf{non lin\'eaire} de dimension $3+1$ (une t\^ete repr\'esentative + $s_t$), o\`u le couplage \`a la population enti\`ere est remplac\'e par une esp\'erance sous la loi \emph{courante} $p_t$ elle-m\^eme --- la logique champ moyen / McKean--Vlasov. On retrouve la dynamique d'une t\^ete isol\'ee du mod\`ele original, mais avec $s(t)$ non plus exog\`ene~: elle est pilot\'ee en boucle ferm\'ee par la force macroscopique moyenne $\bar z_t=\tau_c(t)$.
+\end{remark*}
+
+\section{EDS limite (processus non lin\'eaire tagu\'e)}
+
+On \'ecrit maintenant la limite sous forme d'EDS pour la particule ``tagu\'ee'' $(\bar\alpha_t,\bar X_t,\bar Y_t)$ coupl\'ee \`a $s_t$. M\^eme structure de bruit que le mod\`ele \`a une t\^ete (quatre mesures de Poisson ind\'ependantes $N_{0\to1}, N^{\mathrm{rev}}_{1\to0}, N_{1\to0}, N^{\mathrm{rev}}_{0\to1}$, deux browniens ind\'ependants $B^x_t,B^y_t$), mais $s_t$ n'est plus exog\`ene~: c'est la solution de l'ODE de fermeture \eqref{eq:closure}, elle-m\^eme fonction de la \textbf{loi} de $(\bar\alpha_t,\bar X_t,\bar Y_t)$.
+
+\paragraph{Dynamique de $\bar\alpha_t$.}
+\begin{align*}
+d\bar\alpha_t &= \ind{\bar\alpha_t=0}\Big[\int_{\R_+}\ind{z\le K_{0\to1}(\bar X_t,\bar Y_t,s_t)}N_{0\to1}(dt,dz) + \int_{\R_+}\ind{z\le K^{\mathrm{rev}}_{1\to0}(\bar X_t,\bar Y_t,s_t)}N^{\mathrm{rev}}_{1\to0}(dt,dz)\Big] \\
+&\quad -\;\ind{\bar\alpha_t=1}\Big[\int_{-d/2}^{d/2}\!\int_{\R_+}\ind{z\le K_{1\to0}(x,\bar Y_t,s_t)}N_{1\to0}(dt,dx,dz) + \int_{-d/2}^{d/2}\!\int_{\R_+}\ind{z\le K^{\mathrm{rev}}_{0\to1}(x,\bar Y_t,s_t)}N^{\mathrm{rev}}_{0\to1}(dt,dx,dz)\Big].
+\end{align*}
+
+\paragraph{Dynamique de $\bar X_t$.}
+\begin{align*}
+d\bar X_t &= \ind{\bar\alpha_t=0}\Big[-\eta_x^{-1}\partial_xw_0(\bar X_t,\bar Y_t)\,dt+\sqrt{2\eta_x^{-1}k_BT}\,dB^x_t\Big] + \ind{\bar\alpha_t=1}\,\dot s_t\,dt \\
+&\quad +\;\ind{\bar\alpha_t=0}\Big[\int_{\R_+}(s_t-\bar X_t)\,\ind{z\le K_{0\to1}}N_{0\to1}(dt,dz)+\int_{\R_+}(s_t-\bar X_t)\,\ind{z\le K^{\mathrm{rev}}_{1\to0}}N^{\mathrm{rev}}_{1\to0}(dt,dz)\Big] \\
+&\quad +\;\ind{\bar\alpha_t=1}\Big[\int_{-d/2}^{d/2}\!\int_{\R_+}(x-s_t)\,\ind{z\le K_{1\to0}(x,\cdot)}N_{1\to0}(dt,dx,dz)+\int_{-d/2}^{d/2}\!\int_{\R_+}(x-\bar X_t)\,\ind{z\le K^{\mathrm{rev}}_{0\to1}(x,\cdot)}N^{\mathrm{rev}}_{0\to1}(dt,dx,dz)\Big].
+\end{align*}
+
+En pratique, $\bar X_t=s_t$ exactement d\`es que $\bar\alpha_t=1$~: le saut d'attachement pose $\bar X_t=s_t$, et le terme de d\'erive $\dot s_t\,dt$ le maintient ensuite \'egal \`a $s_t$.
+
+\paragraph{Dynamique de $\bar Y_t$} (inchang\'ee dans sa forme, seul $w_{\bar\alpha_t}$ bascule selon l'\'etat)~:
+\[
+d\bar Y_t = -\eta_y^{-1}\partial_yw_{\bar\alpha_t}(\bar X_t,\bar Y_t)\,dt + \sqrt{2\eta_y^{-1}k_BT}\,dB^y_t.
+\]
+
+\paragraph{Fermeture auto-coh\'erente.}
+\[
+\frac{ds_t}{dt} = \frac{1}{v_1}\Big(f-\bar z_t\Big),\qquad \bar z_t := \E\big[\bar\alpha_t\,\kappa(\bar X_t+\bar Y_t)\big] = \E\big[\varphi(\bar\alpha_t,\bar X_t,\bar Y_t)\big],\quad \varphi(\alpha,x,y)=\alpha\kappa(x+y).
+\]
+
+\begin{remark*}
+Le syst\`eme $(\bar\alpha_t,\bar X_t,\bar Y_t,s_t)$ ci-dessus n'est pas une EDS classique~: $s_t$ d\'epend de la loi de $(\bar\alpha_t,\bar X_t,\bar Y_t)$ \`a chaque instant $t$ (via $\bar z_t=\E[\varphi(\bar\alpha_t,\bar X_t,\bar Y_t)]$), donc les coefficients de l'\'equation d\'ependent de la loi de la solution elle-m\^eme --- c'est la structure McKean--Vlasov. C'est le dual trajectoriel du syst\`eme d'\'equations ma\^itresses $(u_t,v_t,s_t)$ de la Section~3~: en prenant l'esp\'erance de $\varphi$ sous $p_t$ \`a chaque instant on referme la boucle, et $p_t=\mathrm{Law}(\bar\alpha_t,\bar X_t,\bar Y_t)$ r\'esout \eqref{eq:u}--\eqref{eq:closure}.
+\end{remark*}
+
+\section{Propagation du chaos --- \`a d\'emontrer}
+
+On \emph{suppose} ici que la convergence de la loi empirique $\frac1N\sum_i\delta_{(\alpha^i_t,X^i_t,Y^i_t)}$ vers $p_t$, et plus g\'en\'eralement la propagation du chaos (convergence des marginales \`a $k$ corps vers $p_t^{\otimes k}$), peut \^etre \'etablie sous des hypoth\`eses de r\'egularit\'e raisonnables sur les taux de saut $K_{\cdot\to\cdot}$, $K^{\mathrm{rev}}_{\cdot\to\cdot}$ et les potentiels $w_0,w_1$ (typiquement~: bornitude et caract\`ere lipschitzien en $(x,y,s)$). La strat\'egie de preuve (couplage synchrone avec des copies i.i.d.\ du processus limite, estim\'ee de Gr\"onwall sur l'\'ecart quadratique moyen) sera d\'etaill\'ee dans un travail ult\'erieur.
+
+\section*{R\'esum\'e}
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+ & Syst\`eme \`a $N$ t\^etes & Limite $N\to\infty$ \\
+\midrule
+Variable de couplage & $Z_t=\sum_i\alpha_t^i\kappa(X_t^i+Y_t^i)$ (al\'eatoire) & $\bar z_t = \E_{p_t}[\alpha_t\kappa(X_t+Y_t)]$ (d\'eterministe) \\
+\'Echelle requise & --- & $v=Nv_1$, $F=Nf$ \\
+\'Equation ma\^itresse & lin\'eaire, dimension $3N+1$ & non lin\'eaire (McKean--Vlasov), dimension $3+1$ \\
+Repr\'esentation & EDS \`a $N$ particules coupl\'ees & EDS non lin\'eaire (\S4) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\end{document}
