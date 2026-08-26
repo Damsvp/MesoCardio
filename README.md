@@ -11,3 +11,4 @@ A faire:
 * Mettre des compteurs au lieu des $dt$ --> Fait dans Damien-1
 * Mettre les unites ou dire si c'est adimensionné: paramètre a et \kappa en expliquant comment le sytème est adimensionné
 * Ecrire les équation en adimensionné => changer le code. 
+* Faire en sorte que les simulations de la limite champ moyen montre un s_t qui evolue et qui effectue des périodes. 
