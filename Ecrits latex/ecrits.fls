@@ -1,6 +1,6 @@
-PWD c:\Users\Damien\MesoCardio
+PWD c:\Users\Damien\MesoCardio\Ecrits latex
 INPUT C:\Users\Damien\AppData\Local\MiKTeX\miktex\data\le\pdftex\pdflatex.fmt
-INPUT c:\Users\Damien\MesoCardio\ecrits.tex
+INPUT c:\Users\Damien\MesoCardio\Ecrits latex\ecrits.tex
 OUTPUT ecrits.log
 INPUT C:\Users\Damien\AppData\Local\Programs\MiKTeX\tex\latex\base\article.cls
 INPUT C:\Users\Damien\AppData\Local\Programs\MiKTeX\tex\latex\base\article.cls

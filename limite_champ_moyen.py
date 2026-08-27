@@ -58,7 +58,7 @@ alphas = 8
 sl01 = 3.82
 sr01 = 3.82
 
-l = 5                    # largeur de la fenetre d'attachement/detachement (nm)
+l = 10                    # largeur de la fenetre d'attachement/detachement (nm)
 
 k10 = 1
 k01 = 1
@@ -100,7 +100,7 @@ kappa = lambda u: k*u  # kappa(X+Y) = k*(X+Y), force d'une tete attachee
 # --- echelle de champ moyen : v = N*nu1, F = N*fbar (cf section 1 du document) ---
 N_ref = 15      # N utilise dans le modele a N tetes, pour fixer l'echelle
 v_orig = 2      # v (viscosite totale) du modele a N tetes
-F_orig = 1      # F (force imposee totale) du modele a N tetes
+F_orig = -1.5      # F (force imposee totale) du modele a N tetes
 nu1 = v_orig/N_ref   # viscosite PAR tete (notee v_1 dans le document)
 fbar = F_orig/N_ref  # force imposee PAR tete (notee f dans le document)
 
@@ -173,7 +173,7 @@ dt_adv = 1.0/(vmax_x/dx + vmax_y/dy + 1e-12)
 safety = 0.4
 dt = safety*min(dt_diff, dt_adv)
 
-T = 15.0            # duree simulee (ms) -- augmenter si besoin, au prix du temps de calcul (~12 s/ms)
+T = 50.0            # duree simulee (ms) -- augmenter si besoin, au prix du temps de calcul (~12 s/ms)
 nsteps = int(T/dt)
 print(f"dx={dx:.3f} nm, dy={dy:.3f} nm, dt={dt:.3e} ms, nsteps={nsteps}")
 
@@ -310,6 +310,29 @@ for col, (tt, (u_snap, v_snap, s_snap)) in enumerate(snapshots.items()):
     ax_v.set_title(f"v(y), t={tt} ms")
     ax_v.set_xlabel("y (nm)")
     ax_v.set_ylabel("v")
+
+plt.tight_layout()
+plt.show()
+
+#%% Visualisation : profil de w0(x,y) et w1(x,y) pour x negatif/nul/positif
+
+y_plot = np.linspace(ymin, ymax, 400)
+x_vals = [xmin/2, 0.0, xmax/2]   # x negatif, nul, positif
+
+fig, axs = plt.subplots(ncols=2, figsize=(14, 5), sharey=True)
+
+for x_val in x_vals:
+    axs[0].plot(y_plot, w0(x_val, y_plot), label=f"x = {x_val:.1f} nm")
+    axs[1].plot(y_plot, w1(x_val, y_plot), label=f"x = {x_val:.1f} nm")
+
+axs[0].set_title(r"$w_0(x,y)$ (etat detache)")
+axs[0].set_xlabel("y (nm)")
+axs[0].set_ylabel("energie (zJ)")
+axs[0].legend()
+
+axs[1].set_title(r"$w_1(x,y)$ (etat attache)")
+axs[1].set_xlabel("y (nm)")
+axs[1].legend()
 
 plt.tight_layout()
 plt.show()

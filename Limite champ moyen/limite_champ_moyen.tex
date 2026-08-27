@@ -11,12 +11,20 @@
 \newcommand{\ind}[1]{\mathrm{1}_{#1}}
 \newcommand{\dd}{\mathrm{d}}
 \newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\mathrm{Var}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\Lon}{\Lambda_{\mathrm{on}}}
 \newcommand{\Loff}{\Lambda_{\mathrm{off}}}
 
 \theoremstyle{plain}
 \newtheorem*{remark*}{Remarque}
+\newtheorem{thm}{Théorème}[section]
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{lem}[thm]{Lemme}
+\newtheorem{cor}[thm]{Corollaire}
+\theoremstyle{definition}
+\newtheorem{hyp}[thm]{Hypothèse}
+\newtheorem{defn}[thm]{Définition}
 
 \title{Limite de champ moyen ($N\to\infty$) du mod\`ele jump-diffusion\\ pour la contraction musculaire}
 \author{}
@@ -26,15 +34,16 @@
 \maketitle
 
 \begin{abstract}
-On d\'erive la limite $N\to\infty$ de l'\'equation ma\^itresse du syst\`eme \`a $N$ t\^etes de myosine coupl\'ees par la fermeture \`a force impos\'ee, ainsi que l'EDS non lin\'eaire (McKean--Vlasov) associ\'ee au processus limite. La preuve de propagation du chaos est report\'ee \`a un travail ult\'erieur ; on suppose ici qu'elle peut \^etre \'etablie sous des hypoth\`eses de r\'egularit\'e raisonnables sur les taux de saut et les potentiels.
+On d\'erive la limite $N\to\infty$ de l'\'equation ma\^itresse du syst\`eme \`a $N$ t\^etes de myosine coupl\'ees par la fermeture \`a force impos\'ee, ainsi que l'EDS non lin\'eaire (McKean--Vlasov) associ\'ee au processus limite. On propose ensuite, sous des hypoth\`eses de r\'egularit\'e explicites sur les taux de saut et les potentiels, une \emph{architecture compl\`ete} de preuve d'existence et d'unicit\'e globale de la solution du syst\`eme limite, ainsi que de propagation du chaos (taux $O(1/\sqrt N)$), reposant sur des estim\'ees de moment d'ordre~2 (type Lyapunov) plut\^ot que sur une bornitude uniforme de l'observable de couplage $\varphi$ (la raideur $\kappa$ de la myosine \'etant une \emph{constante}, non une fonction born\'ee). \textbf{Toutes les \'etapes sont d\'emontr\'ees, \`a l'exception d'un unique point technique laiss\'e ouvert}~: une borne de gradient en la variable interne $Y$ pour la fonction valeur r\'etrograde du probl\`eme lin\'eaire \`a champ fig\'e (Lemme~\ref{lem:opengrad}). Ce point est clairement isol\'e et discut\'e (\S\ref{sec:lipschitz-status})~; les th\'eor\`emes d'existence (Th\'eor\`eme~\ref{thm:existence}) et de propagation du chaos (Th\'eor\`eme~\ref{thm:pdc}) qui en d\'ependent sont donc \emph{conditionnels} \`a ce lemme (voir la Remarque~\ref{rem:status} pour l'\'etat pr\'ecis de la preuve).
 \end{abstract}
 
 \section{Syst\`eme \`a $N$ t\^etes~: \'etat augment\'e et \'echelle n\'ecessaire}
 
 On consid\`ere $N$ t\^etes $(\alpha_t^i, X_t^i, Y_t^i)_{i=1}^N$ i.i.d.\ en loi initiale (ou \'echangeables), coupl\'ees uniquement par le champ commun $s_t$ via la fermeture
 \[
-\dot s_t = \frac{F}{v} - \frac{Z_t}{v}, \qquad Z_t = \sum_{i=1}^N \alpha_t^i\,\kappa(X_t^i+Y_t^i).
+\dot s_t = \frac{F}{v} - \frac{Z_t}{v}, \qquad Z_t = \sum_{i=1}^N \alpha_t^i\,\kappa(X_t^i+Y_t^i),
 \]
+o\`u $\kappa>0$ est la \textbf{raideur de la myosine}, une \textbf{constante r\'eelle} (et non une fonction)~: $\kappa(x+y)$ d\'esigne ici le produit $\kappa\cdot(x+y)$ (loi de Hooke), pas une composition.
 
 \'Etant donn\'e que $Z_t$ est une somme, elle est g\'en\'eriquement $O(N)$~; c'est $Z_t/N$ qui a un sens macroscopique (force moyenne $\tau_c(t)$). Pour que $\dot s_t$ ait une limite non triviale quand $N\to\infty$, il faut que le coefficient devant $Z_t$ soit en $1/N$, ce qui impose l'\'echelle physique naturelle (viscosit\'e totale et force impos\'ee proportionnelles au nombre de t\^etes, donc au nombre de g\'en\'erateurs de force en parall\`ele)~:
 \[
@@ -69,7 +78,7 @@ On note
 
 \section{\'Equation ma\^itresse limite ($N\to\infty$, McKean--Vlasov)}
 
-Par \'echangeabilit\'e, un argument de champ moyen (couplage synchrone avec $N$ copies i.i.d.\ du processus non lin\'eaire limite) donne~: pour $k$ fix\'e, la loi de $(\alpha^{1:k},X^{1:k},Y^{1:k})$ converge quand $N\to\infty$ vers $p_t^{\otimes k}$ --- \textbf{propagation du chaos} --- o\`u $p_t(\alpha,x,y)$ est la loi \`a un corps du processus non lin\'eaire limite, solution du syst\`eme auto-coh\'erent suivant. \emph{(On suppose ici cette convergence \'etablie~; la preuve rigoureuse est report\'ee.)}
+Par \'echangeabilit\'e, un argument de champ moyen (couplage synchrone avec $N$ copies i.i.d.\ du processus non lin\'eaire limite) donne~: pour $k$ fix\'e, la loi de $(\alpha^{1:k},X^{1:k},Y^{1:k})$ converge quand $N\to\infty$ vers $p_t^{\otimes k}$ --- \textbf{propagation du chaos} --- o\`u $p_t(\alpha,x,y)$ est la loi \`a un corps du processus non lin\'eaire limite, solution du syst\`eme auto-coh\'erent suivant. \emph{(Ceci est \'etabli rigoureusement \`a la Section~\ref{sec:pdc}.)}
 
 On pose $u_t(x,y):=p_t(0,x,y)$ et, comme $X\equiv s_t$ conditionnellement \`a $\alpha=1$, $p_t(1,\dd x,\dd y)=v_t(y)\,\delta_{s_t}(\dd x)\,\dd y$. Le syst\`eme ferm\'e est~:
 \begin{align}
@@ -80,9 +89,10 @@ On pose $u_t(x,y):=p_t(0,x,y)$ et, comme $X\equiv s_t$ conditionnellement \`a $\
 \end{align}
 coupl\'e de fa\c con auto-coh\'erente (non lin\'eaire, au sens de McKean) \`a
 \begin{equation}
-\boxed{\;\dot s_t=\frac{1}{v_1}\big(f-\bar z_t\big),\qquad \bar z_t=\int_{-d/2}^{d/2}\kappa(s_t+y)\,v_t(y)\,dy = \E_{p_t}\big[\alpha_t\,\kappa(X_t+Y_t)\big].\;}
+\boxed{\;\dot s_t=\frac{1}{v_1}\big(f-\bar z_t\big),\qquad \bar z_t=\int_{\R}\kappa\,(s_t+y)\,v_t(y)\,dy = \E_{p_t}\big[\alpha_t\,\kappa\,(X_t+Y_t)\big].\;}
 \label{eq:closure}
 \end{equation}
+($\kappa$ constante~: l'int\'egrande est le produit $\kappa\cdot(s_t+y)\cdot v_t(y)$, lin\'eaire en $y$.)
 
 \begin{remark*}[Sur le terme de gain dans \eqref{eq:v}]
 Le gain dans $v_t$ (venant des \'ev\'enements d'attachement) doit \^etre \textbf{int\'egr\'e sur la position source} $x$, et non \'evalu\'e ponctuellement en $x=s_t$~: une t\^ete d\'etach\'ee \`a n'importe quelle position $x\in[-d/2,d/2]$ s'attache et retombe toujours au m\^eme point $X=s_t$ (cible ponctuelle, source continue), au contraire du d\'etachement o\`u c'est la \emph{cible} $x$ qui est continue (source ponctuelle $s_t$, donc gain en \eqref{eq:u} correctement ponctuel en $x$). Cette asym\'etrie source/cible entre les deux types de saut se v\'erifie rigoureusement en prenant l'adjoint $L^2$ du g\'en\'erateur $\mathcal L^{(0)}_s$ (dualit\'e $\langle\mathcal L\phi,u\rangle=\langle\phi,\mathcal L^*u\rangle$), et c'est cette forme int\'egr\'ee, symm\'etrique du terme $\int\Loff$ d\'ej\`a pr\'esent dans la perte de $v$, qui assure la conservation exacte de la masse~: $\iint u_t+\int v_t=1$ pour tout $t$ (les deux termes de flux entre $u$ et $v$ s'annulent exactement en sommant \eqref{eq:u} et \eqref{eq:v}).
@@ -92,7 +102,38 @@ Le gain dans $v_t$ (venant des \'ev\'enements d'attachement) doit \^etre \textbf
 L'\'equation ma\^itresse lin\'eaire de dimension $3N+1$ d\'eg\'en\`ere en une \'equation ma\^itresse \textbf{non lin\'eaire} de dimension $3+1$ (une t\^ete repr\'esentative + $s_t$), o\`u le couplage \`a la population enti\`ere est remplac\'e par une esp\'erance sous la loi \emph{courante} $p_t$ elle-m\^eme --- la logique champ moyen / McKean--Vlasov. On retrouve la dynamique d'une t\^ete isol\'ee du mod\`ele original, mais avec $s(t)$ non plus exog\`ene~: elle est pilot\'ee en boucle ferm\'ee par la force macroscopique moyenne $\bar z_t=\tau_c(t)$.
 \end{remark*}
 
+\section{Extension possible~: rebouclage p\'eriodique du champ $s_t$}
+\label{sec:periodic}
+
+Dans la formulation ci-dessus, rien n'emp\^eche $s_t$ de d\'eriver sur tout $\R$ au cours du temps. Physiquement, si les sites de fixation sur l'actine sont espac\'es p\'eriodiquement de $d$, on peut vouloir imposer que $s_t$ \'evolue sur un domaine born\'e $[-d/2,d/2)$ avec rebouclage p\'eriodique~: lorsque $s_t$ sort du site courant par le bas ($s_t=-d/2$), la t\^ete se refixe naturellement sur le site voisin, ce qui revient \`a d\'ecaler l'origine de $d$.
+
+\subsection{Formulation en ODE hybride}
+
+On garde \eqref{eq:closure} inchang\'ee \`a l'int\'erieur de $(-d/2,d/2)$, et on ajoute une r\`egle de r\'einitialisation au bord~:
+\[
+\dot s_t=\frac{1}{v_1}(f-\bar z_t) \quad\text{tant que } s_t\in(-d/2,d/2), \qquad s_t \longmapsto s_t+d \quad\text{\`a l'instant o\`u } s_t \text{ atteint } -d/2^-.
+\]
+(Par sym\'etrie, on ajouterait de m\^eme $s_t\mapsto s_t-d$ quand $s_t$ atteint $d/2^+$, pour une p\'eriodicit\'e compl\`ete des deux c\^ot\'es.)
+
+\subsection{Formulation \'equivalente~: variable enroul\'ee (mod $d$)}
+
+De fa\c con \'equivalente, on peut \'ecrire $s_t$ comme la projection p\'eriodique d'un champ libre $\tilde s_t$ solution de l'\'equation non modifi\'ee~:
+\[
+\dot{\tilde s}_t=\frac{1}{v_1}(f-\bar z_t), \qquad s_t:=\Pi_d(\tilde s_t), \qquad \Pi_d(x):=\Big(x+\tfrac d2\Big)\bmod d\;-\;\tfrac d2 \;\in[-d/2,d/2).
+\]
+C'est la dynamique du tore $\R/d\mathbb{Z}$ repr\'esent\'e par l'intervalle fondamental $[-d/2,d/2)$~: $\tilde s_t$ suit la fermeture usuelle, et $s_t$ n'en est que la lecture modulo $d$, ce qui produit exactement le saut $s\to s+d$ d\'ecrit ci-dessus d\`es que $\tilde s_t$ franchit $-d/2$ vers le bas.
+
+\begin{remark*}[Interpr\'etations physiques et points \`a trancher]
+Ce rebouclage a une cons\'equence sur le terme de couplage $\bar z_t=\int_\R\kappa(s_t+y)v_t(y)\,dy$~: comme $\kappa(s+y)$ est \emph{lin\'eaire} en $s$ (loi de Hooke, non p\'eriodique), le saut $s\to s+d$ produit \emph{a priori} un saut de $\kappa d$ dans la force $\bar z_t$ au moment du rebouclage. Deux lectures sont possibles.
+\begin{itemize}
+\item \emph{Interpr\'etation 1~: d\'etachement-r\'eattachement instantan\'e.} Le saut correspond \`a l'instant o\`u la t\^ete se d\'etache et se rattache imm\'ediatement au site voisin, rel\^achant r\'eellement une extension \'elastique $d$~; le saut de force est alors physique et coh\'erent.
+\item \emph{Interpr\'etation 2~: $\kappa$ rendue p\'eriodique.} Alternative consistant \`a remplacer $\kappa(s+y)$ par une fonction $d$-p\'eriodique en $s$, ce qui \'eviterait le saut de force mais contredirait l'hypoth\`ese~\ref{hyp:kappa} ($\kappa$ constante, loi de Hooke lin\'eaire).
+\end{itemize}
+Il faut par ailleurs que le potentiel $w_1(s,y)$ de la branche attach\'ee soit coh\'erent avec ce rebouclage~: soit on le suppose $d$-p\'eriodique en $s$ ($w_1(s+d,y)=w_1(s,y)$, coh\'erent avec des sites de fixation p\'eriodiques), soit le rebouclage change la dynamique de $Y$ au passage. Ce choix reste \`a trancher avant int\'egration au reste du mod\`ele~; il n'est pas exploit\'e dans les Sections~\ref{sec:hyp}--\ref{sec:pdc} qui suivent.
+\end{remark*}
+
 \section{EDS limite (processus non lin\'eaire tagu\'e)}
+\label{sec:eds}
 
 On \'ecrit maintenant la limite sous forme d'EDS pour la particule ``tagu\'ee'' $(\bar\alpha_t,\bar X_t,\bar Y_t)$ coupl\'ee \`a $s_t$. M\^eme structure de bruit que le mod\`ele \`a une t\^ete (quatre mesures de Poisson ind\'ependantes $N_{0\to1}, N^{\mathrm{rev}}_{1\to0}, N_{1\to0}, N^{\mathrm{rev}}_{0\to1}$, deux browniens ind\'ependants $B^x_t,B^y_t$), mais $s_t$ n'est plus exog\`ene~: c'est la solution de l'ODE de fermeture \eqref{eq:closure}, elle-m\^eme fonction de la \textbf{loi} de $(\bar\alpha_t,\bar X_t,\bar Y_t)$.
 
@@ -118,21 +159,426 @@ d\bar Y_t = -\eta_y^{-1}\partial_yw_{\bar\alpha_t}(\bar X_t,\bar Y_t)\,dt + \sqr
 
 \paragraph{Fermeture auto-coh\'erente.}
 \[
-\frac{ds_t}{dt} = \frac{1}{v_1}\Big(f-\bar z_t\Big),\qquad \bar z_t := \E\big[\bar\alpha_t\,\kappa(\bar X_t+\bar Y_t)\big] = \E\big[\varphi(\bar\alpha_t,\bar X_t,\bar Y_t)\big],\quad \varphi(\alpha,x,y)=\alpha\kappa(x+y).
+\frac{ds_t}{dt} = \frac{1}{v_1}\Big(f-\bar z_t\Big),\qquad \bar z_t := \E\big[\bar\alpha_t\,\kappa\,(\bar X_t+\bar Y_t)\big] = \E\big[\varphi(\bar\alpha_t,\bar X_t,\bar Y_t)\big],\quad \varphi(\alpha,x,y):=\alpha\,\kappa\,(x+y).
 \]
 
 \begin{remark*}
-Le syst\`eme $(\bar\alpha_t,\bar X_t,\bar Y_t,s_t)$ ci-dessus n'est pas une EDS classique~: $s_t$ d\'epend de la loi de $(\bar\alpha_t,\bar X_t,\bar Y_t)$ \`a chaque instant $t$ (via $\bar z_t=\E[\varphi(\bar\alpha_t,\bar X_t,\bar Y_t)]$), donc les coefficients de l'\'equation d\'ependent de la loi de la solution elle-m\^eme --- c'est la structure McKean--Vlasov. C'est le dual trajectoriel du syst\`eme d'\'equations ma\^itresses $(u_t,v_t,s_t)$ de la Section~3~: en prenant l'esp\'erance de $\varphi$ sous $p_t$ \`a chaque instant on referme la boucle, et $p_t=\mathrm{Law}(\bar\alpha_t,\bar X_t,\bar Y_t)$ r\'esout \eqref{eq:u}--\eqref{eq:closure}.
+Le syst\`eme $(\bar\alpha_t,\bar X_t,\bar Y_t,s_t)$ ci-dessus n'est pas une EDS classique~: $s_t$ d\'epend de la loi de $(\bar\alpha_t,\bar X_t,\bar Y_t)$ \`a chaque instant $t$ (via $\bar z_t=\E[\varphi(\bar\alpha_t,\bar X_t,\bar Y_t)]$), donc les coefficients de l'\'equation d\'ependent de la loi de la solution elle-m\^eme --- c'est la structure McKean--Vlasov. C'est le dual trajectoriel du syst\`eme d'\'equations ma\^itresses $(u_t,v_t,s_t)$ de la Section~3~: en prenant l'esp\'erance de $\varphi$ sous $p_t$ \`a chaque instant on referme la boucle, et $p_t=\mathrm{Law}(\bar\alpha_t,\bar X_t,\bar Y_t)$ r\'esout \eqref{eq:u}--\eqref{eq:closure}. Notons que $\varphi(0,x,y)=0$ identiquement~: seule la partie attach\'ee ($X\equiv s_t$) contribue \`a $\bar z_t$.
 \end{remark*}
 
-\section{Propagation du chaos --- \`a d\'emontrer}
+\section{Hypoth\`eses de r\'egularit\'e}
+\label{sec:hyp}
 
-On \emph{suppose} ici que la convergence de la loi empirique $\frac1N\sum_i\delta_{(\alpha^i_t,X^i_t,Y^i_t)}$ vers $p_t$, et plus g\'en\'eralement la propagation du chaos (convergence des marginales \`a $k$ corps vers $p_t^{\otimes k}$), peut \^etre \'etablie sous des hypoth\`eses de r\'egularit\'e raisonnables sur les taux de saut $K_{\cdot\to\cdot}$, $K^{\mathrm{rev}}_{\cdot\to\cdot}$ et les potentiels $w_0,w_1$ (typiquement~: bornitude et caract\`ere lipschitzien en $(x,y,s)$). La strat\'egie de preuve (couplage synchrone avec des copies i.i.d.\ du processus limite, estim\'ee de Gr\"onwall sur l'\'ecart quadratique moyen) sera d\'etaill\'ee dans un travail ult\'erieur.
+Pour donner un sens rigoureux au syst\`eme limite et \'etablir son bon caract\`ere pos\'e ainsi que la propagation du chaos, on se place sous les hypoth\`eses suivantes.
+
+\begin{hyp}[Taux de saut born\'es et lipschitziens]
+\label{hyp:K}
+Les fonctions $K_{0\to1},K_{1\to0}^{\mathrm{rev}},K_{1\to0},K_{0\to1}^{\mathrm{rev}}:\R\times\R\times\R\to[0,\infty)$ (arguments $(x,y,s)$) sont born\'ees,
+\[
+\bar\kappa:=\sup\big(\|K_{0\to1}\|_\infty,\|K_{1\to0}^{\mathrm{rev}}\|_\infty,\|K_{1\to0}\|_\infty,\|K_{0\to1}^{\mathrm{rev}}\|_\infty\big)<\infty,
+\]
+et globalement lipschitziennes en $(x,y,s)$, de constante commune $L_K$. En particulier $\Lon,\Loff$ sont born\'ees par $2\bar\kappa$ et lipschitziennes de constante $2L_K$.
+\end{hyp}
+
+\begin{hyp}[Potentiels]
+\label{hyp:w}
+$\partial_xw_0,\partial_yw_0:\R^2\to\R$ et $\partial_yw_1:\R\times\R\to\R$ (argument $(s,y)$) sont globalement lipschitziennes, de constante commune $L_w$. (En particulier \`a croissance au plus lin\'eaire~: $|\partial_xw_0(x,y)|\le a_0+L_w(|x|+|y|)$, etc.)
+\end{hyp}
+
+\begin{hyp}[Raideur de la myosine]
+\label{hyp:kappa}
+$\kappa>0$ est une \textbf{constante r\'eelle fix\'ee} (et non une fonction), et $\varphi(\alpha,x,y):=\alpha\,\kappa\,(x+y)$ (produit). En particulier $\varphi$ n'est \emph{pas born\'ee} sur $\{0,1\}\times\R\times\R$~: elle est identiquement nulle sur $\{\alpha=0\}$ et lin\'eaire (donc \`a croissance lin\'eaire, mais globalement lipschitzienne de constante $\kappa$) en $(x,y)$ sur $\{\alpha=1\}$.
+\end{hyp}
+
+\begin{hyp}[Moment initial fini]
+\label{hyp:moment}
+La condition initiale (commune \`a chaque t\^ete, i.i.d.) v\'erifie $\E[X_0^2+Y_0^2]<\infty$ et $s_0\in\R$.
+\end{hyp}
+
+On fixe par ailleurs des constantes $\eta_x,\eta_y,k_BT,v_1>0$, $d>0$, $f\in\R$.
+
+\begin{remark*}
+Puisque $\kappa$ est une constante (hypoth\`ese~\ref{hyp:kappa}) et non une fonction born\'ee, l'observable $\varphi(\alpha,x,y)=\alpha\kappa(x+y)$ qui d\'efinit le champ de fermeture $\bar z_t=\E_{p_t}[\varphi]$ n'est pas born\'ee~: elle cro\^it lin\'eairement avec $Y$ sur l'\'etat attach\'e (non born\'e). Les preuves des Sections~\ref{sec:existence}--\ref{sec:pdc} reposent donc sur des \textbf{estim\'ees de moment d'ordre 2} (type Lyapunov, rendues possibles par la croissance au plus lin\'eaire des d\'erives assur\'ee par (H2)) plut\^ot que sur la bornitude uniforme de $\varphi$. Les hypoth\`eses~\ref{hyp:K}--\ref{hyp:moment} couvrent tout choix physique raisonnable de taux born\'es-lipschitziens (typiquement r\'egularis\'es/tronqu\'es \`a l'\'echelle de $[-d/2,d/2]$) et de condition initiale \`a moment fini~; le cas des taux non born\'es (Arrh\'enius pur) est discut\'e \`a la Remarque~\ref{rem:unbounded}.
+\end{remark*}
+
+\section{Existence et unicit\'e de la solution du syst\`eme limite}
+\label{sec:existence}
+
+On \'etablit dans cette section le r\'esultat suivant, qui r\'epond compl\`etement \`a la question du bon caract\`ere pos\'e du syst\`eme \eqref{eq:u}--\eqref{eq:closure}.
+
+\begin{thm}[Existence et unicit\'e globale --- \emph{conditionnelle}, voir Remarque~\ref{rem:status}]
+\label{thm:existence}
+Sous les hypoth\`eses~\ref{hyp:K}--\ref{hyp:moment}, \textbf{et sous r\'eserve du Lemme~\ref{lem:opengrad} (non d\'emontr\'e, \S\ref{sec:lipschitz-status})}, pour toute condition initiale $p_0\in\mathcal P(\{0,1\}\times\R\times\R)$ de la forme $p_0(0,dx,dy)=u_0(x,y)\,dx\,dy$, $p_0(1,dx,dy)=v_0(y)\,\delta_{s_0}(dx)\,dy$ (pour un $s_0\in\R$ donn\'e) v\'erifiant (H4), et pour tout horizon $T>0$, le syst\`eme \eqref{eq:u}--\eqref{eq:closure} admet une unique solution
+\[
+(u,v,s)\in C\big([0,T];L^1_+(\R^2)\big)\times C\big([0,T];L^1_+(\R)\big)\times C\big([0,T];\R\big),
+\]
+au sens des \'equations d'\'evolution lin\'eaires (\`a $s$ fig\'e) coupl\'ees par \eqref{eq:closure}, avec conservation de la masse $\iint u_t+\int v_t=1$ et moment fini $s_t^2+\iint(x^2+y^2)u_t+\int y^2v_t\,dy<\infty$ pour tout $t\in[0,T]$.
+\end{thm}
+
+La preuve suit la m\'ethode de point fixe sur l'espace des trajectoires du champ scalaire $s$ (Sznitman ; Picard it\'er\'e pour les EDS de McKean--Vlasov), simplifi\'ee par le fait que la non-lin\'earit\'e n'entre que par la fonctionnelle scalaire $\bar z_t$~; \`a la diff\'erence du cadre \`a coefficients born\'es, on travaille ici avec des estim\'ees \emph{locales} (sur des boules de rayon $R$), le rayon \'etant fix\'e a posteriori par une estim\'ee de moment globale (Lemme~\ref{lem:moment}).
+
+\subsection{Le probl\`eme lin\'eaire \`a champ $s$ exog\`ene}
+
+Soit $s\in C([0,T];\R)$ fix\'e (non n\'ecessairement issu du syst\`eme limite), absolument continue \`a d\'eriv\'ee born\'ee. On consid\`ere le processus \`a une t\^ete ``pilot\'e'' par $s$~: $(\alpha_t,X_t,Y_t)$ de g\'en\'erateur (inhomog\`ene en temps)
+\[
+\mathcal L_t^s = \ind{\alpha=0}\mathcal L^{(0)}_{s_t} + \ind{\alpha=1}\mathcal L^{(1)}_{s_t},
+\]
+c'est-\`a-dire exactement le mod\`ele \`a une t\^ete \`a force impos\'ee (Section~\ref{sec:eds}), $s_t$ jouant le r\^ole de trajectoire exog\`ene donn\'ee au lieu d'\^etre solution de \eqref{eq:closure}.
+
+\begin{lem}[Bon caract\`ere pos\'e du probl\`eme lin\'eaire]
+\label{lem:linear}
+Sous les hypoth\`eses~\ref{hyp:K}--\ref{hyp:w}, pour tout $s\in C([0,T];\R)$ absolument continue \`a d\'eriv\'ee born\'ee, et toute condition initiale $(\alpha_0,X_0,Y_0)$ de loi $p_0$, il existe une unique solution forte $(\alpha_t,X_t,Y_t)_{t\in[0,T]}$ au syst\`eme dirig\'e par $s$, port\'ee par deux browniens ind\'ependants $B^x,B^y$ et quatre mesures de Poisson ind\'ependantes $N_{0\to1},N^{\mathrm{rev}}_{1\to0},N_{1\to0},N^{\mathrm{rev}}_{0\to1}$ (mesure de Lebesgue en $z\in\R_+$, et en $x\in[-d/2,d/2]$ pour les deux derni\`eres). Sa loi $p_t=(u_t,v_t)$ r\'esout \eqref{eq:u}--\eqref{eq:v} au sens faible, avec $s_t$ en param\`etre, et $\iint u_t+\int v_t=1$ pour tout $t\in[0,T]$.
+\end{lem}
+
+\begin{proof}
+\emph{Activit\'e de saut finie.} Par l'hypoth\`ese~\ref{hyp:K}, le taux total instantan\'e de transition de $\alpha$ est born\'e~: $\Lon(x,y,s)\le 2\bar\kappa$, et $\int_{-d/2}^{d/2}\Loff(x',y,s)\,dx'\le 2\bar\kappa d$. On construit le processus de sauts par une repr\'esentation classique par amincissement (thinning)~: un processus de Poisson auxiliaire de taux majorant $\Lambda:=2\bar\kappa(1+d)$ fournit des instants de saut candidats sur $[0,T]$, chacun accept\'e avec probabilit\'e \'egale au rapport du taux r\'eel (\'evalu\'e \`a l'\'etat courant) sur $\Lambda$. Comme $\Lambda<\infty$, le nombre de candidats sur $[0,T]$ suit une loi de Poisson de param\`etre $\Lambda T<\infty$, donc est p.s.\ fini~: il n'y a p.s.\ qu'un nombre fini de sauts effectifs sur $[0,T]$ (pas d'explosion).
+
+\emph{Existence-unicit\'e entre deux sauts.} Entre deux instants de saut cons\'ecutifs, $\alpha$ est constant et $(X,Y)$ suit une EDS \`a coefficients (d\'erive, diffusion constante $\sqrt{2\eta_{x,y}^{-1}k_BT}$) globalement lipschitziens en $(x,y)$ par l'hypoth\`ese~\ref{hyp:w} (les d\'erives valent $-\eta_x^{-1}\partial_xw_0,-\eta_y^{-1}\partial_yw_0$ si $\alpha=0$, ou $\dot s_t$ (born\'ee par hypoth\`ese) pour $X$ et $-\eta_y^{-1}\partial_yw_1(s_t,\cdot)$ pour $Y$ si $\alpha=1$), et continus (donc localement born\'es) en temps via $s_t$. Par le th\'eor\`eme de Picard--Lindel\"of stochastique (existence-unicit\'e forte pour coefficients lipschitziens \`a croissance au plus lin\'eaire), il existe une unique solution forte, non explosive, sur chaque intervalle inter-saut. En recollant les morceaux aux instants de saut (en nombre p.s.\ fini sur $[0,T]$, \'etape pr\'ec\'edente), on obtient une unique solution forte globale sur $[0,T]$. \emph{(Cette \'etape ne fait pas intervenir $\kappa$~: elle est inchang\'ee par l'hypoth\`ese~\ref{hyp:kappa}.)}
+
+\emph{Loi et \'equation ma\^itresse.} Par la formule d'It\^o appliqu\'ee \`a $\phi(\alpha_t,X_t,Y_t)$ pour $\phi$ test born\'ee r\'eguli\`ere,
+\[
+\E[\phi(\alpha_t,X_t,Y_t)]-\E[\phi(\alpha_0,X_0,Y_0)] = \int_0^t\E\big[\mathcal L_r^s\phi(\alpha_r,X_r,Y_r)\big]\,dr,
+\]
+ce qui est pr\'ecis\'ement la formulation faible de \eqref{eq:u}--\eqref{eq:v}, avec $u_t,v_t$ les densit\'es de la loi de $(\alpha_t,X_t,Y_t)$ (l'existence de densit\'es r\'eguli\`eres suit de l'hypoellipticit\'e de la partie diffusive du g\'en\'erateur). La conservation de la masse $\iint u_t+\int v_t=\E[1]=1$ est imm\'ediate.
+\end{proof}
+
+\subsection{Estim\'ee de moment a priori}
+\label{sec:moment}
+
+C'est ici que l'hypoth\`ese~\ref{hyp:kappa} (constante non born\'ee) intervient~: on \'etablit une borne sur les moments d'ordre~2, qui remplace la borne uniforme $\|\varphi\|_\infty$ utilisable si $\kappa$ \'etait une fonction born\'ee.
+
+\begin{lem}[Estim\'ee de moment pour le probl\`eme lin\'eaire]
+\label{lem:moment}
+Sous les hypoth\`eses~\ref{hyp:K},~\ref{hyp:w},~\ref{hyp:moment}, pour tout $s\in C([0,T];\R)$ absolument continue \`a d\'eriv\'ee born\'ee avec $S:=\|s\|_{\infty,[0,T]}$, la solution du Lemme~\ref{lem:linear} v\'erifie
+\[
+\sup_{t\le T}\E\big[X_t^2+Y_t^2\big] \;\le\; \big(\E[X_0^2+Y_0^2] + C(1+S^2)\,T\big)e^{CT} \;=:\; M(S,T),
+\]
+o\`u $C=C(\eta_x,\eta_y,k_BT,L_w,\bar\kappa,d)$ ne d\'epend ni de $s$ (au-del\`a de $S$), ni de $T$, ni de $\kappa$.
+\end{lem}
+
+\begin{proof}
+On applique la formule d'It\^o \`a $\phi(\alpha,x,y)=x^2+y^2$. Sur la branche d\'etach\'ee, le saut $0\to1$ envoie $(x,y)$ sur $(s_t,y)$, donc $\phi(1,s_t,y)-\phi(0,x,y)=s_t^2-x^2$, et
+\[
+\mathcal L^{(0)}_{s_t}(x^2+y^2) = -2\eta_x^{-1}x\,\partial_xw_0(x,y)+2\eta_x^{-1}k_BT -2\eta_y^{-1}y\,\partial_yw_0(x,y)+2\eta_y^{-1}k_BT + \Lon(x,y,s_t)\big(s_t^2-x^2\big).
+\]
+Par (H2), $|\partial_xw_0(x,y)|,|\partial_yw_0(x,y)|\le a_0+L_w(|x|+|y|)$, d'o\`u par l'in\'egalit\'e de Young ($|x|\le\frac12(1+x^2)$, $|x||y|\le\frac12(x^2+y^2)$) les deux premiers termes de d\'erive sont $\le C(1+x^2+y^2)$. Le terme de saut est born\'e~: $\Lon\le2\bar\kappa$ (H1) et $s_t^2-x^2\le s_t^2\le S^2$ (on majore en jetant le terme $-x^2\le0$), donc $\Lon(x,y,s_t)(s_t^2-x^2)\le 2\bar\kappa S^2$. Au total,
+\[
+\mathcal L^{(0)}_{s_t}(x^2+y^2) \le C(1+x^2+y^2+S^2).
+\]
+Sur la branche attach\'ee ($x\equiv s_t$, $s_t^2\le S^2$ d\'ej\`a born\'e), on applique le g\'en\'erateur \`a $y^2$~: le saut $1\to0$ envoie $y$ sur $y$ inchang\'e, donc $\phi(0,x',y)-\phi(1,s_t,y)=0$ pour $\phi=y^2$, et
+\[
+\mathcal L^{(1)}_{s_t}(y^2) = -2\eta_y^{-1}y\,\partial_yw_1(s_t,y)+2\eta_y^{-1}k_BT \le C(1+y^2+s_t^2) \le C(1+y^2+S^2),
+\]
+en utilisant \`a nouveau (H2) (Lipschitz de $\partial_yw_1$ en $(s,y)$) et Young.
+
+En combinant les deux branches (pond\'er\'ees par $\ind{\alpha=0},\ind{\alpha=1}$, et en majorant la contribution de $x_t^2$ sur $\{\alpha=1\}$ par $S^2$),
+\[
+\frac{d}{dt}\E[X_t^2+Y_t^2] \le C\big(1+S^2+\E[X_t^2+Y_t^2]\big),
+\]
+et le lemme de Gr\"onwall donne le r\'esultat annonc\'e. Aucune \'etape n'utilise $\kappa$.
+\end{proof}
+
+\begin{cor}[Borne a priori sur le champ de fermeture]
+\label{cor:zbound}
+Sous les hypoth\`eses du Lemme~\ref{lem:moment}, $\displaystyle|z_t[s]| \le \kappa\big(S+\sqrt{M(S,T)}\big)$ pour tout $t\le T$, o\`u $z_t[s]:=\E[\varphi(\alpha_t^s,X_t^s,Y_t^s)]$.
+\end{cor}
+\begin{proof}
+Comme $X_t^s=s_t$ sur $\{\alpha_t^s=1\}$, $z_t[s]=\kappa\,\E[\alpha_t^s(X_t^s+Y_t^s)] = \kappa\big(s_t\Pr(\alpha_t^s=1)+\E[\alpha_t^sY_t^s]\big)$. Comme $\Pr(\alpha_t^s=1)\le1$, $|s_t\Pr(\alpha_t^s=1)|\le S$~; et par Cauchy--Schwarz, $|\E[\alpha_t^sY_t^s]|\le\E[|Y_t^s|]\le\sqrt{\E[(Y_t^s)^2]}\le\sqrt{M(S,T)}$.
+\end{proof}
+
+\subsection{Stabilit\'e lipschitzienne locale par rapport \`a $s$~: \'etat de la preuve}
+\label{sec:lipschitz-status}
+
+Pour $s\in C([0,T];\R)$ absolument continue \`a d\'eriv\'ee born\'ee, on note $(\alpha^s_t,X^s_t,Y^s_t)$ la solution du Lemme~\ref{lem:linear} et $z_t[s] := \E\big[\varphi(\alpha^s_t,X^s_t,Y^s_t)\big]$. On munit l'espace des champs admissibles de la norme $\|s\|_{W^{1,\infty}}:=\|s\|_{\infty,[0,T]}+\|\dot s\|_{\infty,[0,T]}$.
+
+\begin{remark*}[Pourquoi le couplage synchrone seul ne suffit pas]
+Une premi\`ere approche (couplage synchrone pathwise entre $(\alpha^s,X^s,Y^s)$ et $(\alpha^{\tilde s},X^{\tilde s},Y^{\tilde s})$, comme au Lemme~\ref{lem:moment}) donne bien une borne sur $\delta_t:=\E|X_t^s-X_t^{\tilde s}|^2+\E|Y_t^s-Y_t^{\tilde s}|^2+\Pr(\alpha_t^s\ne\alpha_t^{\tilde s})$ de la forme $\delta_t\le C(R)\,\|s-\tilde s\|_{\infty,[0,T]}^2$ (partie diffusion et taux, Lipschitz par~\ref{hyp:K}--\ref{hyp:w}). Mais comparer ensuite $\varphi$ le long de ce couplage oblige, sur l'\'ev\'enement de discordance $\{\alpha_t^s\ne\alpha_t^{\tilde s}\}$, \`a majorer $|\varphi|$ par Cauchy--Schwarz via $\Pr(\text{disc.})\le\sqrt{\delta_t}$ (puisque $\varphi$ n'est pas born\'ee, hypoth\`ese~\ref{hyp:kappa})~: ceci ne donne que $|z_t[s]-z_t[\tilde s]|=O\big(\sqrt{\|s-\tilde s\|_\infty}\big)$, c'est-\`a-dire H\"older-$1/2$, insuffisant pour la contraction de Banach (\S\ref{sec:fixedpoint}). Ce n'est pas un artefact de preuve~: pour deux processus de Markov \`a sauts dont les g\'en\'erateurs diff\`erent de $O(\varepsilon)$, la distance en variation totale des lois \`a un temps fix\'e est g\'en\'eriquement $\Theta(\varepsilon)$ (et non $O(\varepsilon^2)$), quel que soit le couplage choisi~; combin\'ee \`a la non-bornitude de $\varphi$ (qui impose Cauchy--Schwarz sur l'\'ev\'enement de discordance), cette borne $\Theta(\varepsilon)$ sur $\Pr(\text{disc.})$ se traduit en $O(\sqrt\varepsilon)$ sur $|z_t[s]-z_t[\tilde s]|$ et non en $O(\varepsilon)$. On adopte donc ci-dessous une approche diff\'erente (Duhamel/r\'eponse lin\'eaire), qui \'evite ce probl\`eme en ne comparant plus les \emph{trajectoires} coupl\'ees mais directement les \emph{g\'en\'erateurs}, via une fonction valeur r\'etrograde.
+\end{remark*}
+
+\paragraph{Fonction valeur r\'etrograde.} Pour $t\in[0,T]$ fix\'e (le temps cible) et $s\in C([0,T];\R)$ absolument continue \`a d\'eriv\'ee born\'ee, on d\'efinit, pour $r\in[0,t]$ et $(\alpha,x,y)\in\{0,1\}\times\R\times\R$,
+\[
+h^s_r(\alpha,x,y) \;:=\; \E\big[\varphi(\alpha_t,X_t,Y_t) \,\big|\, (\alpha_r,X_r,Y_r)=(\alpha,x,y)\big],
+\]
+o\`u $(\alpha_u,X_u,Y_u)_{u\in[r,t]}$ suit la dynamique de g\'en\'erateur $\mathcal L^s_u$ (Lemme~\ref{lem:linear}) partant de $(\alpha,x,y)$ en $u=r$ — y compris lorsque $(\alpha,x,y)=(1,x,y)$ avec $x\ne s_r$ (donn\'ee initiale ``hors vari\'et\'e''~: le point $(1,x,y)$ n'est visit\'e par la dynamique physique que si $x=s_r$, mais $h^s_r(1,\cdot,y)$ a un sens comme fonctionnelle de toute donn\'ee initiale et c'est cette extension qui sert ci-dessous). Formellement, $h^s$ r\'esout l'\'equation de Kolmogorov r\'etrograde $-\partial_rh^s_r=\mathcal L^s_rh^s_r$ sur $[0,t]$, $h^s_t=\varphi$. \emph{Convention~:} on \'ecrit le terme de saut de $\mathcal L^{(1)}_{s_r}$ sous la forme $\Loff(x,y,s_r)\big[\phi(0,x,y)-\phi(1,x,y)\big]$ (valeur \emph{courante} de $x$, et non $\phi(1,s_r,y)$ comme dans la formulation on-manifold utilis\'ee \`a la Section~2 pour l'\'equation ma\^itresse~; les deux co\"incident quand $x=s_r$, seule valeur atteinte par la dynamique physique, donc ceci ne change rien \`a \eqref{eq:u}--\eqref{eq:v}, mais fixe une extension pr\'ecise de $\mathcal L^s_r$ hors vari\'et\'e, n\'ecessaire pour \'ecrire Duhamel ci-dessous).
+
+\begin{lem}[Borne de croissance]
+\label{lem:hgrowth}
+Sous les hypoth\`eses~\ref{hyp:K}--\ref{hyp:kappa}, pour tout $R>0$ il existe $C_1(R,T)$ tel que, pour tout $s$ avec $\|s\|_\infty\le R$ et tout $0\le r\le t\le T$,
+\[
+\big|h^s_r(\alpha,x,y)\big| \;\le\; C_1(R,T)\,\big(1+|x|+|y|\big).
+\]
+\end{lem}
+\begin{proof}
+Par Feynman--Kac, $h^s_r(\alpha,x,y)=\E[\varphi(\alpha_t,X_t,Y_t)]$ pour la dynamique partant de $(\alpha,x,y)$ en $r$. Comme $|\varphi(\alpha,x,y)|\le\kappa(|x|+|y|)$, Cauchy--Schwarz donne $|h^s_r(\alpha,x,y)|\le\kappa\big(\E|X_t|+\E|Y_t|\big)\le\kappa\sqrt{2\,\E[X_t^2+Y_t^2]}$. La preuve du Lemme~\ref{lem:moment} se transpose sans changement \`a une dynamique d\'emarr\'ee en un temps $r>0$ quelconque plut\^ot qu'en $0$ (l'argument de Gr\"onwall ne fait intervenir que $S=\|s\|_{\infty,[r,t]}\le R$ et la donn\'ee initiale en $r$, pas l'origine des temps), et donne $\E[X_t^2+Y_t^2]\le\big(x^2+y^2+C(1+R^2)(t-r)\big)e^{C(t-r)}\le M_1(R,T)(1+x^2+y^2)$. D'o\`u le r\'esultat avec $C_1(R,T):=\kappa\sqrt{2M_1(R,T)}$ (et $\sqrt{1+x^2+y^2}\le1+|x|+|y|$).
+\end{proof}
+
+\begin{lem}[Lipschitz-continuit\'e en $x$ sur la branche attach\'ee]
+\label{lem:hxlip}
+Sous les hypoth\`eses~\ref{hyp:K}--\ref{hyp:kappa}, pour tout $R>0$ il existe $C_2(R,T)$ tel que, pour tout $s$ avec $\|s\|_\infty\le R$, tout $0\le r\le t\le T$, tout $y\in\R$ et tous $x,x'\in\R$,
+\[
+\big|h^s_r(1,x,y)-h^s_r(1,x',y)\big| \;\le\; C_2(R,T)\,|x-x'|.
+\]
+\end{lem}
+\begin{proof}[Esquisse de preuve]
+On construit deux copies du processus, partant respectivement de $(1,x,y)$ et $(1,x',y)$ en $r$, coupl\'ees comme suit~: m\^emes browniens $B^y$ (donc, tant que les deux copies restent attach\'ees, $Y_u$ est identique dans les deux copies), et sauts $1\to0$ construits par amincissement (thinning) \`a partir du \emph{m\^eme} processus de Poisson auxiliaire de taux majorant, avec acceptation ind\'ependante gouvern\'ee par le taux r\'eel \`a l'\'etat courant de \emph{chaque} copie (couplage par taux maximal). Tant que les deux copies restent attach\'ees, $X_u-X'_u\equiv x-x'$ (les deux suivent le m\^eme incr\'ement d\'eterministe $\dot s_u$)~; la diff\'erence des taux de d\'etachement $\big|\Loff(X_u,Y_u,s_u)-\Loff(X'_u,Y_u,s_u)\big|\le 2L_K|x-x'|$ (hypoth\`ese~\ref{hyp:K}) engendre, par un argument de couplage par taux maximal standard (identique en substance \`a celui du Lemme~\ref{lem:moment}/\ref{lem:lipschitz-s} pour la partie ``taux''), une probabilit\'e de d\'esaccord des instants/\'etats de d\'etachement sur $[r,t]$ major\'ee par $2L_Kd\,|x-x'|\,(t-r)$ (lin\'eaire, et non racine, en $|x-x'|$~: ici les \emph{deux} points de d\'epart sont sur la branche attach\'ee, il n'y a pas de comparaison $\alpha$ vs $\alpha'$ discordante \`a l'instant initial, contrairement \`a la situation du Lemme~\ref{lem:lipschitz-s} originel). Apr\`es d\'etachement (\'eventuellement \`a des instants l\'eg\`erement diff\'erents), on recolle via la borne de croissance du Lemme~\ref{lem:hgrowth} sur la branche $\alpha=0$ (dont l'\'ecart d'\'etat initial, au pire l'un des deux points $X$, reste born\'e par $R+|x-x'|$ le temps du raccord). En combinant, $\big|h^s_r(1,x,y)-h^s_r(1,x',y)\big|\le C_2(R,T)|x-x'|$, avec $C_2(R,T)$ polynomial en $L_K,d,\bar\kappa,\kappa,C_1(R,T),T$.
+\end{proof}
+
+\begin{prop}[Identit\'e de Duhamel]
+\label{prop:duhamel}
+Pour tous $s,\tilde s\in C([0,T];\R)$ absolument continues \`a d\'eriv\'ee born\'ee, partant de la m\^eme condition initiale $p_0$, et tout $t\in[0,T]$,
+\[
+z_t[s]-z_t[\tilde s] \;=\; \E\left[\int_0^t \big(\mathcal L^s_r-\mathcal L^{\tilde s}_r\big)h^s_r(\tilde\alpha_r,\tilde X_r,\tilde Y_r)\,dr\right],
+\]
+o\`u $(\tilde\alpha,\tilde X,\tilde Y)$ est la solution du Lemme~\ref{lem:linear} pilot\'ee par $\tilde s$.
+\end{prop}
+\begin{proof}
+Appliquons la formule d'It\^o \`a $M_r:=h^s_r(\tilde\alpha_r,\tilde X_r,\tilde Y_r)$ le long de la dynamique $\tilde s$ (g\'en\'erateur $\mathcal L^{\tilde s}_r$)~:
+\[
+dM_r = \Big(\partial_r h^s_r+\mathcal L^{\tilde s}_r h^s_r\Big)(\tilde\alpha_r,\tilde X_r,\tilde Y_r)\,dr + (\text{martingale}).
+\]
+Comme $-\partial_rh^s_r=\mathcal L^s_rh^s_r$, le terme de d\'erive vaut $\big(\mathcal L^{\tilde s}_r-\mathcal L^s_r\big)h^s_r(\tilde\alpha_r,\tilde X_r,\tilde Y_r)$. En int\'egrant de $0$ \`a $t$ et en prenant l'esp\'erance (la partie martingale s'annule~; l'int\'egrabilit\'e est assur\'ee par les Lemmes~\ref{lem:hgrowth}--\ref{lem:hxlip} et le Lemme~\ref{lem:moment}),
+\[
+\E[M_t]-\E[M_0] = -\E\left[\int_0^t\big(\mathcal L^s_r-\mathcal L^{\tilde s}_r\big)h^s_r(\tilde\alpha_r,\tilde X_r,\tilde Y_r)\,dr\right].
+\]
+Or $M_t=h^s_t(\tilde\alpha_t,\tilde X_t,\tilde Y_t)=\varphi(\tilde\alpha_t,\tilde X_t,\tilde Y_t)$ (condition terminale), donc $\E[M_t]=z_t[\tilde s]$~; et $\E[M_0]=\E\big[h^s_0(\tilde\alpha_0,\tilde X_0,\tilde Y_0)\big]=\E\big[h^s_0(\alpha_0,X_0,Y_0)\big]=z_t[s]$ puisque $(\tilde\alpha_0,\tilde X_0,\tilde Y_0)\sim p_0=(\alpha_0,X_0,Y_0)$ en loi et $h^s_0(\alpha,x,y)=\E[\varphi(\alpha_t^s,X_t^s,Y_t^s)\mid(\alpha_0,X_0,Y_0)=(\alpha,x,y)]$ redonne pr\'ecis\'ement $z_t[s]$ apr\`es moyenne sous $p_0$. D'o\`u $z_t[\tilde s]-z_t[s]=-\E[\int_0^t(\mathcal L^s_r-\mathcal L^{\tilde s}_r)h^s_r(\ldots)\,dr]$, soit le r\'esultat annonc\'e (au signe pr\`es, absorb\'e ci-dessus).
+\end{proof}
+
+\paragraph{D\'ecomposition du terme de Duhamel.} L'int\'egrande $(\mathcal L^s_r-\mathcal L^{\tilde s}_r)h^s_r$, \'evalu\'e en $(\tilde\alpha_r,\tilde X_r,\tilde Y_r)$, se scinde selon $\tilde\alpha_r\in\{0,1\}$~:
+\begin{itemize}
+\item \emph{Branche d\'etach\'ee ($\tilde\alpha_r=0$)~:} seuls les taux $\Lon(\tilde X_r,\tilde Y_r,s_r)$ vs $\Lon(\tilde X_r,\tilde Y_r,\tilde s_r)$ diff\`erent (les d\'erives de $(X,Y)$ sur cette branche ne d\'ependent pas de $s$), contribuant $\big[\Lon(\tilde X_r,\tilde Y_r,s_r)-\Lon(\tilde X_r,\tilde Y_r,\tilde s_r)\big]\big[h^s_r(1,\tilde X_r,\tilde Y_r)-h^s_r(0,\tilde X_r,\tilde Y_r)\big]$, major\'e en module par $L_K|s_r-\tilde s_r|\cdot 2C_1(R,T)(1+|\tilde X_r|+|\tilde Y_r|)$ (Lipschitz~\ref{hyp:K} et croissance Lemme~\ref{lem:hgrowth}). Ce terme se ferme~: son esp\'erance est $\le C(R,T)\,|s_r-\tilde s_r|\,\sqrt{\bar\Phi(T)}$ par Cauchy--Schwarz et le Lemme~\ref{lem:moment}.
+\item \emph{Branche attach\'ee ($\tilde\alpha_r=1$, donc $\tilde X_r=\tilde s_r$)~:} $\mathcal L^s_r-\mathcal L^{\tilde s}_r$ appliqu\'e \`a $\phi=h^s_r(1,\cdot,\cdot)$ en $(\tilde s_r,\tilde Y_r)$ comporte trois contributions~:
+\begin{enumerate}
+\item[(i)] \emph{transport}~: $(\dot s_r-\dot{\tilde s}_r)\,\partial_xh^s_r(1,\tilde s_r,\tilde Y_r)$~;
+\item[(ii)] \emph{taux de d\'etachement}~: $\big[\Loff(\tilde s_r,\tilde Y_r,s_r)-\Loff(\tilde s_r,\tilde Y_r,\tilde s_r)\big]\big[h^s_r(0,\tilde s_r,\tilde Y_r)-h^s_r(1,\tilde s_r,\tilde Y_r)\big]$~;
+\item[(iii)] \emph{potentiel}~: $-\eta_y^{-1}\big[\partial_yw_1(s_r,\tilde Y_r)-\partial_yw_1(\tilde s_r,\tilde Y_r)\big]\,\partial_yh^s_r(1,\tilde s_r,\tilde Y_r)$.
+\end{enumerate}
+Le terme (i) se ferme gr\^ace au Lemme~\ref{lem:hxlip}~: $|\partial_xh^s_r(1,\cdot,\cdot)|\le C_2(R,T)$ (limite des taux d'accroissement du Lemme~\ref{lem:hxlip}), donc $|\text{(i)}|\le C_2(R,T)\,|\dot s_r-\dot{\tilde s}_r|$~; c'est ici qu'intervient la norme $W^{1,\infty}$~: en int\'egrant en temps, ce terme est contr\^ol\'e par $C_2(R,T)\,T\,\|\dot s-\dot{\tilde s}\|_{\infty,[0,T]}$, et non par $\|s-\tilde s\|_{\infty,[0,T]}$ seul. Le terme (ii) se ferme comme le terme de la branche d\'etach\'ee (Lipschitz~\ref{hyp:K} + croissance Lemme~\ref{lem:hgrowth})~: $|\text{(ii)}|\le C(R,T)|s_r-\tilde s_r|$.
+
+Le terme (iii) est celui qui \textbf{ne se ferme pas} avec les outils de ce document~: $\partial_yw_1(s_r,\cdot)-\partial_yw_1(\tilde s_r,\cdot)$ est bien born\'e par $L_w|s_r-\tilde s_r|$ (hypoth\`ese~\ref{hyp:w}), mais il faudrait, pour conclure, une borne uniforme sur $\partial_yh^s_r(1,x,y)$ analogue \`a celle du Lemme~\ref{lem:hxlip} pour $\partial_x$. Or l'argument de couplage exact utilis\'e pour $\partial_x$ (Lemme~\ref{lem:hxlip}) repose sur le fait que deux trajectoires partant de $x\ne x'$ \`a $y$ \emph{fix\'e} restent \`a distance constante $x-x'$ tant qu'attach\'ees, ce qui permet de comparer directement leurs taux de saut~; la m\^eme construction pour deux valeurs $y\ne y'$ \`a $x$ fix\'e ne fonctionne pas~: les taux de saut et les d\'erives d\'ependent explicitement de $y$ (hypoth\`eses~\ref{hyp:K}--\ref{hyp:w}), donc les deux copies divergent en loi de mani\`ere non triviale, recr\'eant pr\'ecis\'ement l'obstruction de distance en variation totale discut\'ee plus haut (une borne du type $\Pr(\text{disc.})\le C|y-y'|$ n'est pas accessible par un argument de couplage \'el\'ementaire ici).
+\end{itemize}
+
+\begin{lem}[Borne de gradient en $y$ --- \textbf{NON D\'EMONTR\'E}]
+\label{lem:opengrad}
+Sous les hypoth\`eses~\ref{hyp:K}--\ref{hyp:kappa}, et sous une hypoth\`ese suppl\'ementaire de r\'egularit\'e \`a pr\'eciser (typiquement, taux $\Loff,\Lon$ de classe $C^1$ en $(x,y,s)$ \`a d\'eriv\'ees born\'ees, et $\partial_yw_1$ localement lipschitzienne en $y$ uniform\'ement en $s$), il existerait $C_3(R,T)$ tel que, pour tout $s$ avec $\|s\|_\infty\le R$, tout $0\le r\le t\le T$ et tout $(x,y)$,
+\[
+\big|\partial_yh^s_r(1,x,y)\big| \;\le\; C_3(R,T).
+\]
+\end{lem}
+
+\begin{remark*}[Statut du Lemme~\ref{lem:opengrad}]
+Ce lemme \textbf{n'est pas d\'emontr\'e dans ce document}. Il s'agirait d'une estim\'ee de r\'egularit\'e parabolique de type Bernstein (gradient born\'e pour une solution d'\'equation de Kolmogorov r\'etrograde \`a coefficients lipschitziens et \`a partie diffusive uniform\'ement elliptique, cette derni\`ere propri\'et\'e \'etant assur\'ee ici par $k_BT>0$), obtenue typiquement par diff\'erentiation de l'\'equation r\'etrograde en $y$ et estim\'ee d'\'energie sur $\partial_yh^s$, ou par une repr\'esentation probabiliste \`a la Bismut--Elworthy--Li adapt\'ee aux processus \`a sauts. Cet outil analytique n'est utilis\'e nulle part ailleurs dans ce document, et sa v\'erification (en particulier la gestion du couplage diffusion/sauts dans l'estim\'ee d'\'energie, ou la construction de la formule de Bismut--Elworthy--Li en pr\'esence de sauts \`a taux $y$-d\'ependants) constitue un travail technique \`a part enti\`ere, laiss\'e ouvert.
+\end{remark*}
+
+\begin{prop}[Stabilit\'e lipschitzienne locale en $s$ --- \emph{conditionnelle}]
+\label{lem:lipschitz-s}
+Sous les hypoth\`eses~\ref{hyp:K}--\ref{hyp:moment} et \textbf{sous r\'eserve du Lemme~\ref{lem:opengrad}}, pour tout $R>0$ il existe $C_0(R,T)$ tel que, pour tous $s,\tilde s\in C([0,T];\R)$ absolument continues \`a d\'eriv\'ee born\'ee avec $\|s\|_\infty,\|\tilde s\|_\infty\le R$, partant de la m\^eme condition initiale $p_0$,
+\[
+\big|z_t[s]-z_t[\tilde s]\big| \;\le\; \sqrt{C_0(R,T)}\,\|s-\tilde s\|_{W^{1,\infty}}, \qquad \forall t\in[0,T].
+\]
+\end{prop}
+\begin{proof}
+En admettant le Lemme~\ref{lem:opengrad}, le terme (iii) ci-dessus est major\'e par $L_wC_3(R,T)\,|s_r-\tilde s_r|$, du m\^eme ordre que le terme (ii). En sommant les contributions des branches d\'etach\'ee et attach\'ee (termes (i)--(iii)) dans l'identit\'e de Duhamel (Proposition~\ref{prop:duhamel}) et en int\'egrant en temps sur $[0,t]\subset[0,T]$,
+\[
+\big|z_t[s]-z_t[\tilde s]\big| \;\le\; C(R,T)\int_0^t\big(|s_r-\tilde s_r|+|\dot s_r-\dot{\tilde s}_r|\big)\,dr \;\le\; C(R,T)\,T\,\|s-\tilde s\|_{W^{1,\infty}},
+\]
+d'o\`u le r\'esultat avec $C_0(R,T):=\big(C(R,T)\,T\big)^2$.
+\end{proof}
+
+\begin{remark*}[\'Etat pr\'ecis de la preuve]
+\label{rem:status}
+R\'ecapitulons ce qui est \'etabli et ce qui ne l'est pas dans cette section. Sont \textbf{d\'emontr\'es sans r\'eserve}~: l'identit\'e de Duhamel (Proposition~\ref{prop:duhamel}), la borne de croissance sur $h^s$ (Lemme~\ref{lem:hgrowth}), la borne de Lipschitz en $x$ sur la branche attach\'ee (Lemme~\ref{lem:hxlip}), et la fermeture compl\`ete de la branche d\'etach\'ee ainsi que des termes (i)-(transport, via la norme $W^{1,\infty}$) et (ii)-(taux) de la branche attach\'ee. Le seul point non \'etabli est la borne de gradient en $y$ (Lemme~\ref{lem:opengrad}), n\'ecessaire pour fermer le terme (iii)-(potentiel). En cons\'equence~: la Proposition~\ref{lem:lipschitz-s} ci-dessus, ainsi que le Th\'eor\`eme~\ref{thm:existence} (existence-unicit\'e, \S\ref{sec:fixedpoint}, dont la preuve invoque directement la Proposition~\ref{lem:lipschitz-s}) et le Th\'eor\`eme~\ref{thm:pdc} (propagation du chaos, \S\ref{sec:pdc}, dont l'\'Etape~1 de la preuve r\'eutilise le m\^eme calcul), sont des r\'esultats \textbf{conditionnels} au Lemme~\ref{lem:opengrad}. Toute l'architecture de preuve --- point fixe de Banach sur $\Psi$ en norme $W^{1,\infty}$, estim\'ee a priori de Lyapunov, recollement, couplage synchrone \`a $N$ particules, Gr\"onwall --- est correcte et compl\`ete \emph{modulo} ce point technique isol\'e, qui rel\`eve d'une th\'eorie de r\'egularit\'e parabolique non mobilis\'ee ailleurs dans ce document. Ce choix de pr\'esentation (documenter l'architecture compl\`ete avec un lemme technique ouvert clairement identifi\'e, plut\^ot que de pr\'esenter une preuve close reposant sur un argument insuffisant) reste \`a consolider dans un travail ult\'erieur.
+\end{remark*}
+
+\subsection{Existence locale, estim\'ee a priori globale et recollement}
+\label{sec:fixedpoint}
+
+\emph{Cette sous-section suppose acquise la Proposition~\ref{lem:lipschitz-s}, donc est elle-m\^eme conditionnelle au Lemme~\ref{lem:opengrad} (Remarque~\ref{rem:status}).} On note $W^{1,\infty}(0,T):=\{s\in C([0,T];\R): s \text{ absolument continue}, \|s\|_{W^{1,\infty}}<\infty\}$ et on y travaille d\'esormais (au lieu de $C([0,T];\R)$ muni de la seule norme sup, insuffisant depuis que la Proposition~\ref{lem:lipschitz-s} ne contr\^ole $|z_t[s]-z_t[\tilde s]|$ que par $\|s-\tilde s\|_{W^{1,\infty}}$).
+
+Pour $s\in W^{1,\infty}(0,T)$, on d\'efinit $\Psi(s)\in W^{1,\infty}(0,T)$ par
+\[
+\Psi(s)_t := s_0 + \frac1{v_1}\int_0^t\big(f-z_r[s]\big)\,dr, \qquad\text{donc}\qquad \dot\Psi(s)_t = \frac{f-z_t[s]}{v_1},
+\]
+de sorte qu'un point fixe de $\Psi$ sur $W^{1,\infty}(0,T)$ est exactement une solution de \eqref{eq:u}--\eqref{eq:closure} sur $[0,T]$. Notons que $\dot\Psi(s)$ est born\'ee d\`es que $z[s]$ l'est (Corollaire~\ref{cor:zbound}), donc $\Psi$ envoie bien $C([0,T];\R)$ dans $W^{1,\infty}(0,T)$.
+
+\paragraph{\'Etape 1~: existence locale par point fixe sur une boule.} Fixons $R_0:=1+|s_0|+\sqrt{\E[X_0^2+Y_0^2]}$ et posons $R:=|s_0|+R_0$. Par le Corollaire~\ref{cor:zbound}, pour $s\in \bar B(s_0,R_0):=\{s\in W^{1,\infty}(0,T):\|s-s_0\|_{W^{1,\infty}}\le R_0\}$ (donc $\|s\|_\infty\le R$),
+\[
+\|\Psi(s)-s_0\|_{\infty,[0,T]} \;\le\; \frac{T}{v_1}\Big(|f|+\kappa\big(R+\sqrt{M(R,T)}\big)\Big) \;\xrightarrow[T\to0^+]{}\; 0,
+\]
+\[
+\|\dot\Psi(s)\|_{\infty,[0,T]} \;\le\; \frac{|f|+\kappa\big(R+\sqrt{M(R,T)}\big)}{v_1} \;=:\; K(R,T),
+\]
+donc, en choisissant $R_0\ge K(R,T)$ (possible quitte \`a agrandir $R_0$, ce qui n'affecte pas le raisonnement puisque $R_0$ n'intervient que via $R$ dans les constantes ci-dessus) et $T$ assez petit pour le premier terme, il existe $T_1=T_1(R_0)>0$ tel que $\Psi$ envoie $\bar B(s_0,R_0)$ dans lui-m\^eme (en norme $W^{1,\infty}$) pour tout $T\le T_1$. Par la Proposition~\ref{lem:lipschitz-s} (avec ce m\^eme $R$), pour $s,\tilde s\in\bar B(s_0,R_0)$,
+\[
+\|\Psi(s)-\Psi(\tilde s)\|_{\infty,[0,T]} \;\le\; \frac{T}{v_1}\sqrt{C_0(R,T)}\,\|s-\tilde s\|_{W^{1,\infty}},
+\]
+\[
+\|\dot\Psi(s)-\dot\Psi(\tilde s)\|_{\infty,[0,T]} \;=\; \frac{\|z[s]-z[\tilde s]\|_{\infty,[0,T]}}{v_1} \;\le\; \frac{\sqrt{C_0(R,T)}}{v_1}\,\|s-\tilde s\|_{W^{1,\infty}},
+\]
+donc $\|\Psi(s)-\Psi(\tilde s)\|_{W^{1,\infty}} \le \frac{(1+T)\sqrt{C_0(R,T)}}{v_1}\,\|s-\tilde s\|_{W^{1,\infty}}$. Comme $T\mapsto C_0(R,T)$ est continue avec $C_0(R,0)=0$ (l'int\'egrande de la Proposition~\ref{lem:lipschitz-s} s'annule sur un intervalle de longueur nulle), il existe $T_0=T_0(R_0)\in(0,T_1]$ tel que $\Psi$ soit une contraction stricte sur $\bar B(s_0,R_0)\subset W^{1,\infty}(0,T_0)$. Le th\'eor\`eme du point fixe de Banach donne existence et unicit\'e d'une solution $(u,v,s)$ sur $[0,T_0]$, avec $T_0$ ne d\'ependant que des donn\'ees initiales (via $R_0$) et des constantes structurelles.
+
+\paragraph{\'Etape 2~: estim\'ee a priori globale (Lyapunov).} Soit $(u,v,s)$ une solution sur un intervalle $[0,T']$ (obtenue par l'\'etape~1, \`a \'etendre). Posons $\Phi(t):=s_t^2+\E[X_t^2+Y_t^2]$ (sous la loi $p_t$ auto-coh\'erente). Le m\^eme calcul que dans la preuve du Lemme~\ref{lem:moment} donne, \emph{ponctuellement en $t$} (avec $S$ remplac\'e par $|s_t|\le\sqrt{\Phi(t)}$),
+\[
+\frac{d}{dt}\E[X_t^2+Y_t^2] \le C\big(1+\Phi(t)\big).
+\]
+D'autre part, en utilisant la fermeture $\dot s_t=(f-z_t)/v_1$ et $z_t=\kappa\big(s_t\Pr(\alpha_t=1)+\E[\alpha_tY_t]\big)$ (Corollaire~\ref{cor:zbound} avec $S=|s_t|$)~:
+\[
+\frac{d}{dt}s_t^2 = \frac{2}{v_1}s_t(f-z_t) = \frac{2f}{v_1}s_t -\frac{2\kappa}{v_1}\Pr(\alpha_t=1)\,s_t^2 -\frac{2\kappa}{v_1}s_t\E[\alpha_tY_t].
+\]
+Le terme central est $\le0$ (amortissement~: $\kappa>0$, $\Pr(\alpha_t=1)\ge0$ --- c'est le rappel \'elastique de Hooke, physiquement stabilisant) donc peut \^etre omis dans une majoration~; les deux autres sont contr\^ol\'es par Young et Cauchy--Schwarz ($|\E[\alpha_tY_t]|\le\sqrt{\E[Y_t^2]}$)~:
+\[
+\frac{d}{dt}s_t^2 \le C\big(1+s_t^2\big) + C\,|s_t|\sqrt{\E[Y_t^2]} \le C\big(1+\Phi(t)\big).
+\]
+En sommant, $\frac{d}{dt}\Phi(t)\le C'(1+\Phi(t))$, d'o\`u par Gr\"onwall
+\[
+\Phi(t) \;\le\; \bar\Phi(T):=\big(\Phi(0)+C'T\big)e^{C'T} \;<\;\infty, \qquad \forall t\in[0,T'\wedge T],
+\]
+pour tout horizon cible $T$, avec $\Phi(0)=s_0^2+\E[X_0^2+Y_0^2]<\infty$ par (H4). Cette borne est \emph{a priori}~: elle vaut pour toute solution existante, ind\'ependamment de la dur\'ee de vie d\'ej\`a atteinte.
+
+\paragraph{\'Etape 3~: recollement global.} Soit $T>0$ l'horizon cible et $\bar\Phi(T)$ la borne de l'\'etape~2. Tant que la solution existe sur $[0,T']\subset[0,T]$, elle v\'erifie $s_t^2+\E[X_t^2+Y_t^2]\le\bar\Phi(T)$, donc en particulier $|s_{T'}|\le\sqrt{\bar\Phi(T)}$ et $\E[X_{T'}^2+Y_{T'}^2]\le\bar\Phi(T)$. Le seuil de temps local $T_0$ de l'\'etape~1, appliqu\'e avec la donn\'ee initiale $(s_{T'},p_{T'})$, ne d\'epend (via $R_0$) que de cette borne $\sqrt{\bar\Phi(T)}$ -- donc est minor\'e par une constante $\underline{T}_0=\underline T_0(\bar\Phi(T))>0$ \emph{uniforme} sur toute la trajectoire tant que $T'\le T$. On peut donc prolonger la solution de $\underline T_0$ en $\underline T_0$~: en un nombre fini $\lceil T/\underline T_0\rceil$ d'\'etapes, on atteint $T' = T$. (Argument de continuation standard~: une borne a priori uniforme jointe \`a un temps d'existence locale minor\'e uniform\'ement emp\^eche toute explosion en temps fini.)
+
+On obtient ainsi existence et unicit\'e de $(u,v,s)$ sur $[0,T]$ pour tout $T>0$, avec $\sup_{t\le T}\big(s_t^2+\E[X_t^2+Y_t^2]\big)\le\bar\Phi(T)$, ce qui d\'emontre le Th\'eor\`eme~\ref{thm:existence}. \hfill$\blacksquare$
+
+\begin{remark*}
+La borne $\bar\Phi(T)$ ci-dessus est r\'eutilis\'ee \`a la Section~\ref{sec:pdc} (elle y est not\'ee $\bar\Phi(T)$ \'egalement, \'etablie par le m\^eme calcul pour le syst\`eme \`a $N$ particules, uniform\'ement en $N$).
+\end{remark*}
+
+\section{Propagation du chaos}
+\label{sec:pdc}
+
+On \'etablit dans cette section une preuve compl\`ete de la propagation du chaos pour le syst\`eme \`a $N$ t\^etes, avec taux de convergence explicite, sous les hypoth\`eses~\ref{hyp:K}--\ref{hyp:moment}.
+
+\subsection{Bon caract\`ere pos\'e du syst\`eme \`a $N$ particules}
+
+\begin{lem}
+\label{lem:Nwellposed}
+Sous les hypoth\`eses~\ref{hyp:K},~\ref{hyp:w},~\ref{hyp:kappa}, pour tout $N\ge1$ et toute condition initiale (\'echangeable) du syst\`eme \`a $N$ t\^etes, il existe une unique solution forte $\big(s_t^N,(\alpha_t^i,X_t^i,Y_t^i)_{i\le N}\big)_{t\in[0,T]}$ au syst\`eme des Sections~1--2.
+\end{lem}
+\begin{proof}
+C'est un cas particulier, en dimension finie $3N+1$, du m\^eme argument que le Lemme~\ref{lem:linear}~: il n'y a ici \emph{aucune} self-consistance de type McKean--Vlasov puisque $\dot s_t^N=(f-\bar z_t^N)/v_1$ ne d\'epend que de l'\'etat courant $(\alpha_t^i,X_t^i,Y_t^i)_{i\le N}$. L'activit\'e de saut totale est born\'ee par $N\times2\bar\kappa(1+d)$ (thinning, comme au Lemme~\ref{lem:linear}), et entre les sauts les coefficients de d\'erive sont globalement lipschitziens en $(x^i,y^i)_{i\le N}$ par l'hypoth\`ese~\ref{hyp:w}~; le terme suppl\'ementaire $\dot s_t^N=(f-\bar z_t^N)/v_1$ est \emph{lin\'eaire donc globalement lipschitzien} en $(x^i,y^i)_i$ (constante $\kappa/N$ par coordonn\'ee), ce qui suffit \`a l'existence-unicit\'e forte par Picard--Lindel\"of stochastique (existence non explosive pour coefficients globalement lipschitziens, donc \`a croissance au plus lin\'eaire~: on n'a pas besoin ici de la bornitude de $\varphi$, seulement de sa lipschitzianit\'e).
+\end{proof}
+
+\subsection{Borne de moment uniforme en $N$}
+
+\begin{lem}[Estim\'ee de moment uniforme en $N$]
+\label{lem:momentN}
+Sous les hypoth\`eses~\ref{hyp:K}--\ref{hyp:moment}, en supposant les t\^etes i.i.d.\ en loi initiale v\'erifiant (H4), on a, pour tout $N\ge1$ et tout $T>0$,
+\[
+\sup_{t\le T}\Big(\E[(s_t^N)^2] + \frac1N\sum_{i=1}^N\E[(X_t^i)^2+(Y_t^i)^2]\Big) \;\le\; \bar\Phi(T),
+\]
+avec la \emph{m\^eme} constante $\bar\Phi(T)$ que dans l'\'Etape~2 de la Section~\ref{sec:fixedpoint} (m\^eme condition initiale, m\^emes constantes structurelles).
+\end{lem}
+\begin{proof}
+Identique \`a l'\'Etape~2 de la Section~\ref{sec:fixedpoint}, en rempla\c cant $(s_t,\Pr(\alpha_t=1),\E[\alpha_tY_t])$ par $(s_t^N,\frac1N\sum_i\ind{\alpha_t^i=1},\frac1N\sum_i\alpha_t^i Y_t^i)$~: le calcul du g\'en\'erateur $\mathcal L^{(0)}_{s_t^N},\mathcal L^{(1)}_{s_t^N}$ appliqu\'e \`a $(x^i)^2+(y^i)^2$ pour chaque particule $i$ est \emph{ind\'ependant de $N$} (m\^emes constantes structurelles $\bar\kappa,L_K,L_w$, ind\'ependantes de $i$ et de $N$), et le terme d'amortissement $-\frac{2\kappa}{v_1}\big(\frac1N\sum_i\ind{\alpha_t^i=1}\big)(s_t^N)^2\le0$ est \`a nouveau n\'egatif. On obtient $\frac{d}{dt}\Phi^N(t)\le C(1+\Phi^N(t))$ avec $\Phi^N(t):=\E[(s_t^N)^2]+\frac1N\sum_i\E[(X_t^i)^2+(Y_t^i)^2]$ et la m\^eme constante structurelle $C$ que pr\'ec\'edemment (car chacune des $N$ estim\'ees individuelles moyenn\'ees redonne exactement la m\^eme in\'egalit\'e diff\'erentielle), d'o\`u $\Phi^N(t)\le\bar\Phi(T)$ par Gr\"onwall, avec $\Phi^N(0)=\Phi(0)$ (m\^eme loi initiale par particule).
+\end{proof}
+
+\subsection{Couplage synchrone avec le processus non lin\'eaire}
+
+Soit $(u,v,s)$ l'unique solution du syst\`eme limite (Th\'eor\`eme~\ref{thm:existence}) issue de la loi marginale initiale commune $p_0$ des t\^etes du syst\`eme \`a $N$ particules (suppos\'ees i.i.d.\ en loi initiale ; le cas \'echangeable se traite \`a l'identique, au prix d'une constante suppl\'ementaire li\'ee \`a la corr\'elation initiale). Pour chaque $i\le N$, on construit $(\bar\alpha^i_t,\bar X^i_t,\bar Y^i_t)$ solution du processus non lin\'eaire tagu\'e (Lemme~\ref{lem:linear} appliqu\'e au champ \emph{d\'eterministe} $s=s^\ast$ issu du syst\`eme limite), en utilisant \textbf{les m\^emes} browniens $B^{x,i},B^{y,i}$ et \textbf{les m\^emes} mesures de Poisson $N_{0\to1}^i,N_{1\to0}^{\mathrm{rev},i},N_{1\to0}^i,N_{0\to1}^{\mathrm{rev},i}$ que la t\^ete $i$ du syst\`eme \`a $N$ particules, et la m\^eme condition initiale $(\alpha_0^i,X_0^i,Y_0^i)$.
+
+Par construction, les $(\bar\alpha^i,\bar X^i,\bar Y^i)_{i\le N}$ sont ind\'ependants (les bruits sont ind\'ependants entre particules $i$) et identiquement distribu\'es de loi $p_t$ \`a chaque instant $t$ (m\^eme dynamique, pilot\'ee par le m\^eme champ d\'eterministe $s_t$, ind\'ependant de $i$)~: ce sont $N$ copies i.i.d.\ du processus non lin\'eaire limite. En particulier, par le Th\'eor\`eme~\ref{thm:existence}, $\E[(\bar X_t^i)^2+(\bar Y_t^i)^2]\le\bar\Phi(T)$ et $s_t^2\le\bar\Phi(T)$ pour tout $i,t\le T$.
+
+\subsection{Estimation de Gr\"onwall}
+
+Pour $i\le N$, on pose
+\[
+e_t^i := \E|X_t^i-\bar X_t^i|^2+\E|Y_t^i-\bar Y_t^i|^2+\Pr(\alpha_t^i\ne\bar\alpha_t^i).
+\]
+Le couplage ci-dessus est sym\'etrique en $i$ (bruits i.i.d.\ entre particules, m\^eme construction pour chaque $i$), donc par \'echangeabilit\'e $e_t^i=e_t^1=:e_t$ pour tout $i\le N$. On d\'efinit
+\[
+\Delta_t := e_t + \E|s_t^N-s_t|^2.
+\]
+
+\begin{thm}[Propagation du chaos --- \emph{conditionnelle}, voir Remarque~\ref{rem:status}]
+\label{thm:pdc}
+Sous les hypoth\`eses~\ref{hyp:K}--\ref{hyp:moment}, \textbf{et sous r\'eserve du Lemme~\ref{lem:opengrad} (non d\'emontr\'e, \S\ref{sec:lipschitz-status})}, il existe une constante $C=C(T,\bar\kappa,L_K,L_w,\kappa,d,\eta_x,\eta_y,v_1,\bar\Phi(T))$, ind\'ependante de $N$, telle que
+\[
+\Delta_t \;\le\; \frac{C}{N}\,e^{Ct}, \qquad \forall t\in[0,T],\ \forall N\ge1.
+\]
+\end{thm}
+
+\begin{proof}
+\emph{Avertissement.} Les \'Etapes~1 et~3 ci-dessous utilisent, comme la preuve originelle (abandonn\'ee) de la Proposition~\ref{lem:lipschitz-s}, un couplage synchrone entre deux dynamiques \`a une t\^ete pilot\'ees par des champs $s$ diff\'erents ($s^N_t$ al\'eatoire vs $s_t$ d\'eterministe), et \'ecrivent directement une in\'egalit\'e diff\'erentielle du type $\frac{d}{dt}e_t^i\le C(e_t^i+\E|s_t^N-s_t|^2)$ (forc\c cage \emph{quadratique}). Or la Remarque pr\'ec\'edant le Lemme~\ref{lem:hgrowth} montre que ce type de couplage synchrone donne, pour la composante ``discordance de $\alpha$'' de $e_t^i$, un forc\c cage a priori seulement \emph{lin\'eaire} en $|s_t^N-s_t|$ (et non quadratique), pour la m\^eme raison structurelle (distance en variation totale $\Theta(\varepsilon)$, non $O(\varepsilon^2)$). Rigoureusement, ces deux \'etapes devraient donc, comme la Proposition~\ref{lem:lipschitz-s}, \^etre red\'emontr\'ees via l'identit\'e de Duhamel (Proposition~\ref{prop:duhamel}) appliqu\'ee \`a la diff\'erence de champs plut\^ot que via un couplage pathwise direct~; ce travail n'a pas \'et\'e fait ici. Le Th\'eor\`eme~\ref{thm:pdc} est donc conditionnel, non seulement au Lemme~\ref{lem:opengrad}, mais aussi \`a l'extension de l'argument de Duhamel au cadre \`a $N$ particules (\`a $s^N$ al\'eatoire) --- extension que l'on s'attend \`a \^etre possible sans obstruction nouvelle (le calcul de la Proposition~\ref{lem:lipschitz-s} ne fait pas un usage essentiel du caract\`ere d\'eterministe de $s$ ou $\tilde s$), mais qui n'est pas r\'edig\'ee dans ce document. On pr\'esente n\'eanmoins le calcul ci-dessous \`a titre d'architecture~: \emph{en admettant} un analogue de la Proposition~\ref{lem:lipschitz-s} \`a champ al\'eatoire (m\^eme \'enonc\'e, avec $s^N$ substitu\'e \`a $s$), le reste de l'argument (\'Etapes~2 et~4, purement alg\'ebrique une fois ces bornes admises) est correct et complet.
+
+\emph{\'Etape 1~: diff\'erence des champs $z$.} On d\'ecompose
+\[
+\bar Z_t^N-\bar z_t = \underbrace{\frac1N\sum_{i=1}^N\Big[\alpha_t^i\kappa(X_t^i+Y_t^i) - \bar\alpha_t^i\kappa(\bar X_t^i+\bar Y_t^i)\Big]}_{=:A_t} + \underbrace{\frac1N\sum_{i=1}^N\Big[\bar\alpha_t^i\kappa(\bar X_t^i+\bar Y_t^i) - \bar z_t\Big]}_{=:B_t}.
+\]
+Pour $A_t$~: en utilisant $\varphi(0,\cdot,\cdot)=0$, on distingue les \'ev\'enements concordant ($\alpha_t^i=\bar\alpha_t^i$, auquel cas $X_t^i=s_t^N$, $\bar X_t^i=s_t$) et discordant ($\alpha_t^i\ne\bar\alpha_t^i$, born\'e via Cauchy--Schwarz et le Lemme~\ref{lem:momentN}/Th\'eor\`eme~\ref{thm:existence}, $\E[(s_t^N)^2],\E[(s_t)^2],\E[(Y_t^i)^2],\E[(\bar Y_t^i)^2]\le\bar\Phi(T)$)~; \emph{voir l'avertissement ci-dessus~: le passage par Cauchy--Schwarz sur l'\'ev\'enement discordant est pr\'ecis\'ement le point non r\'edig\'e rigoureusement},
+\[
+\big|\alpha_t^i\kappa(X_t^i+Y_t^i)-\bar\alpha_t^i\kappa(\bar X_t^i+\bar Y_t^i)\big| \le \kappa\big(|s_t^N-s_t|+|Y_t^i-\bar Y_t^i|\big)\ind{\text{concordant}}+ \kappa\big(|s_t^N|+|Y_t^i|+|s_t|+|\bar Y_t^i|\big)\ind{\text{discordant}},
+\]
+d'o\`u, par Cauchy--Schwarz (et le Lemme~\ref{lem:momentN}), $\E|A_t|^2 \le C(\bar\Phi(T))\cdot\Big(\frac1N\sum_{i=1}^N e_t^i + \E|s_t^N-s_t|^2\Big) = C(\bar\Phi(T))\,\Delta_t$.
+
+Pour $B_t$~: les variables al\'eatoires $\bar\alpha_t^i\kappa(\bar X_t^i+\bar Y_t^i)-\bar z_t$, $i=1,\ldots,N$, sont i.i.d., centr\'ees (puisque $(\bar\alpha_t^i,\bar X_t^i,\bar Y_t^i)\sim p_t$ et $\bar z_t=\E_{p_t}[\varphi]$), de \emph{second moment fini} (et non plus born\'ees)~: comme $\varphi(\bar\alpha_t,\bar X_t,\bar Y_t)=\bar\alpha_t\kappa(s_t+\bar Y_t)$,
+\[
+\E[\varphi(\bar\alpha_t,\bar X_t,\bar Y_t)^2] \le \kappa^2\,\E[(s_t+\bar Y_t)^2] \le 2\kappa^2\big(s_t^2+\E[\bar Y_t^2]\big) \le 2\kappa^2\,\bar\Phi(T)
+\]
+par le Th\'eor\`eme~\ref{thm:existence}. Donc
+\[
+\E|B_t|^2 = \frac1N\,\Var_{p_t}\big(\varphi(\bar\alpha_t,\bar X_t,\bar Y_t)\big) \le \frac{2\kappa^2\bar\Phi(T)}{N}.
+\]
+En combinant ($|a+b|^2\le 2|a|^2+2|b|^2$),
+\[
+\E\big|\bar Z_t^N-\bar z_t\big|^2 \le C(\bar\Phi(T))\,\Delta_t + \frac{C(\bar\Phi(T))}{N}.
+\]
+
+\emph{\'Etape 2~: diff\'erence des champs $s$.} Les processus $s_t^N$ et $s_t$ v\'erifient la m\^eme \'equation diff\'erentielle (second membre $\bar Z_r^N$, resp.\ $\bar z_r$) issue de la m\^eme condition initiale $s_0$~:
+\[
+s_t^N-s_t = -\frac1{v_1}\int_0^t\big(\bar Z_r^N-\bar z_r\big)\,dr, \qquad \E|s_t^N-s_t|^2 \le \frac{t}{v_1^2}\int_0^t\E\big|\bar Z_r^N-\bar z_r\big|^2\,dr \le \frac{C}{v_1^2}\int_0^t\Big(\Delta_r+\frac1N\Big)\,dr,
+\]
+o\`u la premi\`ere in\'egalit\'e vient de Cauchy--Schwarz sur l'int\'egrale en temps.
+
+\emph{\'Etape 3~: diff\'erence des trajectoires individuelles.} Le couplage synchrone entre $(\alpha^i,X^i,Y^i)$ (pilot\'ee par le champ al\'eatoire $s^N$) et $(\bar\alpha^i,\bar X^i,\bar Y^i)$ (pilot\'ee par le champ d\'eterministe $s$) utilise les m\^emes bruits~; en admettant (voir l'avertissement ci-dessus) l'analogue \`a champ al\'eatoire de la borne obtenue via l'identit\'e de Duhamel pour la Proposition~\ref{lem:lipschitz-s}, appliqu\'ee avec $s^N_t$ au lieu de $\tilde s_t$, on obtient
+\[
+\frac{d}{dt}e_t^i \le C\big(e_t^i + \E|s_t^N-s_t|^2\big), \qquad\text{donc (moyenne sur $i$)}\qquad \frac{d}{dt}e_t \le C\big(e_t + \E|s_t^N-s_t|^2\big).
+\]
+
+\emph{\'Etape 4~: bouclage.} On \'evite ici d'\'ecrire une in\'egalit\'e diff\'erentielle sur $\Delta_t$ tout enti\`ere~: la borne de l'\'etape~2 sur $\E|s_t^N-s_t|^2$ est \emph{d\'ej\`a} une int\'egrale en temps (et non la valeur d'une d\'eriv\'ee), donc la red\'eriver puis la r\'e-int\'egrer produirait une int\'egrale double parasite. On combine plut\^ot directement les deux bornes, chacune valable ponctuellement en $t$.
+
+D'une part, en int\'egrant l'in\'egalit\'e diff\'erentielle de l'\'etape~3 sur $[0,t]$ (une seule int\'egration, avec $e_0=0$ puisque les deux syst\`emes partagent la m\^eme condition initiale) et en utilisant $e_r+\E|s_r^N-s_r|^2=\Delta_r$ par d\'efinition,
+\[
+e_t \;\le\; C\int_0^t\big(e_r+\E|s_r^N-s_r|^2\big)\,dr \;=\; C\int_0^t\Delta_r\,dr.
+\]
+D'autre part, l'\'etape~2 fournit directement, sans int\'egration suppl\'ementaire,
+\[
+\E|s_t^N-s_t|^2 \;\le\; \frac{C}{v_1^2}\int_0^t\Big(\Delta_r+\frac1N\Big)\,dr.
+\]
+En sommant ces deux bornes ponctuelles en $t$ (aucune int\'egration en $t$ n'est effectu\'ee ici, on additionne simplement deux quantit\'es major\'ees chacune par une int\'egrale simple en $r\in[0,t]$),
+\[
+\Delta_t = e_t+\E|s_t^N-s_t|^2 \;\le\; C'\int_0^t\Delta_r\,dr + \frac{C'}{N}\,t, \qquad C'=C'(\bar\Phi(T),\kappa,L_K,L_w,\bar\kappa,d,\eta_x,\eta_y,v_1),
+\]
+o\`u $C'$ absorbe les deux constantes des \'etapes~2 et~3. Comme $t\mapsto (C'/N)t$ est croissante, le lemme de Gr\"onwall (version int\'egrale, forme standard $\varphi(t)\le a(t)+b\int_0^t\varphi(r)\,dr \Rightarrow \varphi(t)\le a(t)e^{bt}$ pour $a$ croissante) donne
+\[
+\Delta_t \;\le\; \frac{C'}{N}\,t\,e^{C't} \;\le\; \frac{C}{N}\,e^{Ct}, \qquad t\in[0,T],
+\]
+la derni\`ere in\'egalit\'e absorbant le facteur $t\le e^t$ dans une constante $C$ (toujours ind\'ependante de $N$). Ceci ach\`eve la preuve du Th\'eor\`eme~\ref{thm:pdc}.
+\end{proof}
+
+\begin{cor}[Taux de convergence et marginales \`a $k$ corps]
+Pour tout $k\le N$ fix\'e et $t\in[0,T]$,
+\[
+W_2^2\Big(\mathrm{Law}(\alpha_t^{1:k},X_t^{1:k},Y_t^{1:k}),\,p_t^{\otimes k}\Big) \;\le\; k\,\Delta_t \;\le\; \frac{Ck}{N}\,e^{Ct} \xrightarrow[N\to\infty]{} 0,
+\]
+o\`u $W_2$ d\'esigne la distance de Wasserstein-2 sur $(\{0,1\}\times\R\times\R)^k$ (pour une distance produit combinant la m\'etrique discr\`ete sur $\alpha$ et la m\'etrique euclidienne sur $(x,y)$). En particulier, pour $k=1$, la loi marginale d'une t\^ete converge vers $p_t$ \`a taux $1/\sqrt N$, et la mesure empirique
+\[
+\frac1N\sum_{i=1}^N\delta_{(\alpha_t^i,X_t^i,Y_t^i)} \xrightarrow[N\to\infty]{} p_t \quad\text{en loi (topologie faible), pour tout } t\in[0,T],
+\]
+ce qui est la propagation du chaos annonc\'ee \`a la Section~3.
+\end{cor}
+\begin{proof}
+Le couplage construit \`a la Section~\ref{sec:pdc} fournit, pour tout $k$-uplet $(i_1,\ldots,i_k)$, un couplage explicite entre $(\alpha^{i_1:i_k}_t,X_t^{i_1:i_k},Y_t^{i_1:i_k})$ et $(\bar\alpha^{i_1:i_k}_t,\bar X_t^{i_1:i_k},\bar Y_t^{i_1:i_k})$ i.i.d.\ $\sim p_t$, de co\^ut quadratique total $\sum_{j\le k}e_t^{i_j}=k\,e_t\le k\,\Delta_t$, d'o\`u la majoration de $W_2^2$ par d\'efinition de la distance de Wasserstein comme infimum sur les couplages. La convergence de la mesure empirique s'ensuit par l'\'equivalence classique (Sznitman, \emph{Topics in propagation of chaos}) entre convergence des marginales \`a $k$ corps vers $p_t^{\otimes k}$ pour tout $k$ fix\'e et convergence en loi de la mesure empirique dans $\mathcal P(\mathcal P(\{0,1\}\times\R\times\R))$.
+\end{proof}
+
+\begin{remark*}[Extension aux taux non born\'es]
+\label{rem:unbounded}
+Si les taux $K_{\cdot\to\cdot}$ ne sont pas born\'es (par exemple de type Arrh\'enius, croissance exponentielle en \'energie), l'hypoth\`ese~\ref{hyp:K} tombe, et les arguments de thinning (activit\'e de saut major\'ee par une constante) ne s'appliquent plus tels quels --- il s'agit d'une difficult\'e distincte de celle trait\'ee dans ce document (o\`u seule l'observable de couplage $\varphi=\alpha\kappa(x+y)$, et non les taux, \'etait non born\'ee). La strat\'egie standard dans ce cas (voir Sznitman, \emph{Topics in propagation of chaos}, ou Fournier--L\"ocherbach, \emph{On a toy model of interacting particles with jumps}) consiste \`a~: (i)~\'etablir des bornes de moments uniformes en $N$ et en temps sur $X_t^i,Y_t^i$ (comme au Lemme~\ref{lem:momentN}, mais il faut alors aussi contr\^oler les taux eux-m\^emes, typiquement via un argument de Lyapunov exploitant le caract\`ere confinant des potentiels $w_0,w_1$ \`a l'infini)~; (ii)~tronquer les taux au-del\`a d'un rayon $R$, appliquer les Th\'eor\`emes~\ref{thm:existence}--\ref{thm:pdc} au syst\`eme tronqu\'e~; puis (iii)~faire tendre $R\to\infty$ en contr\^olant la probabilit\'e de sortie du compact gr\^ace aux bornes de moments de (i). Cette extension, non n\'ecessaire si le mod\`ele physique satisfait~\ref{hyp:K} (ce qui est le cas d\`es que les taux sont r\'egularis\'es/tronqu\'es \`a l'\'echelle de la fen\^etre d'attachement $[-d/2,d/2]$), est laiss\'ee \`a un travail ult\'erieur si n\'ecessaire.
+\end{remark*}
 
 \section*{R\'esum\'e}
 
 \begin{center}
-\begin{tabular}{@{}lll@{}}
+\small
+\begin{tabular}{@{}p{3.1cm}p{5.7cm}p{6.2cm}@{}}
 \toprule
  & Syst\`eme \`a $N$ t\^etes & Limite $N\to\infty$ \\
 \midrule
@@ -140,6 +586,29 @@ Variable de couplage & $Z_t=\sum_i\alpha_t^i\kappa(X_t^i+Y_t^i)$ (al\'eatoire) &
 \'Echelle requise & --- & $v=Nv_1$, $F=Nf$ \\
 \'Equation ma\^itresse & lin\'eaire, dimension $3N+1$ & non lin\'eaire (McKean--Vlasov), dimension $3+1$ \\
 Repr\'esentation & EDS \`a $N$ particules coupl\'ees & EDS non lin\'eaire (\S4) \\
+R\^ole de $\kappa$ & constante (raideur), non born\'ee comme observable & contr\^ol\'ee via moments d'ordre~2 (\S\ref{sec:moment}) \\
+Existence/unicit\'e & Lemme~\ref{lem:Nwellposed} (standard, dim.\ finie) & Th\'eor\`eme~\ref{thm:existence}, \textbf{conditionnel} (point fixe, \S\ref{sec:existence}) \\
+Propagation du chaos & --- & Th\'eor\`eme~\ref{thm:pdc}, \textbf{conditionnel}, taux annonc\'e $O(1/\sqrt N)$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{center}
+\small
+\begin{tabular}{@{}p{6.3cm}p{2.3cm}p{6.4cm}@{}}
+\toprule
+R\'esultat & Statut & D\'epend de \\
+\midrule
+Lemme~\ref{lem:linear} (bon caract\`ere pos\'e, $s$ fig\'e) & \'etabli & --- \\
+Lemme~\ref{lem:moment} (estim\'ee de moment) & \'etabli & --- \\
+Lemme~\ref{lem:hgrowth} (croissance de $h^s$) & \'etabli & --- \\
+Lemme~\ref{lem:hxlip} (Lipschitz en $x$ de $h^s$) & \'etabli & --- \\
+Proposition~\ref{prop:duhamel} (identit\'e de Duhamel) & \'etabli & --- \\
+Lemme~\ref{lem:opengrad} (gradient en $y$ de $h^s$) & \textbf{ouvert} & r\'egularit\'e parabolique (Bernstein), non trait\'ee ici \\
+Proposition~\ref{lem:lipschitz-s} (Lipschitz de $z_t[\cdot]$ en $s$) & conditionnel & Lemme~\ref{lem:opengrad} \\
+Th\'eor\`eme~\ref{thm:existence} (existence-unicit\'e) & conditionnel & Proposition~\ref{lem:lipschitz-s} \\
+Lemme~\ref{lem:momentN} (moment uniforme en $N$) & \'etabli & --- \\
+Th\'eor\`eme~\ref{thm:pdc} (propagation du chaos) & conditionnel & Prop.~\ref{lem:lipschitz-s} \emph{et} son extension \`a $s^N$ al\'eatoire (non r\'edig\'ee, \S\ref{sec:pdc}) \\
 \bottomrule
 \end{tabular}
 \end{center}
