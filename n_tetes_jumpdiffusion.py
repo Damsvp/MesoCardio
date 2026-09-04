@@ -5,7 +5,7 @@ import random
 
 
 
-N = 15 #number of heads we are going to simulate
+N = 50 #number of heads we are going to simulate
 delta = [0 for i in range(N)] #random position shifts for the heads
 v = 2 #viscosity of the sarcomere's surroundings
 F = 0 #force exerted on the actin filament
@@ -83,16 +83,34 @@ dyw1 = lambda x, y : k*(x + y) + d_double_well(y + sbar1, k1pre, k1post, l1, y1p
 
 muT = 100   #shift due to ATP consumption, in zJ
 
-# plot energy profil
+#%% Profils d'énergie w0 et w1, et détection de leurs minima locaux
 
-# plt.plot([dx*t - d/4 for t in range(4*npos)], [w0(0, dx*t - d/4) for t in range(4*npos)], label = 'detached')
-# plt.plot([dx*t - d/4 for t in range(4*npos)], [w1(0, dx*t - d/4) for t in range(4*npos)], label = 'attached')
-# plt.plot([dx*t - d/4 for t in range(4*npos)], [w0(0, dx*t - d/4) - muT for t in range(4*npos)], label = 'detached')
-# plt.legend()
+y_grid = np.array([dx*t - d/4 for t in range(4*npos)])   #plage de y couvrant les deux puits (pre et post power-stroke)
 
-# plt.show()
+w0_profile = np.array([w0(0, y) for y in y_grid])
+w1_profile = np.array([w1(0, y) for y in y_grid])
 
+def local_minima(x_arr, y_arr) :
+  """Renvoie les positions (x, y) des minima locaux d'un profil 1D discrétisé."""
+  idx = [i for i in range(1, len(y_arr) - 1) if y_arr[i] < y_arr[i - 1] and y_arr[i] < y_arr[i + 1]]
+  return np.array(x_arr)[idx], np.array(y_arr)[idx]
 
+y0_minima, w0_minima_vals = local_minima(y_grid, w0_profile)
+y1_minima, w1_minima_vals = local_minima(y_grid, w1_profile)
+
+plt.figure(figsize=(10, 6))
+plt.plot(y_grid, w0_profile, label='$w_0$ (tête détachée)')
+plt.plot(y_grid, w1_profile, label='$w_1$ (tête attachée)')
+plt.scatter(y0_minima, w0_minima_vals, color='tab:blue', zorder=5, label='minima de $w_0$')
+plt.scatter(y1_minima, w1_minima_vals, color='tab:orange', zorder=5, label='minima de $w_1$')
+plt.xlabel('y')
+plt.ylabel('énergie')
+plt.title("Profils d'énergie $w_0(0, y)$ et $w_1(0, y)$")
+plt.legend()
+plt.show()
+
+print("Minima locaux de w0 (en y) :", y0_minima)
+print("Minima locaux de w1 (en y) :", y1_minima)
 
 
 h = 11       #caracteristic length scale (nm) used to make the expression of reverse transition rates homogeneous
@@ -211,9 +229,14 @@ axs[0].legend()
 axs[0].set_title("X over time")
 
 axs[1].plot([dt*t for t in range(nsteps)], Y[0, :],label='Y')
+for j, yv in enumerate(y0_minima):
+  axs[1].axhline(yv, color='tab:blue', ls='--', lw=0.8, alpha=0.6, label='minima $w_0$' if j == 0 else None)
+for j, yv in enumerate(y1_minima):
+  axs[1].axhline(yv, color='tab:orange', ls='--', lw=0.8, alpha=0.6, label='minima $w_1$' if j == 0 else None)
 axs[1].set_xlabel("time")
 axs[1].set_ylabel("Y_t")
 axs[1].set_title("Y over time")
+axs[1].legend()
 
 axs[2].plot([dt*t for t in range(nsteps)], alpha[0, :],label='alpha')
 axs[2].set_xlabel("time")
