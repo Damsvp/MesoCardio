@@ -442,3 +442,4 @@ print("Force moyenne k*Z :", k * Z.mean(), "pN")
 print(f"Nombre max de têtes attachées : {int(N*n_attached.max())} / {N}")
 
 # %%
+,kjdfjk
