@@ -218,42 +218,7 @@ for t in range(nsteps - 1):
         alpha[i, t + 1] = 1
         X[i, t + 1] = s[i,t + 1]
 
-#%%  Visualization of the results
-fig, axs = plt.subplots(nrows=3, figsize=(18,18))
 
-axs[0].plot([dt*t for t in range(nsteps)], X[0, :],label='X')
-axs[0].plot([dt*t for t in range(nsteps)], s[0,:],label='s')
-axs[0].set_xlabel("time")
-axs[0].set_ylabel("X_t")
-axs[0].legend()
-axs[0].set_title("X over time")
-
-axs[1].plot([dt*t for t in range(nsteps)], Y[0, :],label='Y')
-for j, yv in enumerate(y0_minima):
-  axs[1].axhline(yv, color='tab:blue', ls='--', lw=0.8, alpha=0.6, label='minima $w_0$' if j == 0 else None)
-for j, yv in enumerate(y1_minima):
-  axs[1].axhline(yv, color='tab:orange', ls='--', lw=0.8, alpha=0.6, label='minima $w_1$' if j == 0 else None)
-axs[1].set_xlabel("time")
-axs[1].set_ylabel("Y_t")
-axs[1].set_title("Y over time")
-axs[1].legend()
-
-axs[2].plot([dt*t for t in range(nsteps)], alpha[0, :],label='alpha')
-axs[2].set_xlabel("time")
-axs[2].set_ylabel(r"$\alpha$")
-axs[2].set_title(r"$\alpha$ over time")
-
-
-plt.show()
-
-#%% Force/Speed
-
-speed=[]
-for i in range(len(period)-1):
-  speed.append(d/(period[i+1]-period[i]))
-
-mean_speed=np.mean(speed)
-print(mean_speed)
 
 #%% Simulation accelerated Claude
 
@@ -407,102 +372,43 @@ for i in range(len(period)-1):
 mean_speed=np.mean(speed)
 print(mean_speed)
 
-# %% VErsion finale corrigée
 
-# ── Initialisation des horloges hors boucle ──────────────────────────
-c01    = np.zeros(N)
-c10    = np.zeros(N)
-c01rev = np.zeros(N)
-c10rev = np.zeros(N)
-e01    = -np.log(np.random.random(size=N))
-e10    = -np.log(np.random.random(size=N))
-e01rev = -np.log(np.random.random(size=N))
-e10rev = -np.log(np.random.random(size=N))
+#%%  Visualization of the results
+fig, axs = plt.subplots(nrows=3, figsize=(18,18))
 
-for t in range(nsteps - 1):
-    at = alpha[:, t]
-    Xt = X[:, t]
-    Yt = Y[:, t]
-    st = s[:, t]
+axs[0].plot([dt*t for t in range(nsteps)], X[0, :],label='X')
+axs[0].plot([dt*t for t in range(nsteps)], s[0,:],label='s')
+axs[0].set_xlabel("time")
+axs[0].set_ylabel("X_t")
+axs[0].legend()
+axs[0].set_title("X over time")
 
-    # ── Dynamique de s ────────────────────────────────────────────────
-    delta_s = F*dt/v - (dt/v) * np.sum(at * dxw1(st, Yt))
-    st1 = st + delta_s
-    wrap_minus = st1 < -d/2
-    wrap_plus  = st1 >  d/2
-    st1[wrap_minus] += d
-    st1[wrap_plus]  -= d
-    if wrap_minus[0]:
-        period.append(t * dt)
-    s[:, t+1] = st1
+axs[1].plot([dt*t for t in range(nsteps)], Y[0, :],label='Y')
+for j, yv in enumerate(y0_minima):
+  axs[1].axhline(yv, color='tab:blue', ls='--', lw=0.8, alpha=0.6, label='minima $w_0$' if j == 0 else None)
+for j, yv in enumerate(y1_minima):
+  axs[1].axhline(yv, color='tab:orange', ls='--', lw=0.8, alpha=0.6, label='minima $w_1$' if j == 0 else None)
+axs[1].set_xlabel("time")
+axs[1].set_ylabel("Y_t")
+axs[1].set_title("Y over time")
+axs[1].legend()
 
-    # ── Bruits et taux ────────────────────────────────────────────────
-    Bx = np.random.randn(N)
-    By = np.random.randn(N)
+axs[2].plot([dt*t for t in range(nsteps)], alpha[0, :],label='alpha')
+axs[2].set_xlabel("time")
+axs[2].set_ylabel(r"$\alpha$")
+axs[2].set_title(r"$\alpha$ over time")
 
-    K01t    = K01(Xt, Yt, st)
-    K10t    = K10(Xt, Yt, st)
-    K01revt = K01rev(Xt, Yt, st)
-    K10revt = K10rev(Xt, Yt, st)
 
-    m0 = (at == 0)
-    m1 = (at == 1)
+plt.show()
 
-    # ── Accumulation des compteurs (selon l'état actuel) ─────────────
-    c01[m0]    += K01t[m0]    * dt
-    c10rev[m0] += K10revt[m0] * dt
-    c01rev[m1] += K01revt[m1] * dt
-    c10[m1]    += K10t[m1]    * dt
+#%% Force/Speed
 
-    # ─── Bloc α = 0 ───────────────────────────────────────────────────
-    Y[m0, t+1] = (Yt[m0]
-                  - dt*ny * dyw0(Xt[m0], Yt[m0])
-                  + np.sqrt(2*ny*dt/b) * By[m0])
+speed=[]
+for i in range(len(period)-1):
+  speed.append(d/(period[i+1]-period[i]))
 
-    jump0 = m0 & ((c01 > e01) | (c10rev > e10rev))
-    stay0 = m0 & ~jump0
-
-    alpha[jump0, t+1] = 1
-    X[jump0, t+1]     = st1[jump0]
-    # Reset des horloges ayant sonné
-    n_j0 = jump0.sum()
-    c01[jump0]    = 0.0;  e01[jump0]    = -np.log(np.random.random(size=n_j0))
-    c10rev[jump0] = 0.0;  e10rev[jump0] = -np.log(np.random.random(size=n_j0))
-
-    alpha[stay0, t+1] = 0
-    X[stay0, t+1] = (Xt[stay0]
-                     - dt*nx * dxw0(Xt[stay0], Yt[stay0])
-                     + np.sqrt(2*nx*dt/b) * Bx[stay0])
-
-    # ─── Bloc α = 1 ───────────────────────────────────────────────────
-    Y[m1, t+1] = (Yt[m1]
-                  - dt*ny * dyw1(Xt[m1], Yt[m1])
-                  + np.sqrt(2*ny*dt/b) * By[m1])
-
-    jump1 = m1 & ((c01rev > e01rev) | (c10 > e10))
-    stay1 = m1 & ~jump1
-
-    if jump1.any():
-        idx1 = np.where(jump1)[0]
-        prob_mat = (
-            K10(pos[None, :], Yt[idx1, None], st[idx1, None])
-          + K01rev(pos[None, :], Yt[idx1, None], st[idx1, None])
-        ) * dx
-        row_sums = prob_mat.sum(axis=1, keepdims=True)
-        prob_mat /= row_sums
-        chosen = np.array([
-            np.random.choice(pos, p=prob_mat[k])
-            for k in range(len(idx1))
-        ])
-        alpha[jump1, t+1] = 0
-        X[jump1, t+1]     = st1[jump1] + chosen
-        n_j1 = jump1.sum()
-        c01rev[jump1] = 0.0; e01rev[jump1] = -np.log(np.random.random(size=n_j1))
-        c10[jump1]    = 0.0; e10[jump1]    = -np.log(np.random.random(size=n_j1))
-
-    alpha[stay1, t+1] = 1
-    X[stay1, t+1]     = st1[stay1]
-
+mean_speed=np.mean(speed)
+print(mean_speed)
 # %% Trajectoire de Z_t = sum_i alpha_i (X_i + Y_i)
 
 time = dt * np.arange(nsteps)
