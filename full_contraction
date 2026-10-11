@@ -1,0 +1,168 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Sep 30 14:54:21 2026
+
+@author: titouangiraudon
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+def simulate_full_muscle_contraction(T_max, dt, params):
+    """
+    Simulates the full multi-timescale jump-diffusion system (Equation 27)
+    for actin-myosin interaction under constant sliding velocity conditions.
+    """
+    n_max = int(T_max / dt)
+    time_grid = np.linspace(0, T_max, n_max + 1)
+    
+    # Extract physical constants & parameters
+    kBT = params['kB'] * params['T']
+    eta_x, eta_y = params['eta_x'], params['eta_y']
+    kappa = params['kappa']
+    v_c = params['velocity']
+    
+    # Initialize state trajectories
+    alpha = np.zeros(n_max + 1, dtype=int)
+    X = np.zeros(n_max + 1)
+    Y = np.zeros(n_max + 1)
+    s = np.zeros(n_max + 1)
+    
+    # Initial states
+    alpha[0] = 0  # Detached (0)
+    X[0] = params['X_init']
+    Y[0] = params['Y_init']
+    s[0] = params['s_init']
+    
+    # Poisson process thresholds for the 4 admissible jumps
+    # 0: direct attachment, 1: reverse detachment, 2: direct detachment, 3: reverse attachment
+    e_J = np.random.exponential(1.0, size=4)
+    c_J = np.zeros(4)
+    
+    for n in range(n_max):
+        current_alpha = alpha[n]
+        current_X = X[n]
+        current_Y = Y[n]
+        current_s = s[n]
+        
+        # --- 1. Compute Potentials Gradients ---
+        # w_alpha(x, y) = u_alpha(y) + 0.5 * kappa * (x + y)^2
+        # d/dx w_alpha = kappa * (x + y)
+        grad_w_x = kappa * (current_X + current_Y)
+        
+        # d/dy w_alpha = u'_alpha(y) + kappa * (x + y)
+        # u_alpha(y) is a piecewise double-quadratic potential from Table I
+        l_param = params['l1'] if current_alpha == 1 else params['l0']
+        kappa_pre = params['kappa1pre'] if current_alpha == 1 else params['kappa0pre']
+        kappa_post = params['kappa1post'] if current_alpha == 1 else params['kappa0post']
+        y_post = params['y1post'] if current_alpha == 1 else params['y0post']
+        y_pre = params['y1pre'] if current_alpha == 1 else params['y0pre']
+        
+        if current_Y < l_param:
+            grad_u_y = kappa_pre * (current_Y - y_pre)
+        else:
+            grad_u_y = kappa_post * (current_Y - y_post)
+            
+        grad_w_y = grad_u_y + kappa * (current_X + current_Y)
+        
+        # --- 2. Evaluate Reaction Rates (Table I Profiles) ---
+        rates = np.zeros(4)
+        if current_alpha == 0:
+            # Direct Attachment Rate K_0->1
+            # Simplified localized window window for illustration matching Table I behavior
+            window = 1.0 if (params['s_min'] <= current_s <= params['s_max']) else 0.0
+            rates[0] = params['kmax'] * (1.0 - np.tanh(params['alpha_y'] * (current_Y - params['y0pre']))) * window
+            # Reverse Detachment Rate K_1->0_rev
+            rates[1] = 0.0  
+        else:
+            # Direct Detachment Rate K_1->0
+            rates[2] = params['k1post_detach'] if current_s < 0 else params['k1pre_detach']
+            # Reverse Attachment Rate K_0->1_rev
+            rates[3] = 0.0  
+            
+        # --- 3. Update Intensity Clocks (Weighted by Activation Factors) ---
+        c_J += rates * dt
+        
+        # Check if any threshold is crossed
+        jump_triggered = False
+        triggered_idx = -1
+        max_residual = -np.inf
+        
+        for i in range(4):
+            if c_J[i] >= e_J[i]:
+                jump_triggered = True
+                residual = c_J[i] - e_J[i]
+                if residual > max_residual:
+                    max_residual = residual
+                    triggered_idx = i
+                    
+        # --- 4. Perform Update (Eq. 27 Execution) ---
+        # Generate Gaussian noise variables for Langevin parts
+        Gx = np.random.normal(0, 1)
+        Gy = np.random.normal(0, 1)
+        
+        # Evolution of position of actin sites
+        s[n+1] = current_s + v_c * dt
+        
+        if jump_triggered:
+            # Reset the crossed clock threshold
+            c_J[triggered_idx] = 0.0
+            e_J[triggered_idx] = np.random.exponential(1.0)
+            
+            if triggered_idx == 0: # Direct Attachment (0 -> 1)
+                alpha[n+1] = 1
+                X[n+1] = current_s  # Snaps to nearest actin site target
+                Y[n+1] = current_Y  # Conformation is continuous during jump
+            elif triggered_idx == 2: # Direct Detachment (1 -> 0)
+                alpha[n+1] = 0
+                X[n+1] = current_X + np.random.uniform(-2, 2) # Disperses near post-attached space
+                Y[n+1] = current_Y
+            else:
+                alpha[n+1] = current_alpha
+                X[n+1] = current_X
+                Y[n+1] = current_Y
+        else:
+            # Pure Continuous Langevin Step if no jump occurs
+            alpha[n+1] = current_alpha
+            Y[n+1] = current_Y - (grad_w_y / eta_y) * dt + np.sqrt(2 * kBT * dt / eta_y) * Gy
+            
+            if current_alpha == 0:
+                X[n+1] = current_X - (grad_w_x / eta_x) * dt + np.sqrt(2 * kBT * dt / eta_x) * Gx
+            else:
+                X[n+1] = current_X + v_c * dt # Rigid motion along filament when bound
+                
+    return time_grid, alpha, X, Y
+
+# --- Execution Setup with Parameters from Table I ---
+if __name__ == "__main__":
+    model_params = {
+        'kB': 1.38e-23, 'T': 298,
+        'eta_x': 0.0972, 'eta_y': 0.0972, 'kappa': 1.34,
+        'kmax': 1.21, 'alpha_y': 8.0,
+        'l1': 1.42, 'kappa1pre': 5.60, 'kappa1post': 1.33, 'y1post': 11.0, 'y1pre': 0.0,
+        'l0': 1.42, 'kappa0pre': 6.50, 'kappa0post': 0.60, 'y0post': 6.0, 'y0pre': 0.0,
+        'k1pre_detach': 0.1, 'k1post_detach': 2.0,
+        's_min': -30.0, 's_max': 10.0,
+        'velocity': -0.5, # Active steady contraction
+        'X_init': -5.0, 'Y_init': 0.0, 's_init': 5.0
+    }
+    
+    times, alpha_traj, X_traj, Y_traj = simulate_full_muscle_contraction(15.0, 0.002, model_params)
+    
+    # Plot tracking configurations
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 6), sharex=True)
+    ax1.plot(times, alpha_traj, color='darkmagenta', drawstyle='steps-post', lw=2)
+    ax1.set_yticks([0, 1])
+    ax1.set_yticklabels(['Detached (0)', 'Attached (1)'])
+    ax1.set_title('Coupled System State Transitions ($\\alpha_n$)')
+    ax1.grid(True, alpha=0.2)
+    
+    ax2.plot(times, X_traj, label='Head Displacement $X_t$', color='steelblue')
+    ax2.plot(times, Y_traj, label='Conformation $Y_t$', color='chocolate')
+    ax2.set_xlabel('Time (ms)')
+    ax2.set_ylabel('Displacement (nm)')
+    ax2.legend()
+    ax2.grid(True, alpha=0.2)
+    plt.tight_layout()
+    plt.show()
