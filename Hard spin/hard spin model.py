@@ -176,3 +176,43 @@ fig.suptitle(
     rf"  —  $\lambda_b={lambda_b}$, $v_0={v0}$, $y_0={y0}$"
 )
 plt.show()
+
+# %%
+# Mêmes coupes, pour l'énergie à N fini :
+#   f_N(p,y) = v(p,y) + 1/(βN) log C(N, Np),   p ∈ Λ^N = {0, 1/N, ..., 1}
+# Le terme combinatoire est nul en p=0 et p=1 et maximal en p=1/2 : il courbe les droites v(p,y).
+from math import comb
+
+N = 15
+k = np.arange(N + 1)
+p_N = k / N
+log_binom = np.log([comb(N, int(kk)) for kk in k])
+
+
+def f_N(p, y, z):
+    return energy(p, y, z) + log_binom / (beta * N)
+
+
+fig, axes = plt.subplots(1, 3, figsize=(16, 5), sharey=True, constrained_layout=True)
+for ax, y, yl in zip(axes, y_cut, y_cut_labels):
+    for z, zl, c in zip(z_plot, z_labels, z_colors):
+        ax.plot(p_grid, energy(p_grid, y, z), color=c, lw=1, ls="--", alpha=0.5)   # v(p,y) de référence
+        f = f_N(p_N, y, z)
+        ax.plot(p_N, f, "-o", color=c, lw=1.2, ms=5, label=rf"$z = {zl}$")
+        i_min = np.argmin(f)
+        ax.plot(p_N[i_min], f[i_min], "*", color=c, mec="k", ms=15, zorder=3)
+    ax.set_title(rf"${yl} = {y:.2f}$")
+    ax.set_xlabel(r"$p \in \Lambda^N$")
+    ax.set_xlim(-0.02, 1.02)
+    ax.grid(alpha=0.3)
+    ax.legend(fontsize=9)
+
+axes[0].set_ylabel(r"$f_N(p,y)$")
+fig.suptitle(
+    r"$f_N(p,y) = v(p,y) + \frac{1}{\beta N}\log\binom{N}{Np}$"
+    rf"  —  $N={N}$, $\beta={beta:.2f}$, $\lambda_b={lambda_b}$, $v_0={v0}$"
+    "\n(points : $f_N$ ;  pointillés : $v$ ;  étoiles : minimum sur $\\Lambda^N$)"
+)
+plt.show()
+
+# %%
