@@ -100,3 +100,79 @@ plt.tight_layout()
 plt.show()
 
 # %%
+# Paysage d'énergie v(p, y) à z fixé :
+#   v(p,y) = (1-p) v0 + (1-p)/2 y² + p/2 (y+1)² + λ_b/2 (z-y)²
+# v est affine en p et quadratique en y. À p fixé, le minimum en y est atteint en
+#   y*(p) = (λ_b z - p) / (1 + λ_b)
+# On trace v en niveaux de couleur + courbes de niveau, pour z = z0 - δz, z0, z0 + δz.
+def energy(p, y, z):
+    return (1 - p) * v0 + 0.5 * (1 - p) * y**2 + 0.5 * p * (y + 1)**2 + 0.5 * lambda_b * (z - y)**2
+
+
+y_grid = np.linspace(-1.2, 1.2, 400)
+p_grid = np.linspace(0, 1, 300)
+Y, P = np.meshgrid(y_grid, p_grid)
+z_plot = [z0 - delta_z, z0, z0 + delta_z]
+z_labels = [r"z_0-\delta_z", r"z_0", r"z_0+\delta_z"]
+
+V_all = [energy(P, Y, z) for z in z_plot]
+v_min, v_max = min(V.min() for V in V_all), max(V.max() for V in V_all)
+levels = v_min + (v_max - v_min) * np.linspace(0, 1, 40)**2   # niveaux resserrés près du fond de la vallée
+
+fig, axes = plt.subplots(1, 3, figsize=(16, 5.5), sharey=True, constrained_layout=True)
+for ax, z, zl, V in zip(axes, z_plot, z_labels, V_all):
+    cf = ax.contourf(Y, P, V, levels=levels, cmap="magma_r")
+    cs = ax.contour(Y, P, V, levels=levels[::2], colors="k", linewidths=0.6, alpha=0.6)
+    ax.clabel(cs, cs.levels[::2], fontsize=7, fmt="%.2f")
+
+    # Vallée : minimum en y à p fixé
+    y_star = (lambda_b * z - p_grid) / (1 + lambda_b)
+    ax.plot(y_star, p_grid, "w--", lw=2, label=r"$y^*(p)=\frac{\lambda_b z - p}{1+\lambda_b}$")
+
+    # Le long de la vallée, v est concave en p -> les minima sont aux bords p=0 et p=1
+    v_ends = energy(np.array([0.0, 1.0]), y_star[[0, -1]], z)
+    k = np.argmin(v_ends)
+    ax.plot(y_star[[0, -1]][k], [0, 1][k], "*", color="cyan", mec="k", ms=18, clip_on=False,
+            label=rf"min. global $v={v_ends[k]:.3f}$")
+    ax.plot(y_star[[0, -1]][1 - k], [0, 1][1 - k], "o", color="w", mec="k", ms=9, clip_on=False,
+            label=rf"min. local $v={v_ends[1 - k]:.3f}$")
+
+    ax.set_title(rf"$z = {zl} = {z:.3f}$", pad=12)
+    ax.set_xlabel(r"$y$")
+    ax.legend(fontsize=8, loc="center left", framealpha=0.85)
+
+axes[0].set_ylabel(r"$p$")
+fig.colorbar(cf, ax=axes, label=r"$v(p,y)$", shrink=0.9)
+fig.suptitle(
+    r"$v(p,y) = (1-p)v_0 + \frac{1-p}{2}y^2 + \frac{p}{2}(y+1)^2 + \frac{\lambda_b}{2}(z-y)^2$"
+    rf"  —  $\lambda_b={lambda_b}$, $v_0={v0}$"
+)
+plt.show()
+
+# %%
+# Coupes de v(p, y) en fonction de p, à y et z fixés.
+# v est affine en p :  v(p,y) = v0 + y²/2 + λ_b/2 (z-y)² + p (y - y0),  avec y0 = v0 - 1/2
+# -> pente négative pour y < y0 (p=1 favorisé), nulle pour y = y0, positive pour y > y0 (p=0 favorisé).
+# z ne fait que translater verticalement les droites.
+y0 = v0 - 0.5
+dy = 0.3
+y_cut = [y0 - dy, y0, y0 + dy]
+y_cut_labels = [rf"y = y_0 - {dy}", r"y = y_0", rf"y = y_0 + {dy}"]
+z_colors = plt.cm.viridis(np.linspace(0, 0.85, len(z_plot)))
+
+fig, axes = plt.subplots(1, 3, figsize=(16, 5), sharey=True, constrained_layout=True)
+for ax, y, yl in zip(axes, y_cut, y_cut_labels):
+    for z, zl, c in zip(z_plot, z_labels, z_colors):
+        ax.plot(p_grid, energy(p_grid, y, z), color=c, lw=2.5, label=rf"$z = {zl}$")
+    ax.set_title(rf"${yl} = {y:.2f}$   (pente $y - y_0 = {y - y0:+.2f}$)")
+    ax.set_xlabel(r"$p$")
+    ax.set_xlim(0, 1)
+    ax.grid(alpha=0.3)
+    ax.legend(fontsize=9)
+
+axes[0].set_ylabel(r"$v(p,y)$")
+fig.suptitle(
+    r"$v(p,y) = v_0 + \frac{y^2}{2} + \frac{\lambda_b}{2}(z-y)^2 + p\,(y - y_0)$, $y_0 = v_0 - \frac{1}{2}$"
+    rf"  —  $\lambda_b={lambda_b}$, $v_0={v0}$, $y_0={y0}$"
+)
+plt.show()
