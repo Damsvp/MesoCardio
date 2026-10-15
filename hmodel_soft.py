@@ -190,7 +190,7 @@ def run(model, N, T, dt, mode, rng, state=None, v=0.0, nu=None, Fext_fn=None, re
             dxc = v * dt
         else:
             K = np.where(att, np.maximum(model.W1.d2w(X), 0.0), 0.0).sum()
-            F = Fext_fn(t) if Fext_fn is not None else 0.0
+            F = Fext_fn(t, xc) if Fext_fn is not None else 0.0
             dxc = -(F + S) * dt / (nu + K * dt)
         # --- rates for the active channels
         det = ~att

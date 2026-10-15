@@ -2,8 +2,6 @@
 Needs clamp_sweep.npy (sweep_clamp.py) and ramp_*.npz (soft_ramp.py)."""
 import glob
 import numpy as np
-import matplotlib
-matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 S = np.load("clamp_sweep.npy")
@@ -60,5 +58,6 @@ ax[2].set_title("soft-device ramps (dark: up, light: down)")
 ax[2].legend(fontsize=7)
 ax[2].axhline(0, color="k", lw=0.5)
 plt.tight_layout()
-plt.savefig("S_curve.png", dpi=130)
+plt.show()
+#plt.savefig("S_curve.png", dpi=130)
 print("tau0 =", tau0)

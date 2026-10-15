@@ -26,7 +26,7 @@ m = H.HModel()
 rng = np.random.default_rng(7)
 t0 = time.time()
 o = H.run(m, N=N, T=T_hold + 2 * T_ramp, dt=dt, mode="soft", nu=N * nu_t,
-          Fext_fn=lambda t: -N * pbar(t), rng=rng, record_every=25)
+          Fext_fn=lambda t, xc: -N * pbar(t), rng=rng, record_every=25)
 t = o["t"]
 np.savez(f"ramp_{tag}.npz", t=t, xc=o["xc"], vel=o["vel"], tau=o["tau"], na=o["na"],
          p=np.array([pbar(x) for x in t]), N=N, nu_t=nu_t, tau0=tau0)
