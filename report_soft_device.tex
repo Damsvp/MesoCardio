@@ -3,6 +3,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath,amssymb}
 \usepackage{booktabs}
+\usepackage{longtable}
 \usepackage{graphicx}
 \usepackage[margin=2.5cm]{geometry}
 \usepackage{hyperref}
@@ -12,43 +13,128 @@
 \newcommand{\dd}{\mathrm{d}}
 \newcommand{\umps}{\,\mu\mathrm{m\,s^{-1}}}
 \newcommand{\tauz}{\tau_{c,0}}
+\newcommand{\pss}{\bar p_{\rm ss}}
 
 \title{Soft-device closure for the $h$-model of actin--myosin interaction:\\
-definitions, imposed quantities, protocols and results}
+notation, imposed quantities, protocols and results}
 \author{}
-\date{14 October 2026}
+\date{\today}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
 \noindent
-We implement the $h$-model of Chaintron, Caruel and Kimmig (Math.\ in Action 12, 2023) with $N$ heads, and we add a closure for the sliding variable $x_c$ in which the \emph{total force} is imposed and the sliding speed is an output (soft device). This note states what is imposed and what is measured in each numerical experiment, defines every plotted quantity, and reports the results, including the S-shaped force--speed relation that appears when lengthening speeds are allowed. Calibration choices that are inferred rather than read from the paper are listed explicitly in Section~\ref{sec:caveats}.
+We implement the $h$-model of Chaintron, Caruel and Kimmig (Math.\ in Action 12, 2023) with $N$ heads and add a closure for the sliding variable $x_c$ in which the total force is imposed and the sliding speed is an output (soft device). Section~\ref{sec:notation} defines every symbol, and marks those that are not in the paper. The note then states what is imposed and what is measured in each numerical experiment, defines every plotted quantity, and reports the results: the force--speed relation with its S-shaped part when lengthening is allowed, and stick--slip cycles in a mixed device (a spring in series, far end driven). Calibration choices that are inferred rather than read from the paper are listed in Section~\ref{sec:caveats}.
 \end{abstract}
 
 \section{Setting}
 
-The paper computes the force--velocity curve in \emph{velocity clamp}: the sliding velocity $\dot x_c$ is imposed and the mean force per head $\tau_c$ is measured (its Fig.~5.2). In a force experiment the roles are reversed. Here we do both, with the same head-level model, and relate them:
+The paper computes the force--velocity curve in \emph{velocity clamp}: the sliding velocity $\dot x_c$ is imposed and the mean force per head is measured (its Fig.~5.2). In a force experiment the roles are reversed. Here we do both, with the same head-level model:
 \begin{itemize}
-\item velocity clamp gives the curve $\tau_{ss}(u)$, with $u=-\dot x_c$;
-\item the soft device imposes a load, adds a macroscopic viscosity $\nu$ on $x_c$, and measures $u(t)$.
+\item velocity clamp gives the steady-state force $\tau_{ss}(u)$ at imposed shortening speed $u=-\dot x_c$;
+\item the soft device imposes a load, adds a macroscopic viscosity $\nu$ on $x_c$, and measures $u(t)$;
+\item the mixed device adds a spring between $x_c$ and a far end that is held or driven.
 \end{itemize}
-The two are linked by a steady-state relation (Section~\ref{sec:steady}) whose non-monotone part produces the S.
+The first two are linked by a steady-state relation (Section~\ref{sec:steady}) whose non-monotone part produces the S.
 
-\section{The \texorpdfstring{$h$}{h}-model as implemented}
+\section{Notation and conventions}
+\label{sec:notation}
 
-\subsection{State, units, geometry}
-Head $i=1,\dots,N$ carries $(\alpha_i,X_i,h_i)$: $\alpha_i\in\{0,1\}$ (detached/attached), $X_i$ the position of the tip relative to its anchor, and $h_i\in[-d/2,d/2)$ the signed distance from the tip to the nearest actin site, so that the site is at $X_i+h_i$. When attached, $X_i$ is the site position and $h_i=0$. Units are nm, ms, pN, zJ ($1\,\mathrm{pN\,nm}=1\,\mathrm{zJ}$); $\mu\mathrm m/\mathrm s\equiv\mathrm{nm/ms}$. We use $d=40$ nm, $T=298$ K, $\kBT\simeq 4.11$ zJ, $\mu_T=100$ zJ, and the micro drag $\eta=0.097$ pN\,ms/nm of the detached tip.
+\paragraph{Sign convention.} Following the paper, $\dot x_c<0$ is contraction. All forces are counted positive in the direction of contraction (toward $-x$), unless stated. A force along $+x$ is therefore the opposite of what is called ``positive'' here. Units are nm, ms, pN, zJ, with $1\,\mathrm{pN\,nm}=1\,\mathrm{zJ}$ and $1\,\mathrm{nm/ms}=1\,\mu\mathrm{m/s}$.
 
-\subsection{Energies and force per head}
-The detached and attached energies $w_0,w_1$ are the regularised piecewise quadratic potentials of Table~D.1 (Appendix~\ref{app:params}). A head transmits to the actin only when attached:
+\paragraph{Origin column.} ``P'' means the symbol is in the paper (Math.\ in Action 2023). ``P*'' means the quantity is in the paper but the symbol or the argument is changed here. ``O'' means it is introduced in this note.
+
+{\small
+\begin{longtable}{p{2.5cm}p{8.5cm}p{1.0cm}p{1.9cm}}
+\toprule
+symbol & definition & origin & units \\
+\midrule
+\endhead
+\multicolumn{4}{l}{\emph{Heads and geometry}}\\
+$N$ & number of heads in the simulated cluster. (The paper's $N(\dd t,\dd u)$ is a Poisson measure, unrelated.) & O & --\\
+$i$ & head index, $i=1,\dots,N$ & O & --\\
+$\alpha_i(t)$ & attachment state of head $i$: $1$ attached, $0$ detached & P & --\\
+$X_i(t)$ & position of the tip of head $i$ relative to its anchor on the myosin filament & P & nm\\
+$h_i(t)$ & signed distance from the tip to the nearest actin site, taken in $[-d/2,d/2)$; the site is at $X_i+h_i$. The paper writes $h^\star_t$ for the representative in $[-d/2,d/2)$ of $h_t\in\mathbb T_d$ & P & nm\\
+$d$ & distance between two consecutive actin sites ($40$ nm) & P & nm\\
+$x$ & tip coordinate of a \emph{detached} head, as in $K_{0\to1}(x,h)$ & P & nm\\
+$x_{\rm att}$ & tip coordinate of an \emph{attached} head. It equals the position of the actin site the head is bound to, i.e.\ $X_i$ when $\alpha_i=1$. Used as the argument of the rates $K_{1\to0}$, $K^{\rm rev}_{0\to1}$ and of $w_1$ (the paper writes $X_{t^-}$ in (3.2)) & O & nm\\
+$x_{\rm det}$ & $x_{\rm det}:=x_{\rm att}-h$. The detached tip position paired with $x_{\rm att}$ through the value $h$: a detached head at $x_{\rm det}$ with distance $h$ to its site attaches and lands at $x_{\rm det}+h=x_{\rm att}$; the reverse jump from $x_{\rm att}$ lands at $x_{\rm det}$ with distance $h$ & O & nm\\
+\midrule
+\multicolumn{4}{l}{\emph{Energies and thermal parameters}}\\
+$w_0(x)$, $w_1(x)$ & energy of a detached tip at $x$, and of an attached tip at $x_{\rm att}=x$ (Appendix~\ref{app:params}) & P & zJ\\
+$w_1'$, $w_1''$ & first and second derivative of $w_1$ & O & pN, pN/nm\\
+$\kBT$ & thermal energy, $k_B=1.380649\times10^{-2}$ zJ/K, $T=298$ K, so $\kBT\simeq4.11$ zJ. (Here $T$ is the temperature; durations are written $t_{\max}$) & P & zJ\\
+$\mu_T$ & chemical potential of ATP, $100$ zJ & P & zJ\\
+$\eta$ & micro drag of a detached tip, $0.097$ pN\,ms/nm: $\dd X=-\eta^{-1}w_0'(X)\dd t+\sqrt{2\eta^{-1}\kBT}\,\dd B$ & P & pN\,ms/nm\\
+\midrule
+\multicolumn{4}{l}{\emph{Jump rates}}\\
+$K_{0\to1}(x,h)$ & rate of direct attachment for a detached head at $x$ with site distance $h$ (channel A). Primitive, Table D.1 & P & ms$^{-1}$\\
+$K^{\rm rev}_{1\to0}(x,h)$ & rate of attachment by the reverse of detachment (channel B). Primitive, Table D.1 & P & ms$^{-1}$\\
+$K_{1\to0}(x_{\rm att},h)$ & density in $h$ of direct detachment of a head attached at $x_{\rm att}$, landing with distance $h$ (channel C). Derived from detailed balance & P & ms$^{-1}$nm$^{-1}$\\
+$K^{\rm rev}_{0\to1}(x_{\rm att},h)$ & density in $h$ of the reverse of attachment (channel D). Derived from detailed balance & P & ms$^{-1}$nm$^{-1}$\\
+$k_{1\to0}(x_{\rm att})$, $k^{\rm rev}_{0\to1}(x_{\rm att})$ & global rates of channels C and D, $\int K\,\dd h$ over $[-d/2,d/2)$. The paper writes $k_{1\to0}(x,0)$ in Appendix A & P* & ms$^{-1}$\\
+A, B, C, D & the four jump channels (table in Section~\ref{sec:model}); $n_A,\dots,n_D$ are the numbers of events through each & O & --\\
+$c$, $e$ & clock and threshold of a channel; a jump occurs when $c>e$, $e\sim\mathcal E(1)$ (Algorithm 1) & P & --\\
+\midrule
+\multicolumn{4}{l}{\emph{Sliding variables}}\\
+$x_c(t)$ & actin coordinate: all sites move rigidly with it, so an attached tip has $\dot X_i=\dot x_c$ & P* & nm\\
+$\dot x_c$ & sliding velocity, $<0$ in contraction & P & nm/ms\\
+$v$ & value imposed on $\dot x_c$ in the velocity clamp & O & nm/ms\\
+$u$ & shortening speed $u:=-\dot x_c$; $u>0$ shortening, $u<0$ lengthening & O & nm/ms\\
+$u_5(t)$ & speed averaged over 5 ms, $u_5(t+2.5\,\mathrm{ms})=-[x_c(t+5\,\mathrm{ms})-x_c(t)]/5\,\mathrm{ms}$ & O & nm/ms\\
+$\delta t$, $\Delta x_c$ & time step ($0.002$ ms) and the displacement of $x_c$ in one step & O & ms, nm\\
+\midrule
+\multicolumn{4}{l}{\emph{Forces}}\\
+$f_i$ & force transmitted to the actin by head $i$: $f_i=\alpha_iw_1'(X_i)$ ($=0$ if detached). $f_i>0$ is traction. The paper's integrand is $\partial_xw_1$ & P* & pN\\
+$F_{\rm mot}$ & total motor force, $F_{\rm mot}=\sum_{i=1}^Nf_i$ & O & pN\\
+$\hat\tau(t)$ & instantaneous mean force per head over all $N$ heads (attached or not), $\hat\tau=F_{\rm mot}/N$. Estimator of $\tau_c$ & O & pN\\
+$\tau_c(t)$ & the paper's force per head, $\int\partial_xw_1\,p(t,1,x)\,\dd x$. It is the expectation of one $f_i$, so $\mathbb E[\hat\tau]=\tau_c$ & P & pN\\
+$n_a(t)$ & attached fraction, $N^{-1}\sum_i\alpha_i$. The paper's $\check n_a$ is its long-time value at $\dot x_c=0$ & P* & --\\
+$\check\tau_c$ & force per \emph{attached} head, $\tau_c/n_a$ & P & pN\\
+$\tau_{ss}(u)$ & \textbf{steady-state mean force per head at imposed shortening speed $u$}: the long-time average of $\hat\tau$ in the velocity clamp $\dot x_c=-u$, equivalently $\tau_c$ at $\dot x_c=-u$ in steady state. Measured as the average over the $N$ heads and over the time after a burn-in. Fig.~5.2 plots $\tau_{ss}(u)/\tauz$ against $u$ for $u>0$ & O & pN\\
+$\tau_{c,0}$ & isometric force per head, used to normalise. In this work $\tauz=\tfrac12[\tau_{ss}(0.1)+\tau_{ss}(-0.1)]=0.899$ pN (the exact $\dot x_c=0$ ensemble is quenched in $h$, see Section~\ref{sec:caveats}) & P* & pN\\
+$\sigma_f$ & standard deviation of one $f_i$ & O & pN\\
+\midrule
+\multicolumn{4}{l}{\emph{Closure, load and device}}\\
+$F_{\rm ext}$ & external force on the actin, positive when it assists contraction (i.e.\ the force along $+x$ is $-F_{\rm ext}$) & O & pN\\
+$P$ & load opposing contraction, $P=-F_{\rm ext}$ & O & pN\\
+$\bar p$ & load per head, $\bar p=P/N$ & O & pN\\
+$\nu$ & macroscopic drag on $x_c$: drag force $=-\nu\dot x_c$ & O & pN\,ms/nm\\
+$\tilde\nu$ & drag per head, $\tilde\nu=\nu/N$ & O & pN\,ms/nm\\
+$\pss(u)$ & steady-state load per head that sustains speed $u$, $\pss(u):=\tau_{ss}(u)-\tilde\nu u$ (eq.~\eqref{eq:pbar}) & O & pN\\
+$K_+$ & total attached stiffness used in the numerical scheme, $K_+=\sum_i\alpha_i\max(w_1''(X_i),0)$ & O & pN/nm\\
+$\tilde K$ & mean elastic stiffness per head, $\tilde K=\mathbb E[N^{-1}\sum_i\alpha_iw_1''(X_i)]$ (heuristic of Section~\ref{sec:osc}) & O & pN/nm\\
+$\theta$ & single relaxation time of the force $\hat\tau$ toward $\tau_{ss}$ (heuristic only) & O & ms\\
+$\tau_{ss}'(u)$ & derivative $\dd\tau_{ss}/\dd u$; $\pss'(u)=\tau_{ss}'(u)-\tilde\nu$ & O & pN\,ms/nm\\
+\midrule
+\multicolumn{4}{l}{\emph{Mixed device (spring in series)}}\\
+$x_L(t)$ & far end of the spring, $x_L=x_{L,0}+Vt$ & O & nm\\
+$V$ & speed of the far end; $V>0$ stretches ($x_L$ increases) & O & nm/ms\\
+$k_L$ & spring stiffness \emph{per head} (the spring is $Nk_L$ in total) & O & pN/nm\\
+$g$ & gap $g=x_L-x_c$ & O & nm\\
+$\bar p_0$ & $\bar p_0:=k_Lx_{L,0}$, the load per head at $t=0$ for $x_c(0)=0$; then $\bar p(t)=k_Lg=\bar p_0+k_LVt-k_Lx_c$ & O & pN\\
+\midrule
+\multicolumn{4}{l}{\emph{Run labels}}\\
+$t_{\max}$ & duration of a run & O & ms\\
+yield load & first time on the upward ramp at which $u_5<-3\umps$; the load at that time, in units of $\tauz$ & O & --\\
+recapture load & first time on the downward ramp, after $u_5<-10\umps$ has occurred, at which $u_5>-3\umps$; the load at that time & O & --\\
+\bottomrule
+\end{longtable}
+}
+
+\section{The $h$-model as implemented}
+\label{sec:model}
+
+\subsection{State and energies}
+Head $i$ carries $(\alpha_i,X_i,h_i)$, with $h_i=0$ when attached. The energies $w_0,w_1$ are the regularised piecewise quadratic potentials of Table~D.1 (Appendix~\ref{app:params}). A head transmits force to the actin only when attached:
 \begin{equation}
-f_i=\alpha_i\,w_1'(X_i).
+f_i=\alpha_i\,w_1'(X_i),\qquad F_{\rm mot}=\sum_{i=1}^Nf_i=N\hat\tau .
 \end{equation}
-The paper's $\tau_c(t)=\int\partial_xw_1\,p(t,1,x)\,\dd x$ is the expectation of one $f_i$; we estimate it by $\hat\tau(t)=N^{-1}\sum_i f_i$. The attached fraction is $n_a=N^{-1}\sum_i\alpha_i$ and the force per attached head is $\check\tau_c=\tau_c/n_a$.
 
 \subsection{Jumps and detailed balance}
-There are four channels, each with its own clock $c$ and threshold $e\sim\mathcal E(1)$ (Algorithm~1 of the paper):
+Four channels, each with its own clock $c$ and threshold $e\sim\mathcal E(1)$ (Algorithm~1 of the paper):
 \begin{center}
 \begin{tabular}{cll}
 \toprule
@@ -56,58 +142,55 @@ channel & transition & rate \\
 \midrule
 A & $0\to1$ (direct attachment) & $K_{0\to1}(x,h)$ \\
 B & $0\to1$ (reverse of detachment) & $K^{\rm rev}_{1\to0}(x,h)$ \\
-C & $1\to0$ (direct detachment) & $k_{1\to0}(x)=\int K_{1\to0}(x,h)\,\dd h$ \\
-D & $1\to0$ (reverse of attachment) & $k^{\rm rev}_{0\to1}(x)=\int K^{\rm rev}_{0\to1}(x,h)\,\dd h$ \\
+C & $1\to0$ (direct detachment) & $k_{1\to0}(x_{\rm att})=\int K_{1\to0}(x_{\rm att},h)\,\dd h$ \\
+D & $1\to0$ (reverse of attachment) & $k^{\rm rev}_{0\to1}(x_{\rm att})=\int K^{\rm rev}_{0\to1}(x_{\rm att},h)\,\dd h$ \\
 \bottomrule
 \end{tabular}
 \end{center}
-$K_{0\to1}$ and $K^{\rm rev}_{1\to0}$ are the primitive rates of Table~D.1. The other two follow from detailed balance. With the pairing $x_{\rm det}=x_{\rm att}-h$,
+A and B are active for a detached head, with $x=X_i$ and $h=h_i$. C and D are active for an attached head, with $x_{\rm att}=X_i$. $K_{0\to1}$ and $K^{\rm rev}_{1\to0}$ are the primitive rates of Table~D.1. The other two follow from detailed balance. With the pairing $x_{\rm det}=x_{\rm att}-h$,
 \begin{align}
-K^{\rm rev}_{0\to1}(x_{\rm att},h)&=\frac1d\,K_{0\to1}(x_{\rm att}-h,h)\,\exp\!\Big[\frac{w_1(x_{\rm att})-w_0(x_{\rm att}-h)}{\kBT}\Big],\\
-K_{1\to0}(x_{\rm att},h)&=\frac1d\,K^{\rm rev}_{1\to0}(x_{\rm att}-h,h)\,\exp\!\Big[\frac{w_1(x_{\rm att})-w_0(x_{\rm att}-h)+\mu_T}{\kBT}\Big].
+K^{\rm rev}_{0\to1}(x_{\rm att},h)&=\frac1d\,K_{0\to1}(x_{\rm det},h)\,\exp\!\Big[\frac{w_1(x_{\rm att})-w_0(x_{\rm det})}{\kBT}\Big],\\
+K_{1\to0}(x_{\rm att},h)&=\frac1d\,K^{\rm rev}_{1\to0}(x_{\rm det},h)\,\exp\!\Big[\frac{w_1(x_{\rm att})-w_0(x_{\rm det})+\mu_T}{\kBT}\Big].
 \end{align}
-The factor $1/d$ is discussed in Section~\ref{sec:caveats}. On detachment through C or D, the landing value $h'$ is drawn from the corresponding density $K_{1\to0}(x_{\rm att},\cdot)$ or $K^{\rm rev}_{0\to1}(x_{\rm att},\cdot)$, using tabulated cumulative distributions.
+The factor $1/d$ is discussed in Section~\ref{sec:caveats}. On detachment through C or D, the landing value $h'$ is drawn from the density $K_{1\to0}(x_{\rm att},\cdot)$ or $K^{\rm rev}_{0\to1}(x_{\rm att},\cdot)$ using tabulated cumulative distributions.
 
 \subsection{Time stepping}
-At each step $\delta t=0.002$ ms: (i) compute $\sum_i f_i$ and fix $\Delta x_c$ (Section~\ref{sec:closure}); (ii) update the clocks of the active channels (A, B if detached; C, D if attached) and select the channel with the largest positive residual $c-e$, if any; (iii) move detached tips by Euler--Maruyama, $\Delta X=-\eta^{-1}w_0'(X)\delta t+\sqrt{2\kBT\delta t/\eta}\,\xi$, with $h\leftarrow h+\Delta x_c-\Delta X \pmod d$, and move attached tips by $\Delta x_c$; (iv) apply jumps: attachment sets $X\leftarrow X+h+\Delta x_c$, $h\leftarrow0$; detachment sets $X\leftarrow X+\Delta x_c-h'$, $h\leftarrow h'$; (v) reset the clocks of jumping heads.
+At each step $\delta t=0.002$ ms: (i) compute $F_{\rm mot}$ and fix $\Delta x_c$ (Section~\ref{sec:closure}); (ii) update the clocks of the active channels and select the channel with the largest positive residual $c-e$, if any; (iii) move detached tips by Euler--Maruyama, $\Delta X=-\eta^{-1}w_0'(X)\delta t+\sqrt{2\kBT\delta t/\eta}\,\xi$, $\xi\sim\mathcal N(0,1)$, with $h\leftarrow h+\Delta x_c-\Delta X \pmod d$, and move attached tips by $\Delta x_c$; (iv) apply jumps: attachment sets $X\leftarrow X+h+\Delta x_c$, $h\leftarrow0$; detachment sets $X\leftarrow X+\Delta x_c-h'$, $h\leftarrow h'$; (v) reset the clocks of jumping heads. Numerically, $K_{1\to0}$ and $K^{\rm rev}_{0\to1}$ are tabulated on a grid of $x_{\rm att}\in[-100,100]$ nm (step $0.2$) and $h$ (midpoints, step $0.25$ nm); exponents are clipped to $\pm30$ and tips to $\pm100$ nm.
 
 \section{Imposing the sliding}
 \label{sec:closure}
 
-\subsection{Conventions}
-Following the paper, $\dot x_c<0$ is contraction and $f_i>0$ is traction. We use the shortening speed $u=-\dot x_c$ (so $u<0$ is lengthening). All $x_c$-dependence of the energy is through the attached heads, $E=\sum_i\alpha_iw_1(X_i)$ with $\partial X_i/\partial x_c=1$ for an attached head, hence $\partial E/\partial x_c=\sum_if_i$.
-
 \subsection{Velocity clamp (the paper's protocol)}
-$\dot x_c=v$ is prescribed. Heads are then independent, and an ensemble of $N$ heads with random initial $h_i$ is simply a Monte Carlo sample of one head. We measure the time averages $\langle\hat\tau\rangle$ and $\langle n_a\rangle$ after a burn-in. Defining
+$\dot x_c=v$ is prescribed. Heads are then independent, and an ensemble of $N$ heads with random initial $h_i$ is a Monte Carlo sample of one head. We measure $\langle\hat\tau\rangle$ and $\langle n_a\rangle$, averaged over the $N$ heads and over time after a burn-in, and define
 \begin{equation}
-\tau_{ss}(u):=\langle\hat\tau\rangle\big|_{\dot x_c=-u}
+\tau_{ss}(u):=\langle\hat\tau\rangle\big|_{\dot x_c=-u}.
 \end{equation}
-gives the force--velocity curve of Fig.~5.2, now also for $u<0$.
 
 \subsection{Soft device}
-The actin is rigid with coordinate $x_c$, subject to a viscous drag $\nu\dot x_c$, an external force and the motor force. Overdamped balance gives
+The actin is rigid with coordinate $x_c$, subject to the drag $-\nu\dot x_c$, the external force and the motor force. All $x_c$-dependence of the energy $E=\sum_i\alpha_iw_1(X_i)$ comes from the attached heads ($\partial X_i/\partial x_c=1$), so $\partial E/\partial x_c=F_{\rm mot}$. Overdamped force balance gives
 \begin{equation}
-\nu\,\dot x_c=-F_{\rm ext}-\sum_{i=1}^N f_i,
+F_{\rm ext}+F_{\rm mot}+\nu\,\dot x_c=0,
 \qquad\text{i.e.}\qquad
-F_{\rm ext}+\sum_i f_i+\nu\dot x_c=0 .
+\nu\,\dot x_c=-F_{\rm ext}-\sum_{i=1}^N f_i .
 \label{eq:closure}
 \end{equation}
-$F_{\rm ext}>0$ assists contraction; a load opposing contraction is $P=-F_{\rm ext}$. At $\dot x_c=0$ it reduces to $F_{\rm ext}+\sum_if_i=0$. This is the same update as the $\delta s$ step of the earlier $N$-head JAP codes, with $v\leftrightarrow\nu$ and $F\leftrightarrow-F_{\rm ext}$.
+Every term is a force in the direction of contraction: $F_{\rm ext}>0$ assists contraction, $F_{\rm mot}>0$ is traction, and the drag on a filament moving at shortening speed $u$ is $-\nu u=+\nu\dot x_c$. Equation \eqref{eq:closure} is the same update as the $\delta s$ step of the earlier $N$-head JAP codes, with $v\leftrightarrow\nu$ and $F\leftrightarrow-F_{\rm ext}$. If the opposite sign convention is used (force $F^{(+x)}_{\rm mot}=-\sum_if_i$ along $+x$), the balance reads $F^{(+x)}_{\rm ext}+F^{(+x)}_{\rm mot}-\nu\dot x_c=0$ and is the same equation.
 
-\paragraph{Per-head form.} With $\tilde\nu=\nu/N$ and $\bar p=P/N=-F_{\rm ext}/N$,
+\paragraph{Per-head form.} With $\tilde\nu=\nu/N$, $F_{\rm ext}=-N\bar p$ and $F_{\rm mot}=N\hat\tau$,
 \begin{equation}
-\tilde\nu\,\dot x_c=\bar p-\hat\tau
-\quad\Longleftrightarrow\quad
 \hat\tau=\bar p+\tilde\nu\,u .
 \label{eq:perhead}
 \end{equation}
-Since the force on the filament is $N\tau_c$ and not $\tau_c$, the sum in \eqref{eq:closure} is $N\hat\tau$.
+The force on the filament is $N\hat\tau$, not $\hat\tau$.
 
-\paragraph{Numerics.} At fixed $\alpha$, $\frac{\dd}{\dd t}\sum f=K\dot x_c$ with $K=\sum_i\alpha_i\max(w_1''(X_i),0)$, which makes \eqref{eq:closure} stiff with rate $K/\nu$. We use the semi-implicit step
+\paragraph{Numerics.} At fixed $\alpha$, $\frac{\dd}{\dd t}F_{\rm mot}=K_+\dot x_c$ (for the clipped stiffness), which makes \eqref{eq:closure} stiff with rate $K_+/\nu$. We use the semi-implicit step
 \begin{equation}
-\Delta x_c=-\frac{(F_{\rm ext}+\sum_if_i)\,\delta t}{\nu+K\,\delta t}.
+\Delta x_c=-\frac{(F_{\rm ext}+F_{\rm mot})\,\delta t}{\nu+K_+\,\delta t}.
 \end{equation}
 There is no thermal noise on $x_c$.
+
+\subsection{Mixed device}
+A spring of stiffness $Nk_L$ links the actin to a far end at $x_L(t)=x_{L,0}+Vt$, giving the load per head $\bar p=k_L(x_L-x_c)=\bar p_0+k_LVt-k_Lx_c$. This is a spring in series with the cluster, like the elastic backbone $k_b$ of Fig.~7(b) of Caruel, Allain and Truskinovsky (J.\ Mech.\ Phys.\ Solids 76, 2015). In that figure the force $T$ is applied at the two ends, whereas here the far end is held or driven in position. The closure \eqref{eq:perhead} is unchanged, with $F_{\rm ext}=-N\bar p(t,x_c)$ now depending on $x_c$. $V=0$ is a fixed far end.
 
 \subsection{What is imposed and what is measured}
 \begin{center}
@@ -117,38 +200,39 @@ experiment & imposed & measured \\
 \midrule
 isometric & $\dot x_c=0$ & $\langle n_a\rangle$, $\langle\hat\tau\rangle$, $\check\tau_c$ \\
 velocity-clamp sweep & $\dot x_c=v$, 21 values from $+6$ to $-15\umps$ & $\langle\hat\tau\rangle$, $\langle n_a\rangle$ $\Rightarrow\tau_{ss}(u)$ \\
-soft-device ramp & $F_{\rm ext}(t)=-N\bar p(t)$, $\nu=N\tilde\nu$ & $x_c(t)$, hence $u(t)$; also $\hat\tau$, $n_a$ \\
+soft-device ramp & $F_{\rm ext}(t)=-N\bar p(t)$, $\nu=N\tilde\nu$ & $x_c(t)$, hence $u_5(t)$; also $\hat\tau$, $n_a$ \\
+mixed device & $F_{\rm ext}=-N[\bar p_0+k_LVt-k_Lx_c]$, $\nu=N\tilde\nu$ & $x_c(t)$, and $\bar p(t)$ computed from it \\
 \bottomrule
 \end{tabular}
 \end{center}
-Common settings. Velocity clamp: $N=400$, $T=60$ ms, burn-in 15 ms, $\delta t=0.002$ ms. Soft ramp: $\bar p(t)$ is piecewise linear, held at $0.22$ pN for 60 ms, raised to $1.144$ pN over 300 ms, and lowered back over 300 ms ($0.245\to1.272$ in units of $\tauz=0.899$ pN); $\tilde\nu\in\{0.05,0.30\}$ pN\,ms/nm and $N\in\{30,100,300\}$. All runs start with every head detached, $h$ uniform on $[-d/2,d/2)$, and the tip drawn from a Gaussian around $x=-2$ nm.
+Common settings. Velocity clamp: $N=400$, $t_{\max}=60$ ms, burn-in 15 ms, $\delta t=0.002$ ms. Soft ramp: $\bar p(t)$ is piecewise linear, held at $0.22$ pN for 60 ms, raised to $1.144$ pN over 300 ms and lowered back over 300 ms ($0.245\to1.272$ in units of $\tauz=0.899$ pN); $\tilde\nu\in\{0.05,0.30\}$ pN\,ms/nm and $N\in\{30,100,300\}$. All runs start with every head detached, $h$ uniform on $[-d/2,d/2)$ and the tip drawn from a Gaussian around $x=-2$ nm.
 
 \section{Steady states under force control and the S}
 \label{sec:steady}
 
 \subsection{Steady-state relation}
-In a steady state at speed $u$ the mean force is $\tau_{ss}(u)$, so \eqref{eq:perhead} gives the load that sustains that speed:
+In a steady state at speed $u$ the mean force per head is $\tau_{ss}(u)$, so \eqref{eq:perhead} gives the load that sustains that speed:
 \begin{equation}
-\bar p(u)=\tau_{ss}(u)-\tilde\nu\,u .
+\pss(u)=\tau_{ss}(u)-\tilde\nu\,u .
 \label{eq:pbar}
 \end{equation}
-For $\tilde\nu\to0$ this is the paper's curve, which is the experimental force-clamp protocol. A positive $\tilde\nu$ shifts each point horizontally by $-\tilde\nu u$.
+For $\tilde\nu\to0$ this is the paper's curve, which corresponds to the experimental force-clamp protocol. A positive $\tilde\nu$ shifts each point horizontally by $-\tilde\nu u$.
 
 \subsection{Stability (heuristic)}
-Assume the head population relaxes to $\tau_{ss}$ with a single time $\theta$, $\theta\dot\tau=\tau_{ss}(u)-\tau$, with $u=(\tau-\bar p)/\tilde\nu$ from \eqref{eq:perhead}. Linearising,
+Assume the head population relaxes to $\tau_{ss}$ with a single time $\theta$, $\theta\dot{\hat\tau}=\tau_{ss}(u)-\hat\tau$, with $u=(\hat\tau-\bar p)/\tilde\nu$ from \eqref{eq:perhead}. Linearising,
 \begin{equation}
-\theta\,\delta\dot\tau=\Big(\frac{\tau_{ss}'(u)}{\tilde\nu}-1\Big)\delta\tau,
+\theta\,\delta\dot{\hat\tau}=\Big(\frac{\tau_{ss}'(u)}{\tilde\nu}-1\Big)\delta\hat\tau,
 \end{equation}
-so a steady state is stable if and only if $\tau_{ss}'(u)<\tilde\nu$, equivalently $\dd\bar p/\dd u<0$. This is a one-timescale argument; the real population relaxes on several timescales, so it should be read as a criterion for the sign, not for the location.
+so a steady state is stable if and only if $\tau_{ss}'(u)<\tilde\nu$, equivalently $\pss'(u)<0$. This is a one-timescale argument, a criterion for the sign and not for the location.
 
 \subsection{Origin of the fold}
-Where $\tau_{ss}$ is non-monotone, $\bar p(u)$ is multivalued as a function of the load. We measured $\tau_{ss}$ decreasing monotonically for lengthening ($u<0$), and a slight rise for small $u>0$ (from $0.88$ to $0.94$ pN, comparable to the scatter), as the paper also notes for small shortening speeds. For $\tilde\nu=0.05$ this leaves a stable shortening branch ending at $\bar p\simeq1.03\,\tauz$ ($u\simeq0.2$), an unstable stretch around the stall point, and a fast-lengthening branch $u\simeq(\bar p-\hat\tau)/\tilde\nu$ whose minimum load is $\simeq0.59\,\tauz$ at $|u|\simeq3$. Increasing $\tilde\nu$ removes the fold (Table~\ref{tab:fold}).
+Where $\tau_{ss}$ is non-monotone, $\pss(u)$ is multivalued as a function of the load. We measured $\tau_{ss}$ decreasing monotonically for lengthening ($u<0$), and a slight rise for small $u>0$ (from $0.88$ to $0.94$ pN, comparable to the scatter), as the paper also notes for small shortening speeds. For $\tilde\nu=0.05$ this leaves a stable shortening branch ending at $\pss\simeq1.03\,\tauz$ ($u\simeq0.2$), an unstable stretch around the stall point, and a fast-lengthening branch $u\simeq(\hat\tau-\bar p)/\tilde\nu$ whose minimum load is $\simeq0.59\,\tauz$ at $|u|\simeq3$. Increasing $\tilde\nu$ removes the fold (Table~\ref{tab:fold}).
 
 \begin{table}[h]
 \centering
 \begin{tabular}{ccc}
 \toprule
-$\tilde\nu$ (pN\,ms/nm) & max of $\bar p$ on stall/shortening side & min of $\bar p$ on lengthening side \\
+$\tilde\nu$ (pN\,ms/nm) & max of $\pss$ on stall/shortening side & min of $\pss$ on lengthening side \\
 \midrule
 0.05 & $1.03\,\tauz$ at $u=0.2$ & $0.59\,\tauz$ at $u=-3$ \\
 0.15 & $1.02\,\tauz$ & $0.85\,\tauz$ at $u=-1.5$ \\
@@ -164,24 +248,24 @@ $\tilde\nu$ (pN\,ms/nm) & max of $\bar p$ on stall/shortening side & min of $\ba
 \begin{figure}[h]
 \centering
 \includegraphics[width=\textwidth]{S_curve.png}
-\caption{Left: velocity-clamp curve. Middle: steady-state load from \eqref{eq:pbar}. Right: soft-device ramps.}
+\caption{Left: velocity-clamp curve. Middle: steady-state load \eqref{eq:pbar}. Right: soft-device ramps.}
 \label{fig:S}
 \end{figure}
 
-\paragraph{Left panel (simulation, velocity clamp).} Horizontal axis: $\langle\hat\tau\rangle/\tauz$, mean force per head. Vertical axis: $u=-\dot x_c$ in $\mu$m/s; $u>0$ is shortening and $u<0$ is lengthening. Each marker is one clamp run of $N=400$ heads with $\dot x_c$ imposed. The point at $u=0$ is replaced by the mean of $u=\pm0.1$ because at $\dot x_c=0$ the ensemble is quenched in $h$ and its mean depends on the sample. $\tauz$ is the value at $u\approx0$, $0.899$ pN.
+\paragraph{Left panel (simulation, velocity clamp).} Horizontal axis: $\tau_{ss}(u)/\tauz$. Vertical axis: $u$ in $\mu$m/s; $u>0$ is shortening and $u<0$ is lengthening. Each marker is one clamp run of $N=400$ heads with $\dot x_c=-u$ imposed. The point at $u=0$ is replaced by the mean of $u=\pm0.1$ (definition of $\tauz$).
 
-\paragraph{Middle panel (no new simulation).} It is the transformation \eqref{eq:pbar} applied to the left-panel data, with the horizontal axis now the imposed load per head $\bar p/\tauz$. Each line is one value of $\tilde\nu$; the black line is $\tilde\nu=0$ and equals the left panel. The axes are cut to $0\le\bar p/\tauz\le1.5$.
+\paragraph{Middle panel (no new simulation).} It is the transformation \eqref{eq:pbar} applied to the left-panel data, with the horizontal axis $\pss(u)/\tauz$. Each line is one $\tilde\nu$; the black line is $\tilde\nu=0$ and equals the left panel. The horizontal axis is cut to $0\le\pss/\tauz\le1.5$.
 
-\paragraph{Right panel (simulation, soft device).} Horizontal axis: the imposed load $\bar p(t)/\tauz$ at the midpoint of a window. Vertical axis: $u=-[x_c(t+5\,\mathrm{ms})-x_c(t)]/5\,\mathrm{ms}$, the speed averaged over 5 ms. Dark lines are the upward ramp, light lines the downward ramp; solid is $\tilde\nu=0.05$ (colours: $N=30,100,300$), dotted is $\tilde\nu=0.30$ with $N=100$. The dashed black line is the middle-panel prediction for $\tilde\nu=0.05$. Here the load is the input and $u$ is an output, so jumps appear as vertical segments.
+\paragraph{Right panel (simulation, soft device).} Horizontal axis: the imposed load $\bar p(t)/\tauz$ at the midpoint of a window. Vertical axis: $u_5$. Dark lines are the upward ramp, light lines the downward ramp; solid is $\tilde\nu=0.05$ (colours: $N=30,100,300$), dotted is $\tilde\nu=0.30$ with $N=100$. The dashed black line is the middle-panel prediction for $\tilde\nu=0.05$. Here the load is the input and $u_5$ is an output, so jumps appear as vertical segments.
 
 \section{Results}
 
 \subsection{Validation}
 \begin{itemize}
-\item \emph{Thermodynamic consistency.} At $\mu_T=0$ with $\dot x_c=0$ the net cycling vanishes: $(A-D)/(A+D)=0.002$ and $(C-B)/(C+B)=-0.003$ ($N=600$, 90 ms). At $\mu_T=100$ zJ the net flux is positive.
-\item \emph{Isometric indicators} (Table~5.1: $n_a=0.151$, $\check\tau_c=6.39$ pN). We obtain $n_a\simeq0.14$--$0.15$ and $\check\tau_c\simeq5$--$6$ pN, depending on the seed. The spread reflects the quenched $h$ distribution.
-\item \emph{Force--velocity curve (Fig.~5.2).} $\tau/\tauz\simeq0.29$ at $u=5\umps$ and $\simeq0.06$ at $15\umps$, which agrees with the curve as read from the figure.
-\item \emph{Closure.} In the soft-device runs $\bar p+\tilde\nu u=\hat\tau$ holds to within 0.003 pN in 40 ms windows.
+\item \emph{Thermodynamic consistency.} At $\mu_T=0$ with $\dot x_c=0$ the net cycling vanishes: $(n_A-n_D)/(n_A+n_D)=0.002$ and $(n_C-n_B)/(n_C+n_B)=-0.003$ ($N=600$, 90 ms). At $\mu_T=100$ zJ the net flux is positive.
+\item \emph{Isometric indicators} (Table~5.1: $\check n_a=0.151$, $\check\tau_c=6.39$ pN). We obtain $n_a\simeq0.14$--$0.15$ and $\check\tau_c\simeq5$--$6$ pN, depending on the seed. The spread reflects the quenched $h$ distribution.
+\item \emph{Force--velocity curve (Fig.~5.2).} $\tau_{ss}/\tauz\simeq0.29$ at $u=5\umps$ and $\simeq0.06$ at $15\umps$, which agrees with the curve as read from the figure.
+\item \emph{Closure.} In the soft-device runs $\bar p+\tilde\nu u=\hat\tau$ holds to within 0.003 pN when each term is averaged over a 40 ms window.
 \end{itemize}
 
 \subsection{Velocity-clamp data}
@@ -205,7 +289,8 @@ $0.2$  & 0.938 & 0.154 & $5$    & 0.260 & 0.117 \\
        &       &       & $15$   & 0.053 & 0.059 \\
 \bottomrule
 \end{tabular}
-\caption{Velocity clamp, $N=400$, one run per speed. Errors were not estimated by repetition; the scatter between neighbouring speeds (for example $u=-0.3$ and $-0.7$) suggests $\pm0.05$--$0.1$ pN.}
+\caption{Velocity clamp, $N=400$, one run per speed; $u$ in $\umps$. The table lists $\langle\hat\tau\rangle$, the measured value of $\tau_{ss}(u)$. Errors were not estimated by repetition; the scatter between neighbouring speeds (for example $u=-0.3$ and $-0.7$) suggests $\pm0.05$--$0.1$ pN.}
+\label{tab:clamp}
 \end{table}
 
 \subsection{Soft-device ramps}
@@ -221,32 +306,88 @@ $N$ & $\tilde\nu$ & yield load & recapture load & remark \\
 100 & 0.30 & none & none & max lengthening speed $2.4\umps$, reversible \\
 \bottomrule
 \end{tabular}
-\caption{Yield: first upward-ramp time with the 5 ms mean $u<-3\umps$. Recapture: first downward-ramp time after the filament has been below $-10\umps$ at which $u>-3\umps$. One realisation per row; $\tauz=0.899$ pN. Predicted for $\tilde\nu=0.05$, $N\to\infty$: yield $1.03\,\tauz$, floor $0.59\,\tauz$.}
+\caption{Yield and recapture loads as defined in Section~\ref{sec:notation}, in units of $\tauz=0.899$ pN. One realisation per row. Predicted for $\tilde\nu=0.05$, $N\to\infty$: yield $1.03\,\tauz$, floor $0.59\,\tauz$.}
 \end{table}
 
-The upward ramp follows the shortening branch, stalls ($u\approx0$) close to $\tauz$, and then yields to lengthening at speeds up to $\simeq21\umps$ ($\simeq(\bar p-\hat\tau)/\tilde\nu$, with few heads attached). On the way down the filament stays on the fast branch until a load that depends on $N$. For $\tilde\nu=0.30$ there is no runaway.
+The upward ramp follows the shortening branch, stalls ($u\approx0$) close to $\tauz$, and then yields to lengthening at speeds up to $\simeq21\umps$ ($\simeq(\hat\tau-\bar p)/\tilde\nu$, with few heads attached). On the way down the filament stays on the fast branch until a load that depends on $N$. For $\tilde\nu=0.30$ there is no runaway.
 
-\subsection{Dependence on \texorpdfstring{$N$}{N}}
-Equation \eqref{eq:pbar} is the $N\to\infty$ limit. At finite $N$, $u=(\hat\tau-\bar p)/\tilde\nu$ inherits the fluctuations of $\hat\tau$, of order $\sigma_f/\sqrt N$ with $\sigma_f$ the standard deviation of one $f_i$ (a Bernoulli estimate gives $\sigma_f\approx\sqrt{n_a(1-n_a)}\,\check\tau_c\approx2$ pN). The fluctuation of the speed is then $\delta u\sim\sigma_f/(\tilde\nu\sqrt N)$, about $4\umps$ for $N=100$ and $\tilde\nu=0.05$ (an order-of-magnitude estimate), comparable to the mean speed. This is consistent with what we observe: at $N=100$, $\tilde\nu=0.05$ and $\bar p=0.28$ pN the mean speed is $2.45\umps$ with $\hat\tau=0.41$ pN and $n_a=0.14$, whereas the clamp curve gives $\tau_{ss}(2.45)\simeq0.58$ pN at the same $n_a$. The mean force per attached head is lower in the soft device because heads experience a fluctuating speed.
+\subsection{Dependence on $N$}
+Equation \eqref{eq:pbar} is the $N\to\infty$ limit. At finite $N$, $u=(\hat\tau-\bar p)/\tilde\nu$ inherits the fluctuations of $\hat\tau$, of order $\sigma_f/\sqrt N$ (a Bernoulli estimate gives $\sigma_f\approx\sqrt{n_a(1-n_a)}\,\check\tau_c\approx2$ pN). The fluctuation of the speed is then $\delta u\sim\sigma_f/(\tilde\nu\sqrt N)$, about $4\umps$ for $N=100$ and $\tilde\nu=0.05$ (an order-of-magnitude estimate), comparable to the mean speed. This is consistent with what we observe: at $N=100$, $\tilde\nu=0.05$ and $\bar p=0.28$ pN the mean speed is $2.45\umps$ with $\hat\tau=0.41$ pN and $n_a=0.14$, whereas the clamp curve gives $\tau_{ss}(2.45)\simeq0.58$ pN at the same $n_a$. The mean force per attached head is lower in the soft device because heads experience a fluctuating speed.
 
 Two trends are supported by the data: the recapture load moves toward the predicted floor as $N$ grows ($0.74\to0.59$), and the $N=30$ system does not stay on either branch. The yield loads ($1.15,1.14,0.85$) are not monotone in $N$ and come from single runs, so no trend is claimed for them.
+
+\section{Search for oscillations}
+\label{sec:osc}
+
+\subsection{Fixed far end and constant load}
+Runs of 300 ms, $\tilde\nu=0.05$ pN\,ms/nm unless stated, one realisation each. $\bar p$ is the load per head; a fixed far end ($V=0$) gives $\bar p=\bar p_0-k_Lx_c$.
+\begin{center}
+\begin{tabular}{p{4.3cm}p{5.2cm}p{5.0cm}}
+\toprule
+$N$, load & result & reading \\
+\midrule
+30, constant $0.72$ pN & 7 lengthening bursts, mean interval 37 ms, s.d.\ 36 ms & irregular stick--slip (noise-driven) \\
+100, $\bar p_0=0.90$, $k_L=0.04,\,0.10$ & $x_c$ stays within a few nm of stall & pinned at stall \\
+300, $\bar p_0=0.90$, $k_L=0.04$ & step-like slips of a few nm, autocorrelation maximum $0.15$ at 18 ms & no periodicity \\
+30, $\bar p_0=0.90$, $k_L=0.02,0.04,0.10$ & 1--3 bursts in 240 ms & rare slips \\
+100, $\tilde\nu=0.02$, $\bar p_0=0.95$, $k_L=0.01$ & 5 bursts, interval 54 ms, s.d.\ 22 ms, $x_c$ drifts by $+45$ nm & more regular than Poisson; not a demonstrated limit cycle \\
+\bottomrule
+\end{tabular}
+\end{center}
+With a fixed far end no sustained oscillation was obtained. A two-variable heuristic for a stall point with elastic load $k_L$ (my own, untested against the simulation) uses $\theta$, $\tilde K$ and $\tau_{ss}'(0)$ as defined in Section~\ref{sec:notation}. It gives $\det=k_L/(\tilde\nu\theta)>0$ and a Hopf instability when
+\begin{equation}
+\tau_{ss}'(0)>\theta\,(\tilde K+k_L)+\tilde\nu .
+\end{equation}
+For a constant load ($k_L=0$) $\det=0$ and the heuristic excludes a Hopf bifurcation. A length-step test to measure $\theta$ and $\tilde K$ was inconclusive (the force rose after a release, which I traced to the structure of $w_1$ in Section~\ref{sec:caveats}), so the condition has not been evaluated.
+
+\subsection{Driven far end: stick--slip in the mixed device}
+Now $V>0$: the far end is stretched at speed $V$, and $\bar p(t)=\bar p_0+k_LVt-k_Lx_c$.
+
+\paragraph{Mechanism.} In steady lengthening at speed $V$ ($u=-V$), \eqref{eq:pbar} gives the sustaining load $\pss(-V)=\tau_{ss}(-V)+\tilde\nu V$. Our measured $\tau_{ss}$ decreases with lengthening speed (Table~\ref{tab:clamp}), so for $\tilde\nu=0.05$ this load decreases with $V$ for roughly $0.3\lesssim V\lesssim6\umps$. Suppose the speed follows the branch $\pss(u)=k_Lg$ quasi-statically, with $g=x_L-x_c$. Then $\dot g=V+u$ and $\delta u=(k_L/\pss'(u))\,\delta g$, so
+\begin{equation}
+\delta\dot g=\frac{k_L}{\pss'(u)}\,\delta g,
+\end{equation}
+which grows when $\pss'(u)>0$. This is the same unstable condition as in Section~\ref{sec:steady}, and it holds for any $k_L>0$. The stable parts are the stalled state and the fast-lengthening branch, so the expected motion is stick--slip: the load rises while the heads hold ($u\approx0$), the filament slips, and the load falls until the heads recapture. The argument ignores the head kinetics.
+
+\paragraph{Runs.} $\tilde\nu=0.05$, $\bar p_0=0.50$ pN, $t_{\max}=200$ ms, one realisation each. The load is computed from $x_c(t)$. A ``peak'' is a maximum of the 1 ms-smoothed $\bar p$ above $1.0\,\tauz$ separated from the previous peak by more than 5 ms; the FFT is of $\bar p$ after 40 ms.
+\begin{center}
+\begin{tabular}{cccccp{3.3cm}}
+\toprule
+$N$ & $k_L$ & $V$ & load peaks & interval (ms) & mean peak, FFT period \\
+\midrule
+100 & 0.04 & 2.0 & 10 & $16.4\pm6.0$ & $1.35\,\tauz$, 40 ms \\
+100 & 0.04 & 0.7 & 9  & $17.5\pm13.3$ & $1.26\,\tauz$, 53 ms \\
+100 & 0.10 & 2.0 & 15 & $10.8\pm2.9$ & $1.21\,\tauz$, 10 ms \\
+300 & 0.04 & 2.0 & 6  & $21.5\pm9.8$ & $1.15\,\tauz$, 12 ms \\
+\bottomrule
+\end{tabular}
+\end{center}
+In all four runs the load repeatedly sweeps from about $0.3\,\tauz$ to above $1.2\,\tauz$, and the filament slips at up to about $-20\umps$ each time. The cycles are noisy: the coefficient of variation of the peak intervals is $0.27$ to $0.76$, and the FFT period and the mean interval do not agree in every run. The strongest case is $k_L=0.10$, $V=2$ (CV $0.27$, FFT period 10 ms, interval 10.8 ms). The number of slips with $u_{0.25}<-6\umps$ ($u_{0.25}$ being the speed averaged over 0.25 ms) also increases with $V$ ($22$ for $V=2$, $10$ for $V=0.7$, $N=100$, $k_L=0.04$), as expected for stick--slip. What is established here is repeated, load-synchronised slipping; a clean limit cycle (narrow spectral line) is not.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{stickslip.png}
+\caption{Driven far end, $V=2\umps$. Top: $N=100$, $k_L=0.04$. Middle: $N=100$, $k_L=0.10$. Bottom: $N=300$, $k_L=0.04$. Left: load per head $\bar p/\tauz$ against time. Middle: speed (0.25 ms means). Right: speed against load.}
+\label{fig:stickslip}
+\end{figure}
 
 \section{Caveats and limitations}
 \label{sec:caveats}
 \begin{enumerate}
 \item \textbf{Factor $1/d$ in the detailed-balance rates.} Taken literally, (3.4)--(3.5) of the paper give $n_a=0.03$. Since $K_{0\to1}$ and $K^{\rm rev}_{1\to0}$ are rates while $K_{1\to0}$ and $K^{\rm rev}_{0\to1}$ are densities in $h$, the relation needs a length, and for the uniform measure on the torus it is $d$ (parameter \texttt{H\_NORM}). With it, $n_a$ matches Table~5.1. The $\mu_T=0$ test passes for any value of this factor, so it does not validate it.
-\item \textbf{Potentials.} Evaluated from Table~D.1 as extracted from the PDF text, $w_1$ and $w_0$ agree with Fig.~5.1(a) in the difference $w_0-w_1$ at the minima ($\approx77$ zJ) but differ by a constant of about 30 zJ in absolute value. A constant cancels in all rates. I did not compare the curves point by point.
+\item \textbf{Potentials.} Evaluated from Table~D.1 as extracted from the PDF text, $w_1$ and $w_0$ agree with Fig.~5.1(a) in the difference $w_0-w_1$ at the minima ($\approx77$ zJ) but differ by a constant of about 30 zJ in absolute value. A constant cancels in all rates. I did not compare the curves point by point. \emph{In addition}, inside the regularisation window $[x_\ell,x_r]=[1.3,2.5]$ nm the transcribed interpolation (Hermite terms plus the bump $\check w\,\varphi_5$ with $\check w=5.7$ zJ) gives $w_1'$ between $-9$ and $+23$ pN and $w_1''$ between $-71$ and $+49$ pN/nm. Attached heads sit at $x_{\rm att}\simeq2.2\pm3.2$ nm, so this window is populated. I could not check against Fig.~5.1(a) whether the paper's potential has this structure. All force-dependent results here (stall force, yield and recapture loads, the elastic response) are for the potential as transcribed.
 \item \textbf{Table D.1 reading.} The box in $x$ of $K_{0\to1}$ is taken as $[x^+_\ell,x^+_r]=[1.5,17]$ nm (a positive interval, as in the text of Section~5.1); the exponent in $K^{\rm rev}_{1\to0}$ is clipped to $\pm30$ for numerical safety. The paper's text and Table~D.1 are not fully consistent about which of $K_{1\to0}$, $K^{\rm rev}_{1\to0}$ is the primitive rate; I took the table at face value.
+\item \textbf{Isometric normalisation.} At $\dot x_c=0$ the ensemble is quenched in $h$ (a head whose site is more than about 4 nm away rarely attaches), so $\langle\hat\tau\rangle$ at $v=0$ depends on the sample (0.66 pN against 0.88--0.94 pN at $|u|=0.1$). We therefore define $\tauz$ from $u=\pm0.1$.
 \item \textbf{Statistics.} One run per velocity and per $(N,\tilde\nu)$ in the ramps; no repeated runs, no confidence intervals, and no time-step convergence study (all runs use $\delta t=0.002$ ms).
-\item \textbf{Free parameter.} $\tilde\nu$ is not given by the paper; $0.05$ and $0.30$ are my choices.
+\item \textbf{Free parameters.} $\tilde\nu$, $k_L$, $V$ and $\bar p_0$ are not given by the paper; the values used are my choices.
 \item \textbf{No noise on $x_c$.} The closure is deterministic, so at finite $N$ and $\mu_T=0$ the stationary law is not the soft-ensemble Gibbs measure.
-\item \textbf{Heuristics.} The stability criterion of Section~\ref{sec:steady} assumes one relaxation time, and the $\delta u$ estimate is of order of magnitude only.
+\item \textbf{Heuristics.} The stability criterion of Section~\ref{sec:steady}, the stick--slip argument and the Hopf condition use quasi-static or single-relaxation-time assumptions, and the $\delta u$ estimate is of order of magnitude only.
 \item \textbf{Range.} The clamp sweep reaches $u=-6\umps$ on the lengthening side, whereas the ramps explore lengthening up to $-21\umps$.
 \end{enumerate}
 
 \section{Reproducing}
 \begin{center}
-\begin{tabular}{ll}
+\begin{tabular}{lp{10.5cm}}
 \toprule
 file & role \\
 \midrule
@@ -254,37 +395,78 @@ file & role \\
 \texttt{sweep\_clamp.py} & velocity-clamp sweep, writes \texttt{clamp\_sweep.npy} \\
 \texttt{soft\_ramp.py N nu} & force ramp up and down, writes \texttt{ramp\_*.npz} \\
 \texttt{plot\_S.py} & builds Fig.~\ref{fig:S} from the two outputs \\
+\texttt{osc\_run.py} & mixed device (spring, far end fixed or driven), writes \texttt{osc\_*.npz} \\
+\texttt{an\_osc3.py} & slip statistics and Fig.~\ref{fig:stickslip} from \texttt{osc\_*.npz} \\
 \bottomrule
 \end{tabular}
 \end{center}
-In \texttt{soft\_ramp.py} the reference force is hard-coded as $0.88$ pN to define the ramp limits; the measured $\tauz$ is $0.899$ pN, and all normalised results here use the latter.
+In \texttt{soft\_ramp.py} the reference force is hard-coded as $0.88$ pN to define the ramp limits; the measured $\tauz$ is $0.899$ pN, and all normalised results here use the latter. \texttt{an\_osc3.py} also uses $0.899$ pN.
 
 \appendix
-\section{Parameters}
+\section{Potentials and parameters}
 \label{app:params}
+Each energy is $w_\alpha(x)=E_\alpha+\omega_\alpha(x)$ with, writing $L=x_r-x_\ell$ and $\kappa_\ell,\kappa_r,\tilde x_\ell,\tilde x_r,x_\alpha,x_\ell,x_r,\check w_\alpha,E_\alpha$ for the nine parameters of Table~D.1,
+\begin{equation}
+\omega_\alpha(x)=\begin{cases}
+\tfrac{\kappa_\ell}{2}(x-\tilde x_\ell)^2+\tilde w_\alpha, & x<x_\ell,\\[2pt]
+\tfrac{\kappa_r}{2}(x-\tilde x_r)^2, & x>x_r,\\[2pt]
+\omega^{\rm int}_\alpha(x), & x_\ell\le x\le x_r,
+\end{cases}
+\end{equation}
+\begin{align}
+\omega^{\rm int}_\alpha(x)&=\big[\tfrac{\kappa_\ell}{2}(x_\ell-\tilde x_\ell)^2+\tilde w_\alpha\big]\varphi_1+\kappa_\ell(x_\ell-\tilde x_\ell)\varphi_2\nonumber\\
+&\quad+\tfrac{\kappa_r}{2}(x_r-\tilde x_r)^2\varphi_3+\kappa_r(x_r-\tilde x_r)\varphi_4+\check w_\alpha\varphi_5,
+\end{align}
+\begin{equation}
+\tilde w_\alpha=-\tfrac{\kappa_\ell}{2}(x_\alpha-\tilde x_\ell)^2+\tfrac{\kappa_r}{2}(x_\alpha-\tilde x_r)^2,
+\end{equation}
+\begin{align}
+\varphi_1&=\tfrac{(x-x_r)^2}{L^2}\Big[\tfrac{2(x-x_\ell)}{L}+1\Big], & \varphi_2&=\tfrac{(x-x_r)^2}{L^2}(x-x_\ell),\\
+\varphi_3&=\tfrac{(x-x_\ell)^2}{L^2}\Big[3-\tfrac{2(x-x_\ell)}{L}\Big], & \varphi_4&=\tfrac{(x-x_\ell)^2}{L^2}(x-x_r),\\
+\varphi_5&=\tfrac{\varphi_1\varphi_3}{\varphi_1(x_\alpha)\varphi_3(x_\alpha)}. &&
+\end{align}
+(The $\varphi_{1..4}$ are the cubic Hermite basis, so the piecewise function is $C^1$; $\varphi_5$ is the bump of height $\check w_\alpha$ at $x_\alpha$ that vanishes with its derivative at $x_\ell$ and $x_r$.)
+
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+parameter & $w_1$ ($\alpha=1$) & $w_0$ ($\alpha=0$) \\
+\midrule
+$\kappa_\ell$ (pN/nm) & 0.60 & 0.12 \\
+$\kappa_r$ (pN/nm) & 1 & 1 \\
+$\tilde x_\ell$ (nm) & $-12.5$ & $-2$ \\
+$\tilde x_r$ (nm) & $-1.5$ & $2$ \\
+$x_\alpha$ (nm) & 2 & $-2$ \\
+$x_\ell$ (nm) & 1.3 & $-3.5$ \\
+$x_r$ (nm) & 2.5 & 0.5 \\
+$\check w_\alpha$ (zJ) & 5.7 & 5.7 \\
+$E_\alpha$ (zJ) & 50 & 70 \\
+\bottomrule
+\end{tabular}
+\end{center}
+Other parameters: $d=40$ nm, $T=298$ K, $\mu_T=100$ zJ, $\eta=0.097$ pN\,ms/nm.
+
+\section{Rate formulas}
+Let $b(h;\lambda,a)=\tfrac12[1+\tanh\lambda(h+a)]$ for $h<0$ and $\tfrac12[1-\tanh\lambda(h-a)]$ for $h\ge0$. The primitive rates are
+\begin{align}
+K_{0\to1}(x,h)&=k_+\,b(h;\lambda_{h,+},h_+)\,\chi(x),\\
+\chi(x)&=\begin{cases}\tfrac12[1+\tanh\lambda_{x,+}(x-x_{\ell,+})],&x<\tfrac12(x_{\ell,+}+x_{r,+}),\\[2pt]\tfrac12[1-\tanh\lambda_{x,+}(x-x_{r,+})],&\text{otherwise,}\end{cases}\\
+K^{\rm rev}_{1\to0}(x,h)&=k_m\,\tfrac12[1-\tanh\lambda_{x,m}(x-x_m)]\,b(h;\lambda_{h,m},h_m)\nonumber\\
+&\quad+\Big\{k_p\,\tfrac12[1-\tanh\lambda_{x,p}(x-x_p)]\,b(h;\lambda_{h,p},h_p)+k_b\,b(h;\lambda_{h,b},h_b)\Big\}\nonumber\\
+&\qquad\times e^{[w_0(x)-w_1(x+h)-\mu_T]/\kBT}.
+\end{align}
 \begin{center}
 \begin{tabular}{ll}
 \toprule
-quantity & value \\
+rate & parameters (rates in ms$^{-1}$, lengths in nm, $\lambda$ in nm$^{-1}$) \\
 \midrule
-$w_1$ ($\kappa_\ell,\kappa_r,\tilde x_\ell,\tilde x_r,x_\alpha,x_\ell,x_r,\check w,E$) & $0.60,\ 1,\ -12.5,\ -1.5,\ 2,\ 1.3,\ 2.5,\ 5.7,\ 50$ \\
-$w_0$ (same order) & $0.12,\ 1,\ -2,\ 2,\ -2,\ -3.5,\ 0.5,\ 5.7,\ 70$ \\
-$K_{0\to1}$: $k_{\max}^+,\lambda_h^+,h_{1/2}^+,\lambda_x^+,x_\ell^+,x_r^+$ & $0.413,\ 1.6,\ 3.9,\ 8,\ 1.5,\ 17$ \\
-$K^{\rm rev}_{1\to0}$: $k_{\max},\lambda_h,h_{1/2},\lambda_x,x$ (first term) & $0.206,\ 5,\ 2,\ 10,\ -28$ \\
-\quad second term: $k_p,\lambda_h,h_{1/2},\lambda_x,x_p$ & $3.1,\ 5,\ 2,\ 20,\ 0.5$ \\
-\quad third term: $k_b,\lambda_h,h_{1/2}$ & $0.07,\ 5,\ 0.2$ \\
+$K_{0\to1}$ & $k_+=0.413$, $\lambda_{h,+}=1.6$, $h_+=3.9$, $\lambda_{x,+}=8$, $x_{\ell,+}=1.5$, $x_{r,+}=17$ \\
+$K^{\rm rev}_{1\to0}$, first term & $k_m=0.206$, $\lambda_{h,m}=5$, $h_m=2$, $\lambda_{x,m}=10$, $x_m=-28$ \\
+$K^{\rm rev}_{1\to0}$, second term & $k_p=3.1$, $\lambda_{h,p}=5$, $h_p=2$, $\lambda_{x,p}=20$, $x_p=0.5$ \\
+$K^{\rm rev}_{1\to0}$, third term & $k_b=0.07$, $\lambda_{h,b}=5$, $h_b=0.2$ \\
 \bottomrule
 \end{tabular}
 \end{center}
-Units: stiffnesses in pN/nm, lengths in nm, energies in zJ, rates in ms$^{-1}$.
-
-\section{Rate formulas}
-Let $b(h;\lambda,a)=\tfrac12[1+\tanh\lambda(h+a)]$ for $h<0$ and $\tfrac12[1-\tanh\lambda(h-a)]$ for $h\ge0$. Then
-\begin{align}
-K_{0\to1}(x,h)&=k_{\max}^+\,b(h;\lambda_h^+,h_{1/2}^+)\,\chi(x),\\
-\chi(x)&=\begin{cases}\tfrac12[1+\tanh\lambda_x^+(x-x_\ell^+)],&x<\tfrac12(x_\ell^++x_r^+),\\[2pt]\tfrac12[1-\tanh\lambda_x^+(x-x_r^+)],&\text{otherwise,}\end{cases}\\
-K^{\rm rev}_{1\to0}(x,h)&=k_{\max}\,\tfrac12[1-\tanh\lambda_x(x-x_{\rm m})]\,b(h;\lambda_h,h_{1/2})\nonumber\\
-&\quad+\Big\{k_p\,\tfrac12[1-\tanh\lambda_{x,p}(x-x_p)]\,b(h;5,2)+k_b\,b(h;5,0.2)\Big\}\,e^{[w_0(x)-w_1(x+h)-\mu_T]/\kBT}.
-\end{align}
+The derived rates $K^{\rm rev}_{0\to1}$ and $K_{1\to0}$ are given in Section~\ref{sec:model}.
 
 \end{document}
