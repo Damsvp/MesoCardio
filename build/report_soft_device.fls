@@ -2,7 +2,7 @@ PWD /Users/titouangiraudon/Desktop/MesoCardio/MesoCardio_github
 INPUT /usr/local/texlive/2026/texmf.cnf
 INPUT /usr/local/texlive/2026/texmf-dist/web2c/texmf.cnf
 INPUT /usr/local/texlive/2026/texmf-var/web2c/pdftex/pdflatex.fmt
-INPUT report_soft_device.tex
+INPUT /Users/titouangiraudon/Desktop/MesoCardio/MesoCardio_github/report_soft_device.tex
 OUTPUT build/report_soft_device.log
 INPUT /usr/local/texlive/2026/texmf-dist/tex/latex/base/article.cls
 INPUT /usr/local/texlive/2026/texmf-dist/tex/latex/base/article.cls
