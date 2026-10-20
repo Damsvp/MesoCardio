@@ -478,4 +478,16 @@ It also shows the sharp transition for $\sigma = \sigma^* = v_0$ where we can ob
     \caption{Energies $\hat{w}$ for several $p$ values}
     \label{fig:placeholder}
 \end{figure}
+
+\section{Soft Device framework}
+
+We want to compare two different setups of the soft device framework, one with a number $N$ finite of myosin heads and one with an inifinite number of independent heads.
+
+\subsection{h-model framework for N finite}
+
+In the context of the soft device framework where the total tension $\Sigma_{ext}$ is prescribed, we consider a system of $N$ myosin heads. The position of each is represented by a random variable $X_t^i$ and the attachment state described by a discrete variable $\alpha_t^i \in \{0, 1\}$, where $0$ corresponds to the detached state with an energy $w_0$ and $1$ corresponds to the attached one with an energy $w_1$. We consider a total number of $P$ actin sites per filament.
+We introduce the new variable representing the external force applied per head $N\sigma = \Sigma_{ext}$ and the total force exerted by the myosin motors $F_{mot} = \sum_i f_i = \sum_{i=1}^N \alpha_t^i \partial_x(X_t^i)$. 
+The force exerted by each myosin head derives from the energy of the spring $f_i = -\nabla E_i(X_t^i) = -kX_t^i^2$ where $k$ is the stiffness of the spring. The dynamics of the system is then described by the following set of equations:
+
+
 \end{document}
