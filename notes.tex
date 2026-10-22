@@ -485,9 +485,146 @@ We want to compare two different setups of the soft device framework, one with a
 
 \subsection{h-model framework for N finite}
 
-In the context of the soft device framework where the total tension $\Sigma_{ext}$ is prescribed, we consider a system of $N$ myosin heads. The position of each is represented by a random variable $X_t^i$ and the attachment state described by a discrete variable $\alpha_t^i \in \{0, 1\}$, where $0$ corresponds to the detached state with an energy $w_0$ and $1$ corresponds to the attached one with an energy $w_1$. We consider a total number of $P$ actin sites per filament.
-We introduce the new variable representing the external force applied per head $N\sigma = \Sigma_{ext}$ and the total force exerted by the myosin motors $F_{mot} = \sum_i f_i = \sum_{i=1}^N \alpha_t^i \partial_x(X_t^i)$. 
-The force exerted by each myosin head derives from the energy of the spring $f_i = -\nabla E_i(X_t^i) = -kX_t^i^2$ where $k$ is the stiffness of the spring. The dynamics of the system is then described by the following set of equations:
+In the context of the soft device framework where the total tension $\Sigma_{ext}$ is prescribed, we consider a system of $N$ myosin heads. The position of each is represented by a random variable $X_t^i$ and the attachment state described by a discrete variable $\alpha_t^i \in \{0, 1\}$, where $0$ corresponds to the detached state with an energy $w_0$ and $1$ corresponds to the attached one with an energy $w_1$.\\
+We consider a total number of $P$ actin sites separated by a distance $d$ per filament and the position of the closest actin site to the myosin head is denoted by $s_t^i = X_t^i + h_t^i $. The position over the actin filament is parameterized by the variable $y$.
+We introduce the new variable representing the external force applied per head $N\sigma = \Sigma_{ext}$ and the total force exerted by the $N$ myosin motors is $F_{mot} = \sum_i f_i = \sum_{i=1}^N \alpha_t^i \partial_x(X_t^i)$. 
+The force exerted by each myosin head derives from the energy of the spring $f_i = -\nabla E_i(X_t^i) = -k{X_t^i}^2$ where $k$ is the stiffness of the spring.\\ 
+The dynamics of the system is then described by the following set of equations at equilibrium :
+\begin{equation}
+    \Sigma_{ext} + F_{mot} - \nu \dot{y}= 0
+\end{equation}
+where $\nu \dot{y}$ is the macroscopic viscous drag. The dynamics of the myosin heads can be written as
+
+\begin{equation}
+    N \sigma + N f - \nu \dot{y} = 0 \quad \text{with} \quad f = -\frac{k}{N} \sum_{i=1}^N \alpha_t^i X_t^i
+\end{equation}
+\subsubsection{ Dimensionless h-model framework with N finite}
+
+We want to wrote the h-model framework in a dimensionless form. We use $kd$ as the force scale, $d$ as the length scale and $\tau$ as the time scale. We introduce the following dimensionless variables :
+\begin{equation}
+    \tilde{X}_t^i = \frac{X_t^i}{d}, \quad \frac{d\tilde{y}}{d\tilde{t}} = \frac{dy}{dt}\frac{\tau}{d}, \quad \tilde{\sigma} = \frac{\sigma}{kd}, \quad \tilde{f} = \frac{f}{kd}
+\end{equation}
+so that the dimensionless form of the dynamics of the system is
+\begin{equation}
+    \tilde{\sigma} + \tilde{f} - \frac{\nu}{Nk\tau} \frac{d\tilde{y}}{d\tilde{t}} = 0
+\end{equation}
+
+We now write the dynamics for one motor in the detached state in dimensionless form, using $kd^2$ as the energy scale and $\tau$ as the time scale.
+\begin{equation}
+    dX_t^i = - \frac{1}{\eta}\left. \frac{dw_0}{dx} \right|_{x = X_t^i} dt + \sqrt{\frac{2k_B T}{\eta}} dB_t^i
+\end{equation}
+Introducing the dimensionless variables 
+\begin{equation}
+    d\tilde{X}_t^i = \frac{dX_t^i}{d} \quad \tilde{t} = \frac{t}{\tau} \quad \frac{\tilde{w}_0}{\tilde{x}} = \frac{dw_0}{dx}\frac{d}{kd^2} \quad \tilde{B}_t^i = \frac{B_t^i}{\sqrt{\tau}}
+\end{equation}
+The dimensionless form of the dynamics for one motor in the detached state is then
+\begin{equation}
+    d\tilde{X}_t^i = - \frac{k\tau}{\eta}\left. \frac{d\tilde{w}_0}{d\tilde{x}} \right|_{\tilde{x} = \tilde{X}_t^i} d\tilde{t} + \sqrt{\frac{2\beta k\tau}{\eta}} d\tilde{B}_t^i \qquad \beta = \frac{k_B T}{k d^2}
+\end{equation}
+We then have two possibilities for the characteristic time $\tau$ : either we choose $\tau = \frac{\eta}{k}$ or $\tau = \frac{\nu}{k}$. In the first case, we have a microscopic timescale while in the second case this is a macroscopic timescale.\\
+We choose the first case, so that all dependencies are captured in the dimensionless form of the macroscopic equation and keeps the detached-head dynamics independent of the viscosity ratio $\gamma$ as 
+\begin{equation}
+    d\tilde{X}_t^i = - \left. \frac{d\tilde{w}_0}{d\tilde{x}} \right|_{\tilde{x} = \tilde{X}_t^i} d\tilde{t} + \sqrt{2\beta} d\tilde{B}_t^i
+\end{equation}
+\begin{equation}
+    \tilde{\sigma} + \tilde{f} - \frac{\gamma}{N} \frac{d\tilde{y}}{d\tilde{t}} = 0 \quad \text{with} \quad \gamma = \frac{\nu}{\eta}
+\end{equation}
+The limits can thus be interpreted as follows 
+\begin{itemize}
+    \item $\gamma \rightarrow 0$ : the macroscopic drag is negligible compared to the microscopic viscosity, so that the system is dominated by the microscopic dynamics of the myosin heads and the force balance becomes a singular constraint $\tilde{\sigma} + \tilde{f} = 0$ for a finite limiting velocity.
+    \item $\gamma \rightarrow \infty$ : the macroscopic drag is dominant compared to the microscopic drag, so that the system is dominated by the macroscopic dynamics of the myosin heads. For bounded forces; the filament velocity is negligible and the system is quasi-static.
+\end{itemize}
+
+For the dynamics of the attached state, we have
+\begin{equation}
+    dX_t^i = \dot{y} dt
+\end{equation}
+so that the dimensionless form of the dynamics for one motor in the attached state is
+\begin{equation}
+    d\tilde{X}_t^i = \frac{d\tilde{y}}{d\tau} d\tau
+\end{equation}
+The periodic coordinate satisfies $dh_t^i = \dot{y} dt - d\pi(X_t^i)$ and the dimensionless form is
+\begin{equation}
+    d\tilde{h}_t^i = \frac{d\tilde{y}}{d\tau} d\tau - d\tilde{\pi}(\tilde{X}_t^i)
+\end{equation}
 
 
-\end{document}
+\subsubsection{jumps in the h-model framework with N finite}
+The jumps in the h-model framework with N finite are modeled using two independent Poisson random measures for the two transitions $N_+^i(dt,dh,du)$ and $N_-^i(dt,dh,du)$, with intensity $\nu(dt\,dh\,du) = dtdhdu$.\\
+Let's The dynamics of the attachment/detachment process is then given by
+\begin{equation}
+\begin{aligned}
+d\alpha_t^i &= d\alpha_t^i\Big|_+ + d\alpha_t^i\Big|_- \\
+&= \mathbf{1}_{\{\alpha_{t^-}=0\}} \int_{\mathbb{R}_+ \times \mathbb{T}_d} \mathbf{1}_{\{u \le k_{0+}(X_{t^-}^i, h)\}} N_+^i(dt, dh, du) \\
+&\quad - \mathbf{1}_{\{\alpha_{t^-}=1\}} \int_{\mathbb{R}_+ \times \mathbb{T}_d} \mathbf{1}_{\{u \le k_{0-}(X_{t^-}^i, h)\}} N_-^i(dt, dh, du)
+\end{aligned}
+\end{equation}
+
+We choose a truncated normalized Gaussian density for the rate $k_{0+}(X_{t^-}^i, h)$, as the attachment is preferentially localized around the actin site on the filament, and an uniform detachment rate $k_{0-}(X_{t^-}^i, h)$ over the whole window considered.  
+The rates can then be written as
+\begin{equation}
+    k_{0+}(x, h) 
+=\lambda_+(x)\,q_G(h)
+\quad \text{where} \quad q_G(h)=
+\frac{\exp(-h^2/(2\sigma^2))}
+{\displaystyle\int_{-d/2}^{d/2}\exp(-u^2/(2\sigma^2))\,du}
+\mathbf 1_{\{|h|\le d/2\}}
+\end{equation}
+$\lambda_+(x)$ is the total attachment rate for a myosin head at position $x$ and $q_G(h)$ is the truncated Gaussian distribution centered on the actin site. 
+The detachment rate is uniform over the window considered, so that we can define 
+\begin{equation}
+    k_{0-}(x, h) = \lambda_-(x)\,q_U(h) = \frac{\lambda_-(x)}{d}\mathbf 1_{\{|h|\le d/2\}} \quad \text{where} \quad q_U(h) = \frac{1}{d}\mathbf 1_{\{|h|\le d/2\}}
+\end{equation}
+Using $d$ as the characteristic length scale and $\tau$ as the characteristic time scale, we can write the dynamics of the attachment/detachment process in dimensionless form as
+\begin{equation}
+\tilde k_{0+}=t_0d\,k_{0+},
+\qquad
+\tilde k_{0-}=t_0d\,k_{0-}.
+\end{equation}
+so that the window becomes $\tilde{h} \in [-1/2, 1/2]$ and the truncated Gaussian distribution is
+\begin{equation}
+\tilde{q}_G(\tilde{h})=
+\frac{\exp[-\tilde h^2/(2\tilde\sigma^2)]}
+{\displaystyle\int_{-1/2}^{1/2}
+\exp[-r^2/(2\tilde\sigma^2)]\,dr},
+\qquad
+\tilde\sigma=\frac{\sigma}{d}
+\end{equation}
+while normalized dimensionless uniform density is simply
+\begin{equation}
+\tilde q_U(\tilde h)=\mathbf 1_{[-1/2,1/2]}(\tilde h).
+\end{equation}
+
+\subsection{h-model framework for N infinite}
+
+We consider a system of $N$ independent myosin heads in the limit $N \to \infty$. For one single head, the force is 
+\begin{equation}
+    f_t=-\mathbf 1_{\alpha_t=1}\partial_xw_1(X_t).
+\end{equation}
+Let $p(t, 1, x)$ be the joint probability density of the head being attached and having coordinate $x$ at time $t$
+\begin{equation}
+    p(t,1,x)\,dx
+=\mathbb P(\alpha_t=1,\ X_t\in[x,x+dx])
+\end{equation}
+Taking the expected value of the force over the distribution of the head's state and position, we have
+\begin{equation}
+    \mathbb E[f_t]
+=-\int_{\mathbb R}\partial_xw_1(x)p(t,1,x)\,dx = -\tau_c(t)
+\end{equation}
+Therefore, assuming the heads are independent and identically distributed, the law of large numbers implies that the average force per head converges to the expected value as $N \to \infty$:
+\begin{equation}
+\frac1N\sum_{i=1}^N f_t^i
+\longrightarrow -\int_{\mathbb R}\partial_xw_1(x)p(t,1,x)\,dx =-\tau_c(t)
+\end{equation}
+Writing the soft device macroscopic equation, we have 
+\begin{equation}
+    \Sigma_{ext} + \sum_i f_t^i - \nu \dot{y}= 0 
+\end{equation}
+In the infinite-population limit, $N \to \infty$, the limiting force balance per head is thus 
+\begin{equation}
+    \sigma - \tau_c(t) - \frac{\nu}{N}\dot{y} = 0
+\end{equation}
+
+
+
+\end{document}  
