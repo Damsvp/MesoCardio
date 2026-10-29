@@ -192,16 +192,6 @@ INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm1
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/jknappen/ec/ecbx1200.tfm
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/jknappen/ec/ecrm0800.tfm
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/jknappen/ec/ecrm0600.tfm
-INPUT ./S_curve.png
-INPUT ./S_curve.png
-INPUT ./S_curve.png
-INPUT ./S_curve.png
-INPUT ./S_curve.png
-INPUT ./stickslip.png
-INPUT ./stickslip.png
-INPUT ./stickslip.png
-INPUT ./stickslip.png
-INPUT ./stickslip.png
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/jknappen/ec/ectt1095.tfm
 INPUT build/report_soft_device.aux
 INPUT build/report_soft_device.out

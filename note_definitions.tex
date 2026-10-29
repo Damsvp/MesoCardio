@@ -1,0 +1,57 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb,amsthm}
+
+\usepackage{enumitem}
+\begin{document}
+\subsection*{Definitions used in the simulations}
+
+\paragraph{Potentials} The head is held by a quadratic well  
+\begin{equation}
+w_1(x)=\frac{k_1}{2}\,x^2,\qquad w_0(x)=\frac{k_0}{2}\,x^2,\qquad f=-\partial_x w_1(x)=-k_1\,x ,
+\end{equation}
+with $k_1=0.5\ \mathrm{pN/nm}$, $k_0=0.2\ \mathrm{pN/nm}$, damping $\eta=0.2\ \mathrm{pN\,ms/nm}$, $k_BT=4.1\ \mathrm{zJ}$ and site spacing $d=40$ nm (Fig.~\ref{fig:defs}).
+
+\paragraph{Rates.} The rates enter the Poisson measures of (3.2); $h\in[-d/2,d/2)$ is the signed distance from the tip to the closest actin site ($h>0$: the site is in front of the tip), recomputed at every time step from the window of size $d$ centred on the tip. We take
+\begin{align}
+K_{0\to1}(x,h) &= k_{\rm att}\,\mathbf 1_{\{h>h_\ast\}}, \qquad 0\le h_\ast<d/2,\\
+K_{1\to0}(x,h) &= \frac{\lambda_{\rm det}}{d/2}\,\mathbf 1_{\{-d/2<h<0\}}
+\end{align}
+$K_{0\to1}$ is a step in $h$: a detached head can bind only if the closest site is in front of the tip by more than $h_\ast$ (here $h_\ast=5$ nm). The limit $k_{\rm att}\to\infty$ makes the threshold alone decide: the head binds as soon as $h>h_\ast$. $K_{1\to0}(x,\cdot)$ is a density in the landing mark $h$: the total detachment rate is $\int K_{1\to0}(x,h)\,dh=\lambda_{\rm det}$ and the mark is uniform on $(-d/2,0)$. At a $0\to1$ jump, $X\to X+h^\star$ and $h\to0$; at a $1\to0$ jump, $X\to X-h^\star$ and $h\to h^\star$. Since an attached head moves with its site ($\dot X=\dot y$ and the sites move at $\dot y$), $dh=0$ while attached: $h$ cannot trigger a detachment, which is why $K_{1\to0}$ is a jump rate.
+
+\paragraph{Macroscopic equation (soft device).} With $\sigma$ imposed,
+\begin{equation}
+\nu\,\dot y=N\sigma-\sum_{i=1}^N\alpha^i_t\,\partial_x w_1(X^i_t),
+\end{equation}
+and $\nu_{\rm ph}=\nu/N$ ($=0.05\ \mathrm{pN\,ms/nm}$ in the simulations) is the viscosity per head.
+
+\paragraph{Consequences, case $N=1$.}
+\begin{itemize}
+\item \emph{Detached head}: $\tau_c=0$, hence $\dot y=\sigma/\nu$ and $h$ increases on average with slope $\sigma/\nu$.
+\item \emph{Attached head} ($w_1$ quadratic): $\dot X=\dot y=(\sigma-k_1X)/\nu$, hence
+\begin{equation}
+X(t)=\frac{\sigma}{k_1}+\Big(X(t_a^+)-\frac{\sigma}{k_1}\Big)e^{-k_1(t-t_a)/\nu},\qquad X(t_a^+)=X(t_a^-)+h ,
+\end{equation}
+an exponential (not a linear) evolution toward $\sigma/k_1$, with rate $k_1/\nu$.
+\item \emph{No detachment} ($\lambda_{\rm det}=0$): the head stays attached, $\dot y\to0$, $\tau_c\to\sigma$, $X\to\sigma/k_1$: the system stops.
+\item \emph{No attachment} ($k_{\rm att}=0$): $\tau_c=0$ and $\dot y=\sigma/\nu$ for all times, linear in $\sigma$.
+\end{itemize}
+
+\paragraph{Between two jumps, any $N$.} Differentiating the macroscopic equation, with $\dot\sigma=0$ and $\dot X^i=\dot y$ for the $N_a$ attached heads,
+\begin{align}
+\nu\,\ddot y&=-k_1N_a\,\dot y\quad\Longrightarrow\quad \dot y(t)=\dot y(t_j^+)\,e^{-k_1N_a(t-t_j)/\nu},\\
+\dot y(t_j^+)&=\frac1\nu\Big(N\sigma-\sum_i\alpha^i\,k_1X^i_{t_j^+}\Big).
+\end{align}
+The decay rate depends only on the number of attached heads, and $\sigma$ enters through the value of $\dot y$ right after the jump, which is fixed by the force balance. The speed stops ($\dot y\to0$) when $\tau_c=\sigma$.
+
+\begin{figure}[h]
+\centering
+% \includegraphics[width=\textwidth]{fig_definitions.png}   % produced by hmodel_plot_definitions.py
+\caption{Potentials $w_0,w_1$, forces, attachment rate $K_{0\to1}(h)$ (step at $h_\ast$) and detachment density $K_{1\to0}(h)$.}
+\label{fig:defs}
+\end{figure}
+
+\end{document}

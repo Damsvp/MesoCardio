@@ -1,6 +1,11 @@
+<<<<<<< HEAD
 This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.10.15)  21 OCT 2026 16:07
+=======
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.10.23)  29 OCT 2026 10:57
+>>>>>>> 03f6a81 (attachement detachement)
 entering extended mode
  restricted \write18 enabled.
+ file:line:error style messages enabled.
  %&-line parsing enabled.
 **/Users/titouangiraudon/Desktop/MesoCardio/MesoCardio_github/notes.tex
 (/Users/titouangiraudon/Desktop/MesoCardio/MesoCardio_github/notes.tex
@@ -277,12 +282,12 @@ Package pdftex.def Info: snap_spring.png  used on input line 416.
 <energies_w_hat.png, id=53, 642.90187pt x 426.09187pt>
 File: energies_w_hat.png Graphic file (type png)
 <use energies_w_hat.png>
-Package pdftex.def Info: energies_w_hat.png  used on input line 476.
+Package pdftex.def Info: energies_w_hat.png  used on input line 475.
 (pdftex.def)             Requested size: 212.41261pt x 140.77979pt.
 <energy_w_hat_one_value.png, id=54, 642.90187pt x 426.09187pt>
 File: energy_w_hat_one_value.png Graphic file (type png)
 <use energy_w_hat_one_value.png>
-Package pdftex.def Info: energy_w_hat_one_value.png  used on input line 477.
+Package pdftex.def Info: energy_w_hat_one_value.png  used on input line 476.
 (pdftex.def)             Requested size: 212.41261pt x 140.77979pt.
  [10] [11 <./energies_w_hat.png> <./energy_w_hat_one_value.png>] [12] [13] (build/notes.aux)
  ***********
@@ -297,6 +302,7 @@ LaTeX Warning: There were multiply-defined labels.
 Here is how much of TeX's memory you used:
  4072 strings out of 467525
  60169 string characters out of 5418981
+<<<<<<< HEAD
  493245 words of memory out of 5000000
  32946 multiletter control sequences out of 15000+600000
  636884 words of font info for 75 fonts, out of 8000000 for 9000
@@ -304,6 +310,15 @@ Here is how much of TeX's memory you used:
  57i,11n,65p,541b,368s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm7.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb>
 Output written on build/notes.pdf (13 pages, 479953 bytes).
+=======
+ 489245 words of memory out of 5000000
+ 32946 multiletter control sequences out of 15000+600000
+ 636884 words of font info for 75 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 57i,12n,65p,541b,368s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm7.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb>
+Output written on build/notes.pdf (13 pages, 478994 bytes).
+>>>>>>> 03f6a81 (attachement detachement)
 PDF statistics:
  146 PDF objects out of 1000 (max. 8388607)
  87 compressed objects within 1 object stream

@@ -1,6 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1792146297.90727 "/Users/titouangiraudon/Desktop/MesoCardio/MesoCardio_github/report_soft_device.tex" "build/report_soft_device.pdf" "report_soft_device" 1792146299.94027 0
-  "/Users/titouangiraudon/Desktop/MesoCardio/MesoCardio_github/report_soft_device.tex" 1792144934.11728 36698 e1c7248c8eaeab4936d05ca6244a4c43 ""
+["pdflatex"] 1793267493.09621 "/Users/titouangiraudon/Desktop/MesoCardio/MesoCardio_github/report_soft_device.tex" "build/report_soft_device.pdf" "report_soft_device" 1793267494.00554 2
+  "/Users/titouangiraudon/Desktop/MesoCardio/MesoCardio_github/report_soft_device.tex" 1792144934 36698 e1c7248c8eaeab4936d05ca6244a4c43 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1136849721 2971 def0b6c1f0b107b3b936def894055589 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1136849721 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -120,14 +120,16 @@
   "/usr/local/texlive/2026/texmf-dist/tex/latex/tools/longtable.sty" 1761946296 16014 dfa4b4d4e04a78a3f05a90c19711737a ""
   "/usr/local/texlive/2026/texmf-dist/tex/latex/url/url.sty" 1388531844 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "/usr/local/texlive/2026/texmf-dist/web2c/texmf.cnf" 1770478701 43630 e9fa012910491fe5ae08a72c3c2997a7 ""
-  "/usr/local/texlive/2026/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1792075596 5573038 b99aad5e4898a9034e953632f940512b ""
-  "/usr/local/texlive/2026/texmf-var/web2c/pdftex/pdflatex.fmt" 1792075467 3636769 2ef554731a4edc12bd2e987c1540427d ""
+  "/usr/local/texlive/2026/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1792746132 5573038 b99aad5e4898a9034e953632f940512b ""
+  "/usr/local/texlive/2026/texmf-var/web2c/pdftex/pdflatex.fmt" 1792746113 3636770 cf7ac2e3b47cdb35b752db2868a2b441 ""
   "/usr/local/texlive/2026/texmf.cnf" 1774209515 577 648cd9f92f9c0eac486f4c71c85cfbbe ""
-  "S_curve.png" 1791915893.62931 201975 74892f8db5c88efc095147dccba34f12 ""
-  "build/report_soft_device.aux" 1792146299.76827 8080 0e88be7dd8c93ddca0dc2c004eeeac19 "pdflatex"
-  "build/report_soft_device.out" 1792146299.76932 4624 d3f52e7542755e1cb960d6d9f08b3387 "pdflatex"
-  "report_soft_device.tex" 1792144934.11728 36698 e1c7248c8eaeab4936d05ca6244a4c43 ""
-  "stickslip.png" 1792016795.58167 940901 c669be047eb84c1ffb4f24d7fbcd054b ""
+  "S_curve.png" 0 -1 0 ""
+  "build/S_curve.png" 0 -1 0 ""
+  "build/report_soft_device.aux" 1793267493.8636 8081 67cca844e4bc28a75026972f0dd20b53 "pdflatex"
+  "build/report_soft_device.out" 1793267493.86495 4624 d3f52e7542755e1cb960d6d9f08b3387 "pdflatex"
+  "build/stickslip.png" 0 -1 0 ""
+  "report_soft_device.tex" 1792144934 36698 e1c7248c8eaeab4936d05ca6244a4c43 ""
+  "stickslip.png" 0 -1 0 ""
   (generated)
   "build/report_soft_device.aux"
   "build/report_soft_device.log"

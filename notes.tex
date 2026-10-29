@@ -446,11 +446,10 @@ So that
 Introducing the discrete order parameter $p = - \frac{1}{N} \sum_i x_i$, the fraction of the cross-bridges in the \textit{folded} state, the energy $\hat{w} (\lbrace x \rbrace ; \sigma)$ is
 
 \begin{align*}
-    \hat{w} (\lbrace x \rbrace ; \sigma) &= \frac{1}{N} \sum_{i=1}^N \,\left\lbrace (1+x_i)v_0 + \frac{1}{2} (\sigma + \frac{1}{N}\sum_i x_i -x_i)^2 - \sigma \left(\sigma + \frac{1}{N}\sum_i x_i \right) \right\rbrace \\
-    &=  \frac{1}{N} \sum_{i=1}^N \,\left\lbrace (1+x_i)v_0 - \frac{\sigma^2}{2} -\sigma x_i -\frac{x_i}{N}\sum_i x_i + \frac{x_i}{2}^2 + \frac{1}{2}\left(\frac{1}{N}\sum_i x_i \right)^2  \right\rbrace \\
-    & = (1-p) v_0 -\frac{1}{2}\sigma^2 + \sigma p + \frac{1}{N}\sum_i x_ip + \frac{1}{2N}\sum_i x_i^2 + \frac{p^2}{2} \\
-    & = -\frac{1}{2}\sigma^2 + \sigma p -\frac{p^2}{2} + \frac{p}{2} + (1-p)v_0 \\
-    & = -\frac{1}{2}\sigma^2 + \sigma p + \frac{p}{2}(1-p) + (1-p)v_0
+\hat{w} (\{x\} ; \sigma) &= \frac{1}{N} \sum_{i=1}^N \Bigl\{ (1+x_i)v_0 - \frac{\sigma^2}{2} - \sigma x_i \Bigr\} \\
+&= (1-p) v_0 -\frac{1}{2}\sigma^2 + \sigma p + \frac{1}{N}\sum_i x_i p + \frac{1}{2N}\sum_i x_i^2 \\
+&= -\frac{1}{2}\sigma^2 + \sigma p -\frac{p^2}{2} + \frac{p}{2} + (1-p)v_0 \\
+&= -\frac{1}{2}\sigma^2 + \sigma p -\frac{p}{2}(1-p) + (1-p)v_0
 \end{align*}
  using $\sum_i x_i^2 = \sum_i x_i$ because $x_i =\lbrace0,1\rbrace$. Thus there is a coupling term $p(1-p)$ traducing the mean-field interaction between the individual cross-bridges
 
@@ -487,8 +486,13 @@ We want to compare two different setups of the soft device framework, one with a
 
 In the context of the soft device framework where the total tension $\Sigma_{ext}$ is prescribed, we consider a system of $N$ myosin heads. The position of each is represented by a random variable $X_t^i$ and the attachment state described by a discrete variable $\alpha_t^i \in \{0, 1\}$, where $0$ corresponds to the detached state with an energy $w_0$ and $1$ corresponds to the attached one with an energy $w_1$.\\
 We consider a total number of $P$ actin sites separated by a distance $d$ per filament and the position of the closest actin site to the myosin head is denoted by $s_t^i = X_t^i + h_t^i $. The position over the actin filament is parameterized by the variable $y$.
+<<<<<<< HEAD
 We introduce the new variable representing the external force applied per head $N\sigma = \Sigma_{ext}$ and the total force exerted by the $N$ myosin motors is $F_{mot} = \sum_i f_i = \sum_{i=1}^N \alpha_t^i \partial_x(X_t^i)$. 
 The force exerted by each myosin head derives from the energy of the spring $f_i = -\nabla E_i(X_t^i) = -k{X_t^i}^2$ where $k$ is the stiffness of the spring.\\ 
+=======
+We introduce the new variable representing the external force applied per head $N\sigma = \Sigma_{ext}$ and the total force exerted by the $N$ myosin motors is $F_{mot} = \sum_i f_i = \sum_{i=1}^N \alpha_t^i \partial_x w_1(X_t^i)$. 
+The force exerted by each myosin head derives from the energy of the spring $f_i = -\nabla E_i(X_t^i) = -k{X_t^i}$ where $k$ is the stiffness of the spring.\\ 
+>>>>>>> 03f6a81 (attachement detachement)
 The dynamics of the system is then described by the following set of equations at equilibrium :
 \begin{equation}
     \Sigma_{ext} + F_{mot} - \nu \dot{y}= 0
@@ -519,12 +523,20 @@ Introducing the dimensionless variables
 \end{equation}
 The dimensionless form of the dynamics for one motor in the detached state is then
 \begin{equation}
+<<<<<<< HEAD
     d\tilde{X}_t^i = - \frac{k\tau}{\eta}\left. \frac{d\tilde{w}_0}{d\tilde{x}} \right|_{\tilde{x} = \tilde{X}_t^i} d\tilde{t} + \sqrt{\frac{2\beta k\tau}{\eta}} d\tilde{B}_t^i \qquad \beta = \frac{k_B T}{k d^2}
+=======
+    d\tilde{X}_t^i = - \frac{k\tau}{\eta}\left. \frac{d\tilde{w}_0}{d\tilde{x}} \right|_{\tilde{x} = \tilde{X}_t^i} d\tilde{t} + \sqrt{\frac{2\beta^{-1} k\tau}{\eta}} d\tilde{B}_t^i \qquad \beta^{-1} = \frac{k_B T}{k d^2}
+>>>>>>> 03f6a81 (attachement detachement)
 \end{equation}
 We then have two possibilities for the characteristic time $\tau$ : either we choose $\tau = \frac{\eta}{k}$ or $\tau = \frac{\nu}{k}$. In the first case, we have a microscopic timescale while in the second case this is a macroscopic timescale.\\
 We choose the first case, so that all dependencies are captured in the dimensionless form of the macroscopic equation and keeps the detached-head dynamics independent of the viscosity ratio $\gamma$ as 
 \begin{equation}
+<<<<<<< HEAD
     d\tilde{X}_t^i = - \left. \frac{d\tilde{w}_0}{d\tilde{x}} \right|_{\tilde{x} = \tilde{X}_t^i} d\tilde{t} + \sqrt{2\beta} d\tilde{B}_t^i
+=======
+    d\tilde{X}_t^i = - \left. \frac{d\tilde{w}_0}{d\tilde{x}} \right|_{\tilde{x} = \tilde{X}_t^i} d\tilde{t} + \sqrt{2\beta^{-1}} d\tilde{B}_t^i
+>>>>>>> 03f6a81 (attachement detachement)
 \end{equation}
 \begin{equation}
     \tilde{\sigma} + \tilde{f} - \frac{\gamma}{N} \frac{d\tilde{y}}{d\tilde{t}} = 0 \quad \text{with} \quad \gamma = \frac{\nu}{\eta}
@@ -597,7 +609,11 @@ while normalized dimensionless uniform density is simply
 
 \subsection{h-model framework for N infinite}
 
+<<<<<<< HEAD
 We consider a system of $N$ independent myosin heads in the limit $N \to \infty$. For one single head, the force is 
+=======
+We consider a system of $N$ independent myosin heads in the limit $N \to \infty$. The force exerted by one single head is 
+>>>>>>> 03f6a81 (attachement detachement)
 \begin{equation}
     f_t=-\mathbf 1_{\alpha_t=1}\partial_xw_1(X_t).
 \end{equation}
@@ -611,6 +627,7 @@ Taking the expected value of the force over the distribution of the head's state
     \mathbb E[f_t]
 =-\int_{\mathbb R}\partial_xw_1(x)p(t,1,x)\,dx = -\tau_c(t)
 \end{equation}
+<<<<<<< HEAD
 Therefore, assuming the heads are independent and identically distributed, the law of large numbers implies that the average force per head converges to the expected value as $N \to \infty$:
 \begin{equation}
 \frac1N\sum_{i=1}^N f_t^i
@@ -628,3 +645,15 @@ In the infinite-population limit, $N \to \infty$, the limiting force balance per
 
 
 \end{document}  
+=======
+$\tau_c(t)$ is thus the average force exerted by the system over a single myosin head at time $t$. Each independent one head system is subjected to an external force $\sigma(t)$, so that the macroscopic equation for the head is given by
+\begin{equation}
+    \sigma (t) - \tau_c(t) - \nu\dot y(t)=0
+\end{equation}
+where $\nu\dot y(t)$ is the macroscopic viscous drag applied to the head considered. The dynamics of the head is then given by the following stochastic differential equation
+\begin{equation}
+    dX_t = -\mathbf 1_{\alpha_t=0}
+\end{equation}
+
+\end{document}
+>>>>>>> 03f6a81 (attachement detachement)
