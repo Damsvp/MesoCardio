@@ -8,8 +8,8 @@
 #    jump (mark h' ~ U(-D/2,0), X -> X - h'): the only element that is not a threshold on h.
 import numpy as np, matplotlib.pyplot as plt
 
-D, KBT, ETA, K0, K1, NU = 40.0, 4.1, 0.2, 0.2, 0.5, 0.05          # d [nm], kBT [zJ], eta, k0, k1 [pN/nm], nu [pN ms/nm]
-SIGMA, H_THR, LAM_DET = 0.5, 5.0, 0.0
+D, KBT, ETA, K0, K1, NU = 40.0, 4.1, 0.097, 0.2, 0.5, 0.05          # d [nm], kBT [zJ], eta, k0, k1 [pN/nm], nu [pN ms/nm]
+SIGMA, H_THR, LAM_DET = 0.5, 5.0, 0.1
 T, dt, seed = 60.0, 0.002, 3
 wrap = lambda u: (u + D/2) % D - D/2
 
@@ -18,7 +18,7 @@ X = rng.normal()*np.sqrt(KBT/K0); s0 = X + rng.uniform(-D/2, D/2); y = 0.0; al =
 nsteps = int(round(T/dt)); rec = np.empty((nsteps, 5)); events = []
 for n in range(nsteps):
     t = n*dt
-    ydot = (SIGMA - al*K1*X)/(NU + al*K1*dt)                      # macro equation (semi-implicit)
+    ydot = (SIGMA - al*K1*X)/(NU)                       # macro equation (semi-implicit)
     h = wrap(s0 + y - X)                                           # nearest site in the window centred on the tip
     rec[n] = (t, X, h, al, ydot)
     if not al and h > H_THR:                                       # threshold: attach, X -> X + h

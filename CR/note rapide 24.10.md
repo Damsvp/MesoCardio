@@ -28,7 +28,7 @@ $\Longrightarrow$ Mieux comprendre l'EDS sur la varaible $h$. (cf ci-dessous)
 
 On définit l'action de groupe $\rho_d: (k,z) \in \mathbb{Z} \times \mathbb{R} \mapsto x + kd \in \mathbb{R} $. On peut écrire que $\mathbb{R}= \bigcup_{x \in [ -d/2,d/2)} \Omega_x$ où $\Omega_x = \{y \in \mathbb{R} ; \exists k \in \mathbb{Z}, y=x+kd\}$ sont les orbites pour cette action. Autrement dit, en français, les $\Omega_x$ sont les ensembles des réels espacés d'une distance un multiple de $d$ de $x$. Ainsi, chaque $x \in \R$ a un unique représentant $x^\star$ dans $[-d/2,d/2)$ i.e. $x \equiv x^\star [d]$.  En posant l'application
 $$ \psi : x \in \R \mapsto x^\star \in [-d/2,d/2) $$
-je définis un morphisme de groupe (\psi( x + y) = \psi (x) + \psi(y)) surjectif dont le noyau (l'ensemble des éléments $x \in \R$ tels que $\psi(x)=0$) est $d\Z$. Par propriété universelle du quotient, je peux définir une nouvelle application
+je définis un morphisme de groupe ($\psi( x + y) = \psi (x) + \psi(y)$) surjectif dont le noyau (l'ensemble des éléments $x \in \R$ tels que $\psi(x)=0$) est $d\Z$. Par propriété universelle du quotient, je peux définir une nouvelle application
 $$ \Psi : x \in \R / d\Z \mapsto x^\star \in [-d/2,d/2)$$
 qui est bijective par construction et reste toujours un morphisme de groupe. Le tore $\mathbb{T}_d$ est par définition $\R / d\Z$. Ainsi, l'application inverse est bien défini et correspond dans l'article à $\pi$
 $$ \Psi^{-1} = \pi : x^\star \in [-d/2,d/2) \mapsto x \in \mathbb{T}_d $$

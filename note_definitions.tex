@@ -13,45 +13,56 @@
 \begin{equation}
 w_1(x)=\frac{k_1}{2}\,x^2,\qquad w_0(x)=\frac{k_0}{2}\,x^2,\qquad f=-\partial_x w_1(x)=-k_1\,x ,
 \end{equation}
-with $k_1=0.5\ \mathrm{pN/nm}$, $k_0=0.2\ \mathrm{pN/nm}$, damping $\eta=0.2\ \mathrm{pN\,ms/nm}$, $k_BT=4.1\ \mathrm{zJ}$ and site spacing $d=40$ nm (Fig.~\ref{fig:defs}).
+with $k_1=0.5\ \mathrm{pN/nm}$, $k_0=0.2\ \mathrm{pN/nm}$, microscopic viscosity $\eta=0.097\ \mathrm{pN\,ms/nm}$, $k_BT=4.1\ \mathrm{zJ}$ and site spacing $d=40$ nm (Fig.~\ref{fig:defs}).
 
-\paragraph{Rates.} The rates enter the Poisson measures of (3.2); $h\in[-d/2,d/2)$ is the signed distance from the tip to the closest actin site ($h>0$: the site is in front of the tip), recomputed at every time step from the window of size $d$ centred on the tip. We take
+\paragraph{Rates}  $h\in[-d/2,d/2)$ is the signed distance from the tip to the closest actin site ($h>0$: the site is in front of the tip), recomputed at every time step from the window of size $d$ centred on the tip. We take
 \begin{align}
 K_{0\to1}(x,h) &= k_{\rm att}\,\mathbf 1_{\{h>h_\ast\}}, \qquad 0\le h_\ast<d/2,\\
 K_{1\to0}(x,h) &= \frac{\lambda_{\rm det}}{d/2}\,\mathbf 1_{\{-d/2<h<0\}}
 \end{align}
-$K_{0\to1}$ is a step in $h$: a detached head can bind only if the closest site is in front of the tip by more than $h_\ast$ (here $h_\ast=5$ nm). The limit $k_{\rm att}\to\infty$ makes the threshold alone decide: the head binds as soon as $h>h_\ast$. $K_{1\to0}(x,\cdot)$ is a density in the landing mark $h$: the total detachment rate is $\int K_{1\to0}(x,h)\,dh=\lambda_{\rm det}$ and the mark is uniform on $(-d/2,0)$. At a $0\to1$ jump, $X\to X+h^\star$ and $h\to0$; at a $1\to0$ jump, $X\to X-h^\star$ and $h\to h^\star$. Since an attached head moves with its site ($\dot X=\dot y$ and the sites move at $\dot y$), $dh=0$ while attached: $h$ cannot trigger a detachment, which is why $K_{1\to0}$ is a jump rate.
+$K_{0\to1}$ is a step in $h$: a detached head can bind only if the closest site is in front of the tip by more than $h_\ast$ (here $h_\ast=5$ nm). The limit $k_{\rm att}\to\infty$ makes the threshold alone decide: the head binds as soon as $h>h_\ast$.  The total detachment rate is $\int K_{1\to0}(x,h)\,dh=\lambda_{\rm det}$ and the mark is uniform on $(-d/2,0)$. While the head is attached, each time step has probability
+$p_{\rm det}=1-e^{-\lambda_{\rm det}\Delta t}$ of detachment.
 
-\paragraph{Macroscopic equation (soft device).} With $\sigma$ imposed,
+\paragraph{Macroscopic equation (soft device)} With $\sigma$ imposed,
 \begin{equation}
-\nu\,\dot y=N\sigma-\sum_{i=1}^N\alpha^i_t\,\partial_x w_1(X^i_t),
+\nu\,\dot y=\sigma-\frac{1}{N}\sum_{i=1}^N\alpha^i_t\,\partial_x w_1(X^i_t)
 \end{equation}
-and $\nu_{\rm ph}=\nu/N$ ($=0.05\ \mathrm{pN\,ms/nm}$ in the simulations) is the viscosity per head.
+and $\nu=N\tilde\nu$ ($=0.05\ \mathrm{pN\,ms/nm}$ in the simulations) is the macroscopic viscosity.
 
-\paragraph{Consequences, case $N=1$.}
+\paragraph{Case $N=1$}
 \begin{itemize}
-\item \emph{Detached head}: $\tau_c=0$, hence $\dot y=\sigma/\nu$ and $h$ increases on average with slope $\sigma/\nu$.
+\item \emph{Detached head}: $\sum_{i=1}^N f_t^i=0$, hence $\dot y=\sigma/\nu$ and $h$ increases on average with slope $\sigma/\nu$.
 \item \emph{Attached head} ($w_1$ quadratic): $\dot X=\dot y=(\sigma-k_1X)/\nu$, hence
 \begin{equation}
-X(t)=\frac{\sigma}{k_1}+\Big(X(t_a^+)-\frac{\sigma}{k_1}\Big)e^{-k_1(t-t_a)/\nu},\qquad X(t_a^+)=X(t_a^-)+h ,
+X(t)=\frac{\sigma}{k_1}+\Big(X(t_a^+)-\frac{\sigma}{k_1}\Big)e^{-k_1(t-t_a)/\nu} \quad \text{with} \quad  X(t_a^+)=X(t_a^-)+h ,
 \end{equation}
-an exponential (not a linear) evolution toward $\sigma/k_1$, with rate $k_1/\nu$.
-\item \emph{No detachment} ($\lambda_{\rm det}=0$): the head stays attached, $\dot y\to0$, $\tau_c\to\sigma$, $X\to\sigma/k_1$: the system stops.
-\item \emph{No attachment} ($k_{\rm att}=0$): $\tau_c=0$ and $\dot y=\sigma/\nu$ for all times, linear in $\sigma$.
+an exponential evolution toward $\sigma/k_1$, with rate $k_1/\nu$.
+\item \emph{No detachment} ($\lambda_{\rm det}=0$): the head stays attached, $\dot y\to0$, $\sum_i f_t^i\to\sigma$, $X\to\sigma/k_1$: the system stops.
+\item \emph{No attachment} ($k_{\rm att}=0$): $\sum_i f_t^i=0$ and $\dot y=\sigma/\nu$ for all times, linear in $\sigma$.
 \end{itemize}
 
-\paragraph{Between two jumps, any $N$.} Differentiating the macroscopic equation, with $\dot\sigma=0$ and $\dot X^i=\dot y$ for the $N_a$ attached heads,
+\paragraph{Between two jumps, any $N$.} Differentiating the macroscopic equation, with $\dot\sigma=0$ and $\dot X^i=\dot y$ for the $N_a=\sum_i\alpha^i$ attached heads,
 \begin{align}
-\nu\,\ddot y&=-k_1N_a\,\dot y\quad\Longrightarrow\quad \dot y(t)=\dot y(t_j^+)\,e^{-k_1N_a(t-t_j)/\nu},\\
-\dot y(t_j^+)&=\frac1\nu\Big(N\sigma-\sum_i\alpha^i\,k_1X^i_{t_j^+}\Big).
+\nu\ddot y
+&=-\frac{k_1}{N}\sum_{i=1}^N\alpha^i\dot X^i
+=-\frac{k_1N_a}{N}\dot y,\\
+\quad\Longrightarrow\quad \dot y(t)&=\dot y(t_j^+)\exp{\left[-\frac{k_1N_a}{N\nu}(t-t_j)\right]} \quad
+\dot y(t_j^+)=\frac1\nu\Big(\sigma-\frac{k_1}{N}\sum_i\alpha_{t_j^+}^i\,X^i_{t_j^+}\Big).
 \end{align}
-The decay rate depends only on the number of attached heads, and $\sigma$ enters through the value of $\dot y$ right after the jump, which is fixed by the force balance. The speed stops ($\dot y\to0$) when $\tau_c=\sigma$.
+Between jumps, the speed decays exponentially at rate \(k_1N_a/(N\nu)\), which is proportional to the number \(N_a\) of attached heads when \(N\), \(k_1\), and \(\nu\) are fixed. The load \(\sigma\) sets the speed’s amplitude through the post-jump force balance.
 
 \begin{figure}[h]
 \centering
-% \includegraphics[width=\textwidth]{fig_definitions.png}   % produced by hmodel_plot_definitions.py
+\includegraphics[width=\textwidth]{fig_definitions.png}   % produced by hmodel_plot_definitions.py
 \caption{Potentials $w_0,w_1$, forces, attachment rate $K_{0\to1}(h)$ (step at $h_\ast$) and detachment density $K_{1\to0}(h)$.}
 \label{fig:defs}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{fig_threshold.png}   % produced by hmodel_plot_definitions.py
+\caption{$X_t$, $h_t$, $\alpha_t$ and $\dot{y}$ for a single head with $\sigma=0.5\ \mathrm{pN}$, $\lambda_{\rm det}=0.1\ \mathrm{ms^{-1}}$. The head attaches when $h>h_\ast=5$ nm and detaches at a uniform random distance in $(-d/2,0)$.}
+\label{fig:plots}
 \end{figure}
 
 \end{document}

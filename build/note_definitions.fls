@@ -91,7 +91,17 @@ INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/cm/cmbx7.tfm
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/cm/cmbx5.tfm
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/jknappen/ec/tcrm1000.tfm
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/cm/cmti10.tfm
+INPUT ./fig_definitions.png
+INPUT ./fig_definitions.png
+INPUT ./fig_definitions.png
+INPUT ./fig_definitions.png
 OUTPUT build/note_definitions.pdf
+INPUT ./fig_definitions.png
+INPUT ./fig_threshold.png
+INPUT ./fig_threshold.png
+INPUT ./fig_threshold.png
+INPUT ./fig_threshold.png
+INPUT ./fig_threshold.png
 INPUT /usr/local/texlive/2026/texmf-var/fonts/map/pdftex/updmap/pdftex.map
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc
 INPUT build/note_definitions.aux
